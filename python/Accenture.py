@@ -6,4 +6,7 @@ request=req.Request(url, headers={
 })
 with req.urlopen(url) as response:
     data=response.read().decode("utf-8")
-print(data)
+import bs4
+root=bs4.BeautifulSoup(data,"html.parser")
+print(root.title.string)
+
