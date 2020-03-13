@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <info>
-	<infoitem key="UD_page_data" value="name:id;datatype:int,name:pdf;datatype:string,name:content;datatype:blob" />
+	<infoitem key="UD_page_data" value="name:id;datatype:int,name:pdf;datatype:string,name:content;datatype:blob,name:datetime;datatype:datetime,name:page_name;datatype:string,name:sort;datatype:string" />
 	<infoitem key="UD_session" value="name:id;datatype:int,name:account;datatype:string,name:password;datatype:string,name:level;datatype:int" />
 </info>

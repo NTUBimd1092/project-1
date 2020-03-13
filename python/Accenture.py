@@ -17,7 +17,7 @@ cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
 #插入資料
 sqlinsert = """INSERT INTO page_data(pdf,content,page_name,sort)
-         VALUES ('檔名','內容','網站名稱','分類')"""
+         VALUES ('pdf','content','page_name','sort')"""
 try:
    # 執行sql語句
    cursor.execute(sqlinsert)
