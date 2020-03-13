@@ -8,7 +8,6 @@ with req.urlopen(url) as response:
     data=response.read().decode("utf-8")
 import bs4
 root=bs4.BeautifulSoup(data,"html.parser")
-pdf
 print(root.title.string)
 #連線資料庫
 import pymysql
@@ -17,15 +16,17 @@ cursor = db.cursor()
 cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
 #插入資料
-sqlinsert = """INSERT INTO page_data(pdf,content)
-         VALUES ('pyhon','python content insert test')"""
+sqlinsert = """INSERT INTO page_data(pdf,content,page_name,sort)
+         VALUES ('檔名','內容','網站名稱','分類')"""
 try:
    # 執行sql語句
    cursor.execute(sqlinsert)
    # 提交到資料庫執行
    db.commit()
+   print('成功')
 except:
    # 如果發生錯誤則回滾
    db.rollback()
+   print('失敗')
 db.close()
 
