@@ -15,7 +15,11 @@ cursor = db.cursor()
 cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
 #插入資料
-myurl=root.findAll("a")
+myurl=root.find_all("a",role="button")
+for ii in myurl:
+    if ii.a !=None:
+        print(ii.a.string)
+'''
 X=root.find_all("li",class_="summary-item rte-inline")
 for i in X:
     if i !=None:
@@ -37,5 +41,6 @@ except:
    # 如果發生錯誤則回滾
    db.rollback()
    print('失敗')
+'''
 db.close()
 
