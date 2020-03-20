@@ -15,9 +15,9 @@ cursor = db.cursor()
 cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
 #插入資料
-myurl=root.findall("a")
-print(myurl)
-
+myurl=root.findAll("a")
+X=root.find("li",class_="summary-item rte-inline")
+print(root.h2.string)
 pdf=''
 content='屋'
 page_name=str(root.title.string)
