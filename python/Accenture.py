@@ -16,13 +16,15 @@ cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
 #插入資料
 myurl=root.findAll("a")
-X=root.find("li",class_="summary-item rte-inline")
-print(root.h2.string)
+X=root.find_all("li",class_="summary-item rte-inline")
+for i in X:
+    if i !=None:
+        summary=i.string
+        print(i.string)
 pdf=''
-content='屋'
+content=summary
 page_name=str(root.title.string)
-sort='挖'
-"""
+sort=''
 sqlinsert = ("INSERT INTO page_data(pdf,content,page_name,sort)" "VALUES(%s,%s,%s,%s)")
 data_inster = (pdf,content,page_name,sort)
 try:
@@ -35,6 +37,5 @@ except:
    # 如果發生錯誤則回滾
    db.rollback()
    print('失敗')
-   """
 db.close()
 
