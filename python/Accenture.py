@@ -21,6 +21,8 @@ pdf_dir="pdfs/"
 if not os.path.exists(pdf_dir):
     os.mkdir(pdf_dir)
 #抓取網頁資料
+#抓pdf網址
+"""
 myurl=root.find_all("a",role="button")
 for ii in myurl:
     href=ii.get("href")
@@ -37,15 +39,18 @@ for ii in myurl:
                 f.close
             except:
                 print("{}無法讀取!".format(filename))
-'''
+"""
+#抓摘要
 X=root.find_all("li",class_="summary-item rte-inline")
 for i in X:
     if i !=None:
         summary=i.string
         print(i.string)
+#抓分類
+
 pdf=''  #檔案連結
 content=summary #摘要
-page_name=str(root.title.string)    #網站名稱
+page_name=str(root.title.string[-9::1])#網站名稱
 sort='' #分類
 #插入資料
 sqlinsert = ("INSERT INTO page_data(pdf,content,page_name,sort)" "VALUES(%s,%s,%s,%s)")
@@ -60,6 +65,6 @@ except:
    # 如果發生錯誤則回滾
    db.rollback()
    print('失敗')
-'''
+
 db.close()
 
