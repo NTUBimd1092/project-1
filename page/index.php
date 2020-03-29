@@ -1,5 +1,6 @@
 <?php require_once('Connections/crawler.php'); ?>
 <?php
+mysql_query("SET NAMES 'utf8'");//修正中文亂碼問題
 //initialize the session
 if (!isset($_SESSION)) {
   session_start();
@@ -110,7 +111,7 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
 <html lang="TW">
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -120,7 +121,9 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
 </head>
 <body>
 <div class="row">
-  <div class="col-md-2" align="right"><a href="login.php">登入</a></div>
+  <div class="col-md-2" align="right"><a href="login.php">登入</a></br>
+  目錄：
+  </div>
   <div class="col-md-6" align="center">
   <table class="table">
   <th colspan="7"><p align="center">產業報告資訊整合平台</p>
@@ -142,7 +145,7 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
       <td><?php echo $row_page_data['datetime']; ?></td>
       <td><?php echo $row_page_data['page_name']; ?></td>
       <td><?php echo $row_page_data['sort']; ?></td>
-      <td><a href="#">下載</a></td>
+      <td><a href="https://www.accenture.cn/_acnmedia/PDF-117/Accenture-TechVision-2020-Exec-Summary-Report-CN-ZH.pdf#zoom=40" target="_blank">下載</a></td>
     </tr>
     <?php } while ($row_page_data = mysql_fetch_assoc($page_data)); ?>
    
