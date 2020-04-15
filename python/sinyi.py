@@ -19,9 +19,9 @@ def getData(url):
         result.add('https://www.sinyi.com.tw/rent/'+link.select_one('a')['href'])      
     result = list(result)
     for i ,result in enumerate(result):
-        print(result)
-        
-count=1
+        print(result) 
+
+count=1#頁數
 while count<=2:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
     print("==========================================")
