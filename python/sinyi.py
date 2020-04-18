@@ -1,25 +1,41 @@
 import requests
 from bs4 import BeautifulSoup
+import pymysql
+db = pymysql.connect("localhost","root","1234","crawler")
+cursor = db.cursor()
+
+
 def getData(url):
-    res= requests.get(url)
-    soup=BeautifulSoup(res.text,'html.parser')#原始碼
-    adress=soup.find_all(class_="num num-text")#地址
-    print("地址============================")
-    for adres in adress:
-        if soup.find(class_="num num-text") !=None:
-            print(adres.string)
-    print("房屋名稱============================")
-    house=soup.find_all("span", class_="item_title")#房屋名稱
-    for name in house:
-        if soup.find("span", class_="item_title")!=None:
-            print(name.string)       
-    print("房屋網址============================")
-    result= set()#房屋網址
-    for link in soup.select('.search_result_item'):
-        result.add('https://www.sinyi.com.tw/rent/'+link.select_one('a')['href'])      
-    result = list(result)
-    for i ,result in enumerate(result):
-        print(result) 
+    resources = requests.get(url)
+    soup = BeautifulSoup(resources.text, 'html.parser')
+
+    result= list()
+
+    for house in soup.select('.search_result_item'):
+        house_name = house.find("span", class_="item_title").string
+        address = house.find(class_="num num-text").string
+        url = f'''https://www.sinyi.com.tw/rent/{house.select_one('a')['href']}'''
+        house_money = house.find("span", class_="num").string
+        result.append({
+            'house_name': house_name,
+            'address': address,
+            'url': url,
+            'house_money':house_money
+        })
+
+    for i, data in enumerate(result):
+        print(f'#{i}: ')
+        print(data['house_name'])
+        print(data['address'])
+        print(data['url'])
+        print(data['house_money'])
+        print()
+        sqlinsert = ("INSERT INTO page_data(WebName,adress,house,Link,money)" "VALUES(%s,%s,%s,%s,%s)")
+        val = ['信義房屋',data['address'],data['house_name'],data['url'],data['house_money']]
+        cursor.execute(sqlinsert,val)
+        db.commit()
+    print(f'Total: {len(result)}')
+
 
 count=1#頁數
 while count<=2:
@@ -28,3 +44,4 @@ while count<=2:
     print(pageURL)
     pageURL=getData(pageURL)
     count+=1
+db.close()
