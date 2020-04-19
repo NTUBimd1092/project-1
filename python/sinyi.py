@@ -15,12 +15,13 @@ def getData(url):
         house_name = house.find("span", class_="item_title").string
         address = house.find(class_="num num-text").string
         url = f'''https://www.sinyi.com.tw/rent/{house.select_one('a')['href']}'''
-        house_money = house.find("span", class_="num").string
+        price_tag = house.find("div", class_="price_new")
+        price = price_tag.find("span", class_="num").string
         result.append({
             'house_name': house_name,
             'address': address,
             'url': url,
-            'house_money':house_money
+            'house_money':price
         })
 
     for i, data in enumerate(result):
@@ -40,7 +41,7 @@ def getData(url):
 count=1#頁數
 while count<=2:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
-    print("==========================================")
+    print(f'=================第{count}頁==================')
     print(pageURL)
     pageURL=getData(pageURL)
     count+=1
