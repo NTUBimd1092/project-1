@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pymysql
+from re import sub
 db = pymysql.connect("localhost","root","1234","crawler")
 cursor = db.cursor()
 

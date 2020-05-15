@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pymysql
+from re import sub
 db = pymysql.connect("localhost","root","1234","crawler")
 cursor = db.cursor()
 
@@ -18,6 +19,7 @@ def getData(url):
         url = f'''https://www.sinyi.com.tw/rent/{house.select_one('a')['href']}'''
         price_tag = house.find("div", class_="price_new")
         price = price_tag.find("span", class_="num").string
+        money = float(sub(r'[^\d.]', '', price))
         house_info=house.find("div",class_="detail_line2")
         house_info2=house_info.find_all('span',class_="num")
         house_info3=[]
@@ -28,7 +30,7 @@ def getData(url):
             'house_name': house_name,
             'address': address,
             'url': url,
-            'house_money':price,
+            'house_money':money,
             'house_type':house_info3[0],
             'pattern':house_info3[2]+house_info3[3]+house_info3[4]+house_info3[5],
             'square_meters':house_info3[1],
