@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主機: localhost
--- 產生日期: 2020 年 05 月 12 日 08:30
+-- 產生日期: 2020 年 05 月 15 日 13:35
 -- 伺服器版本: 5.6.12-log
 -- PHP 版本: 5.4.12
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `page_data` (
   `Link` varchar(255) NOT NULL,
   `house` varchar(255) DEFAULT NULL,
   `adress` varchar(255) DEFAULT NULL,
-  `money` varchar(30) DEFAULT NULL,
+  `money` double DEFAULT NULL,
   `house_type` varchar(255) NOT NULL,
   `floor` varchar(10) NOT NULL,
   `square_meters` int(10) NOT NULL,
@@ -48,66 +48,66 @@ CREATE TABLE IF NOT EXISTS `page_data` (
 --
 
 INSERT INTO `page_data` (`images`, `WebName`, `Link`, `house`, `adress`, `money`, `house_type`, `floor`, `square_meters`, `pattern`) VALUES
-('https://res.sinyi.com.tw/rent/C173562/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C173562', '黃金名仕園', '名仕園   /   台北市士林區中山北路七段', '215,000', '成屋', '1/7', 124, '0123'),
-('https://res.sinyi.com.tw/rent/C196020/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C196020', '政大熱鬧金店面', '台北市文山區指南路二段', '100,000', '成屋', '1/3', 22, '0110'),
-('https://res.sinyi.com.tw/rent/C198945/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C198945', '開心一百黃金角店', '台中市潭子區中山路一段', '25,000', '成屋', '1/13', 35, '0110'),
-('https://res.sinyi.com.tw/rent/C202337/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C202337', '都會情人美２房', '都會情人   /   高雄市鼓山區文信路', '16,000', '成屋', '4/15', 23, '2210'),
-('https://res.sinyi.com.tw/rent/C203410/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C203410', '堤景採光三房車位', '香榭堤景   /   桃園市蘆竹區南昌路', '25,000', '成屋', '11/15', 52, '3221'),
-('https://res.sinyi.com.tw/rent/C203828/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C203828', '中和中正廠辦‧２', '新北市中和區中正路', '90,000', '成屋', '2/3', 94, '3210'),
-('https://res.sinyi.com.tw/rent/C203829/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C203829', '中和中正廠辦‧３', '新北市中和區中正路', '80,000', '成屋', '3/3', 94, '2210'),
-('https://res.sinyi.com.tw/rent/C204527/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C204527', 'Ａ９三房美屋車位', '文化錄   /   新北市林口區文化三路一段', '28,000', '成屋', '3/12', 36, '3220'),
-('https://res.sinyi.com.tw/rent/C205734/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C205734', '招財１＋２樓店面', '新北市永和區得和路', '50,000', '成屋', '1-2/4', 24, '0220'),
-('https://res.sinyi.com.tw/rent/C206338/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C206338', '富國面寬邊間金店', '美夢成真NO.1   /   高雄市左營區富國路', '80,000', '成屋', '1/7', 63, '0210'),
-('https://res.sinyi.com.tw/rent/C206518/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C206518', '士林捷運裝潢美廈', '小貴馥   /   台北市士林區福德路', '30,000', '成屋', '6/8', 10, '0110'),
-('https://res.sinyi.com.tw/rent/C206958/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C206958', '新美齊高樓含車戶', '新北市三重區朝陽街', '38,000', '成屋', '12/12', 38, '2210'),
-('https://res.sinyi.com.tw/rent/C208110/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208110', '士北科好宅', '台北市北投區文林北路', '38,000', '成屋', '8/13', 45, '3220'),
-('https://res.sinyi.com.tw/rent/C208193/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208193', '大坪林捷運大店面', '新北市新店區民權路', '230,000', '成屋', '1/5', 66, '2330'),
-('https://res.sinyi.com.tw/rent/C208194/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208194', '玉上園景觀美宅', '玉上園   /   新北市新店區寶橋路', '68,000', '成屋', '25/27', 74, '4220'),
-('https://res.sinyi.com.tw/rent/C208215/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208215', '麗石邊間高樓景觀', '台北市北投區裕民二路', '90,000', '成屋', '12/19', 53, '221.51'),
-('https://res.sinyi.com.tw/rent/C208380/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208380', '捷運寬敞辦公', '台北市大同區重慶北路二段', '42,000', '成屋', '8/12', 37, '1110'),
-('https://res.sinyi.com.tw/rent/C208488/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208488', '聚合發經典好居宅', '聚合發經典   /   台中市西屯區市政路', '45,000', '成屋', '6/19', 64, '3220'),
-('https://res.sinyi.com.tw/rent/C208586/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208586', '耀嵩豐兩房平車', '高雄市左營區博愛四路', '32,000', '成屋', '17/28', 43, '2120'),
-('https://res.sinyi.com.tw/rent/C209039/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209039', '大墩學區三房車位', '大東家春風   /   台中市南屯區三和街', '25,000', '成屋', '5/8', 41, '3220'),
-('https://res.sinyi.com.tw/rent/C209330/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209330', '金門３樓', '新北市板橋區金門街', '16,000', '成屋', '3/4', 26, '2211'),
-('https://res.sinyi.com.tw/rent/C209357/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209357', '東湖商圈金店面', '台北市內湖區東湖路', '40,000', '成屋', '1/7', 43, '1111'),
-('https://res.sinyi.com.tw/rent/C209627/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209627', '聯上真品裝潢豪邸', '聯上真品   /   高雄市鼓山區文信路', '38,000', '成屋', '12/15', 65, '3221'),
-('https://res.sinyi.com.tw/rent/C209640/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209640', '國盛電梯方正２房', '台北市中正區中華路二段', '20,000', '成屋', '3/7', 11, '2110'),
-('https://res.sinyi.com.tw/rent/C210034/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C210034', '正展演中心旁商辦', '桃園市桃園區藝文一街', '46,000', '成屋', '14/18', 30, '0100'),
-('https://res.sinyi.com.tw/rent/C210112/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C210112', '農１６美四房車位', '高雄市鼓山區中華一路', '19,000', '成屋', '11/13', 48, '4220'),
-('https://res.sinyi.com.tw/rent/C211704/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211704', '永興大樓精美Ａ', '新北市中和區建康路', '17,500', '成屋', '8/9', 23, '1110'),
-('https://res.sinyi.com.tw/rent/C212544/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C212544', '東方之冠高樓裝潢', '富宇東方之冠   /   台中市西屯區市政路', '100,000', '成屋', '15/38', 114, '4230'),
-('https://res.sinyi.com.tw/rent/C213087/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C213087', '正勤好租好租三房', '正勤   /   高雄市前鎮區中華五路', '16,800', '成屋', '2/12', 42, '3220'),
-('https://res.sinyi.com.tw/rent/C213092/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C213092', '筑丰天母三房', '台北市士林區中山北路六段', '79,500', '成屋', '9/21', 57, '3220'),
-('https://res.sinyi.com.tw/rent/C213649/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C213649', '近好市多三房', '高雄市左營區大順一路', '13,000', '成屋', '18/20', 68, '3220'),
-('https://res.sinyi.com.tw/rent/C213980/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C213980', '美麗尊邸美三房', '高雄市左營區重忠路', '15,000', '成屋', '8/14', 41, '3220'),
-('https://res.sinyi.com.tw/rent/C214290/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214290', '海洋都心成家三房', '新北市淡水區新市五路三段', '19,000', '成屋', '12/27', 45, '3220'),
-('https://res.sinyi.com.tw/rent/C214466/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214466', '民權西路電梯租屋', '台北市中山區天祥路', '26,500', '成屋', '4/5', 14, '1110'),
-('https://res.sinyi.com.tw/rent/C215137/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215137', '塗城京讚三房平車', '台中市大里區塗城路', '25,000', '成屋', '8/11', 48, '3220'),
-('https://res.sinyi.com.tw/rent/C215457/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215457', '長安東中山區辦公', '台北市中山區長安東路一段', '111,000', '成屋', '3/11', 74, '0107'),
-('https://res.sinyi.com.tw/rent/C215542/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215542', '德安印象極簡時尚', '台北市內湖區行善路', '120,000', '成屋', '4/13', 67, '4220'),
-('https://res.sinyi.com.tw/rent/C215747/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215747', '高樓採光美三房', '新竹縣竹北市成功十五街', '22,000', '成屋', '8/12', 49, '3220'),
-('https://res.sinyi.com.tw/rent/C216138/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216138', '永安捷運公寓二樓', '新北市永和區中和路', '14,000', '成屋', '2/5', 17, '3010'),
-('https://res.sinyi.com.tw/rent/C216271/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216271', '昇陽精緻邊間兩房', '昇陽GRAND   /   台北市大安區光復南路', '44,000', '成屋', '10/14', 25, '2110'),
-('https://res.sinyi.com.tw/rent/C216315/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216315', '邊間阿曼風尚雅居', '台北市中山區民生東路一段', '28,000', '成屋', '5/8', 16, '1110'),
-('https://res.sinyi.com.tw/rent/C216333/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216333', '西門裝潢溫馨套房', '台北市萬華區環河南路一段', '19,500', '成屋', '6/12', 13, '1120'),
-('https://res.sinyi.com.tw/rent/C216427/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216427', '百達富裔優美四房', '百達富裔   /   台中市西屯區臺灣大道三段', '118,888', '成屋', '27/35', 109, '4230'),
-('https://res.sinyi.com.tw/rent/C216498/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216498', '巨蛋佳人捷運三房', '博愛佳人   /   高雄市鼓山區博愛二路', '26,000', '成屋', '10/14', 47, '3220'),
-('https://res.sinyi.com.tw/rent/C216525/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216525', '捷運新都星金店面', '捷運新都星   /   新北市永和區信義路', '60,000', '成屋', '1/17', 24, '0110'),
-('https://res.sinyi.com.tw/rent/C216704/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216704', '仁愛管理高樓３房', '鴻福大樓   /   台北市大安區仁愛路四段', '32,000', '成屋', '12/14', 25, '3210'),
-('https://res.sinyi.com.tw/rent/C217095/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C217095', '大坪林捷運美兩房', '新北市新店區中興路三段', '22,000', '成屋', '3/5', 22, '3220'),
-('https://res.sinyi.com.tw/rent/C217096/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C217096', '大坪林捷運雅房Ａ', '新北市新店區中興路三段', '9,000', '成屋', '3/5', 18, '3220'),
-('https://res.sinyi.com.tw/rent/C217097/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C217097', '大坪林捷運套房Ｂ', '新北市新店區中興路三段', '12,000', '成屋', '3/5', 20, '3220'),
-('https://res.sinyi.com.tw/rent/C217149/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C217149', '海華鬧區面寬店面', '桃園市中壢區新生路', '98,000', '成屋', '1/22', 20, '0111'),
-('https://res.sinyi.com.tw/rent/C219296/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219296', '農１６超採光三房', '新世界   /   高雄市鼓山區裕誠路', '18,000', '成屋', '14/14', 36, '3220'),
-('https://res.sinyi.com.tw/rent/C219481/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219481', '海都一期舒適兩房', '新北市淡水區新市五路三段', '17,000', '成屋', '19/26', 31, '2210'),
-('https://res.sinyi.com.tw/rent/C219569/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219569', '松江寬大店面', '台北市中山區松江路', '50,000', '成屋', '1/5', 28, '2211'),
-('https://res.sinyi.com.tw/rent/C219608/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219608', '大安好租靜巷三房', '台北市大安區忠孝東路四段', '35,000', '成屋', '4/5', 34, '3220'),
-('https://res.sinyi.com.tw/rent/C220121/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C220121', '重慶圓環金三角窗', '台北市大同區天水路', '98,000', '成屋', '1/19', 68, '1211'),
-('https://res.sinyi.com.tw/rent/C220321/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C220321', '微美信義香榭', '信義香榭   /   台北市信義區信義路五段', '46,000', '成屋', '3/19', 26, '2210'),
-('https://res.sinyi.com.tw/rent/C220671/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C220671', '雲Ｂ高樓三房平車', '雲世紀B區米勒拾穗   /   台中市西屯區國安一路', '29,000', '成屋', '19/21', 53, '3220'),
-('https://res.sinyi.com.tw/rent/C221305/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C221305', '璀璨之都兩房', '璀璨之都   /   新北市五股區芳洲一路', '19,000', '成屋', '8/15', 30, '2210'),
-('https://res.sinyi.com.tw/rent/C221931/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C221931', '舒曼的家二房', '舒曼的家   /   台北市文山區興隆路二段', '25,000', '成屋', '2/13', 22, '2210'),
-('https://res.sinyi.com.tw/rent/CZ02787/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/CZ02787', '忠孝東路整層辦公', '台北市中正區忠孝東路一段', '440,000', '成屋', '4/12', 248, '0110');
+('https://res.sinyi.com.tw/rent/C198810/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C198810', '春天悅灣３房', '春天悅灣   /   新北市淡水區民族路', 36000, '成屋', '3/7', 62, '3220'),
+('https://res.sinyi.com.tw/rent/C204218/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C204218', '麗思卡登二房車位', '桃園市桃園區永安路', 23000, '成屋', '10/15', 41, '2210'),
+('https://res.sinyi.com.tw/rent/C205355/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C205355', 'Ｒ１５捷運美兩房', '高雄市左營區崇德路', 12500, '成屋', '14/14', 21, '2210'),
+('https://res.sinyi.com.tw/rent/C205544/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C205544', '近新堀江金鑽透天', '高雄市苓雅區文橫二路', 35000, '成屋', '1-2/2', 24, '0200'),
+('https://res.sinyi.com.tw/rent/C206030/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C206030', '大同莊園裝潢三房', '新北市土城區莊園街', 36000, '成屋', '8/27', 31, '3220'),
+('https://res.sinyi.com.tw/rent/C207190/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C207190', '近捷運極品金店面', '新北市中和區自立路', 60000, '成屋', '1/5', 28, '0110'),
+('https://res.sinyi.com.tw/rent/C207515/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C207515', '康朵溫馨套房', '台中市西屯區弘孝路', 16500, '成屋', '4/12', 21, '1110'),
+('https://res.sinyi.com.tw/rent/C208488/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208488', '聚合發經典好居宅', '聚合發經典   /   台中市西屯區市政路', 39000, '成屋', '6/19', 64, '3220'),
+('https://res.sinyi.com.tw/rent/C208816/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C208816', '安中商圈大坪店面', '台南市安南區安中路一段', 50000, '成屋', '1/4', 46, '0210'),
+('https://res.sinyi.com.tw/rent/C209000/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209000', '高樓亮美兩房平車', '高雄市鳳山區建國路三段', 18500, '成屋', '9/15', 35, '2210'),
+('https://res.sinyi.com.tw/rent/C209438/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209438', '行善龍騰大店面', '台北市內湖區行善路', 198684, '成屋', '1/8', 166, '0302'),
+('https://res.sinyi.com.tw/rent/C209603/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209603', '西湖電梯四房車位', '爵堡   /   台北市內湖區內湖路一段', 40000, '成屋', '9/9', 50, '4220'),
+('https://res.sinyi.com.tw/rent/C209670/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209670', '星海別墅四棟連通', '星海別墅   /   新北市淡水區新市一路一段', 88000, '成屋', '1-4/4', 211, '114110'),
+('https://res.sinyi.com.tw/rent/C209858/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C209858', '御丰擎天三房車位', '御丰莊園   /   桃園市八德區建德路', 19000, '成屋', '8/25', 62, '3221'),
+('https://res.sinyi.com.tw/rent/C211030/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211030', '中港文心旗艦店面', '德安臻藏   /   台中市西屯區文心路三段', 200000, '成屋', '-1/10', 339, '0120'),
+('https://res.sinyi.com.tw/rent/C211365/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211365', '中正檀廂車位', '台北市中正區南昌路一段', 5000, '車位', '-2/15', 14, '1110'),
+('https://res.sinyi.com.tw/rent/C211407/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211407', '近捷運樹海大四房', '大英博物館   /   新北市三峽區學成路', 35000, '成屋', '3/15', 74, '4220'),
+('https://res.sinyi.com.tw/rent/C211444/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211444', '中西區企業總部', '台南市中西區尊王路', 180000, '成屋', 'B1-7/7', 373, '6890'),
+('https://res.sinyi.com.tw/rent/C211690/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211690', '崇德文心兩房平車', '台中市北屯區瀋陽路三段', 25500, '成屋', '2/18', 38, '2210'),
+('https://res.sinyi.com.tw/rent/C211859/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211859', '璟都柏悅２房車位', '桃園市桃園區吉安一街', 25500, '成屋', '6/21', 32, '2210'),
+('https://res.sinyi.com.tw/rent/C211953/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C211953', '京城鳳凰高樓兩房', '台南市永康區中華路', 19000, '成屋', '19/19', 27, '2210'),
+('https://res.sinyi.com.tw/rent/C212122/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C212122', '大容翠堤三房車位', '台中市西屯區大容東街', 23000, '成屋', '9/12', 32, '3220'),
+('https://res.sinyi.com.tw/rent/C212185/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C212185', '保平路２０３公寓', '新北市永和區保平路', 10000, '成屋', '5/5', 13, '2110'),
+('https://res.sinyi.com.tw/rent/C212198/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C212198', '瓊林１＋１華廈', '新北市新莊區瓊林路', 18000, '成屋', '4/7', 17, '2110'),
+('https://res.sinyi.com.tw/rent/C212721/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C212721', '富春四季小資首選', '富春四季   /   台北市文山區指南路三段', 25000, '成屋', '10/11', 25, '1110'),
+('https://res.sinyi.com.tw/rent/C213564/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C213564', '霞關優質金店面', '太平洋霞關   /   台北市士林區中正路', 40000, '成屋', '1/16', 22, '0110'),
+('https://res.sinyi.com.tw/rent/C214084/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214084', '勝美學精美套房', '勝美學   /   台中市北區學士路', 19500, '成屋', '13/18', 25, '1110'),
+('https://res.sinyi.com.tw/rent/C214087/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214087', '書香世家女中美屋', '台中市西區四維街', 28000, '成屋', '7/7', 40, '3220'),
+('https://res.sinyi.com.tw/rent/C214088/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214088', '學士ＶＩＳＡ。租', '台中市北區學士路', 7900, '成屋', '3/8', 17, '1110'),
+('https://res.sinyi.com.tw/rent/C214090/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214090', '勤美草悟道美三房', '長安科博   /   台中市西區英才路', 35000, '成屋', '6/12', 52, '3220'),
+('https://res.sinyi.com.tw/rent/C214237/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214237', '精誠八街日式店面', '台中市西區精誠八街', 55000, '成屋', '1-2/2', 36, '3221'),
+('https://res.sinyi.com.tw/rent/C214239/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214239', '不二家四房平車位', '不二家I   /   台中市西屯區東興路三段', 25000, '成屋', '8/13', 43, '4220'),
+('https://res.sinyi.com.tw/rent/C214470/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214470', '民權大樓雙捷辦住', '台北市中山區民權西路', 25000, '成屋', '11/12', 12, '1110'),
+('https://res.sinyi.com.tw/rent/C214837/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C214837', '植物園大面寬店面', '科博京隱   /   台中市北區忠明路', 48000, '成屋', '1/12', 61, '1220'),
+('https://res.sinyi.com.tw/rent/C215208/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215208', '東湖捷運美景華廈', '台北市內湖區民權東路六段', 30000, '成屋', '9-10/11', 42, '121.50'),
+('https://res.sinyi.com.tw/rent/C215825/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215825', '石牌懷德車位電梯', '振華公園華廈   /   台北市北投區懷德街', 38000, '成屋', '3/8', 43, '3220'),
+('https://res.sinyi.com.tw/rent/C215826/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215826', '幸福街精美透天', '台北市士林區幸福街', 50000, '成屋', '1-2/2', 21, '2221'),
+('https://res.sinyi.com.tw/rent/C215905/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C215905', '內湖捷運４樓美寓', '台北市內湖區成功路四段', 35000, '成屋', '4/5', 37, '3220'),
+('https://res.sinyi.com.tw/rent/C216109/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216109', '逢甲福星路金店面', '台中市西屯區福星路', 188000, '成屋', '1-2/4', 46, '1110'),
+('https://res.sinyi.com.tw/rent/C216827/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C216827', '正崇德路店面', '台中市北屯區崇德路一段', 48000, '成屋', 'B1-5/1', 18, '0110'),
+('https://res.sinyi.com.tw/rent/C218004/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218004', '日升月恆景觀美屋', '日升月恆   /   台北市南港區經貿二路', 110000, '成屋', '8/21', 91, '3220'),
+('https://res.sinyi.com.tw/rent/C218014/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218014', '復興路黃金店面', '新北市中和區復興路', 65000, '成屋', '1/5', 26, '0100'),
+('https://res.sinyi.com.tw/rent/C218021/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218021', '家綠寶兩房車位', '台中市南區忠明南路', 14000, '成屋', '8/12', 33, '2220'),
+('https://res.sinyi.com.tw/rent/C218327/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218327', '鄉林高樓視野美屋', '台中市西屯區漢口路二段', 30000, '成屋', '13/15', 50, '3220'),
+('https://res.sinyi.com.tw/rent/C218334/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218334', '大面寬邊間金店面', '台北市文山區興隆路二段', 100000, '成屋', '1/4', 35, '0310'),
+('https://res.sinyi.com.tw/rent/C218491/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218491', '北投市場二樓店面', '台北市北投區新市街', 166000, '成屋', '2/5', 70, '0110'),
+('https://res.sinyi.com.tw/rent/C218492/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218492', '北投市場一樓店面', '台北市北投區新市街', 150000, '成屋', '1/5', 71, '0110'),
+('https://res.sinyi.com.tw/rent/C218544/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C218544', '汐止樟樹三樓美寓', '新北市汐止區樟樹一路', 18000, '成屋', '3/5', 29, '3210'),
+('https://res.sinyi.com.tw/rent/C219401/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219401', '安中路一樓店面', '台南市安南區安中路一段', 18000, '成屋', '1/4', 9, '0110'),
+('https://res.sinyi.com.tw/rent/C219446/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219446', '南方之星靚靚屋', '新北市中和區捷運路', 20000, '成屋', '5/19', 15, '0110'),
+('https://res.sinyi.com.tw/rent/C219916/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C219916', '新月三房含車位', '新月   /   新北市淡水區新市一路三段', 20000, '成屋', '17/20', 49, '3220'),
+('https://res.sinyi.com.tw/rent/C220131/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C220131', '捷運靜巷店面Ａ', '台北市內湖區康寧路三段', 43000, '成屋', '1/5', 16, '0110'),
+('https://res.sinyi.com.tw/rent/C220441/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C220441', '新宿低公設兩房', '世貿新宿   /   新北市汐止區樟樹一路', 18000, '成屋', '2/7', 28, '2210'),
+('https://res.sinyi.com.tw/rent/C220873/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C220873', '衛武營旁好住家', '高雄市苓雅區武嶺街', 10000, '成屋', '1-3/3', 12, '6330'),
+('https://res.sinyi.com.tw/rent/C221035/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C221035', '西區文青面寬店面', '台中市西區大忠街', 46000, '成屋', '1/7', 50, '2210'),
+('https://res.sinyi.com.tw/rent/C221037/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C221037', '鄉林夏都', '鄉林夏都   /   台中市西區忠明南路', 35000, '成屋', '10/15', 34, '2220'),
+('https://res.sinyi.com.tw/rent/C222371/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C222371', '捷運君綻綠景三房', '台北市內湖區內湖路三段', 65000, '成屋', '10/15', 43, '3220'),
+('https://res.sinyi.com.tw/rent/C222375/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/C222375', '北大湖靜巷３樓', '北大湖社區   /   台北市內湖區成功路四段', 30000, '成屋', '3/5', 31, '3220'),
+('https://res.sinyi.com.tw/rent/CZ02891/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/CZ02891', '文林北路景觀辦公', '遠東瑞市   /   台北市士林區文林北路', 141427, '成屋', '6/11', 123, '5120'),
+('https://res.sinyi.com.tw/rent/CZ02966/smallimg/A.JPG', '信義房屋', 'https://www.sinyi.com.tw/rent/houseno/CZ02966', '文林北路邊間店面', '台北市北投區文林北路', 191688, '成屋', '1/23', 91, '1010');
 
 -- --------------------------------------------------------
 
@@ -138,6 +138,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `image` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `birth` date NOT NULL,
+  `subscribe` varchar(1) NOT NULL DEFAULT '0' COMMENT '1有通知;0無通知',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
@@ -145,13 +146,13 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- 轉存資料表中的資料 `user`
 --
 
-INSERT INTO `user` (`id`, `account`, `password`, `name`, `image`, `phone`, `birth`) VALUES
-(1, 'a1234@gmail.com', '1234', '1234', '', '', '0000-00-00'),
-(2, 'a@a.a', '1234', 'a', '', '0348215213', '2020-05-05'),
-(3, 's@s.s', '1234', 's', '', '0909660051', '2020-04-27'),
-(4, 'root@1.1', '1234', 'root', '', '0909660051', '2020-04-28'),
-(5, '1@1.1', '1234', '2', '', '0909660051', '2020-05-05'),
-(6, '5@5.5', '123456', '密碼正確', '', '0909660051', '2020-04-27');
+INSERT INTO `user` (`id`, `account`, `password`, `name`, `image`, `phone`, `birth`, `subscribe`) VALUES
+(1, 'a1234@gmail.com', '1234', '1234', '', '', '0000-00-00', ''),
+(2, 'a@a.a', '1234', 'a', '214639kpavoexwtk0xgwwk.jpg', '0348215213', '2020-05-05', ''),
+(3, 's@s.s', '1234', 's', '', '0909660051', '2020-04-27', ''),
+(4, 'root@1.1', '1234', 'root', '', '0909660051', '2020-04-28', ''),
+(5, '1@1.1', '1234', '2', '', '0909660051', '2020-05-05', ''),
+(6, '5@5.5', '123456', '密碼正確', '', '0909660051', '2020-04-27', '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

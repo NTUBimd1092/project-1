@@ -19,7 +19,7 @@ def getData(url):
         url = f'''https://www.sinyi.com.tw/rent/{house.select_one('a')['href']}'''
         price_tag = house.find("div", class_="price_new")
         price = price_tag.find("span", class_="num").string
-        money = float(sub(r'[^\d.]', '', price))
+        money = int(sub(r'[^\d.]', '', price))
         house_info=house.find("div",class_="detail_line2")
         house_info2=house_info.find_all('span',class_="num")
         house_info3=[]
@@ -49,9 +49,12 @@ def getData(url):
         print(data['square_meters'])
         print(data['floor'])
         print()
-        sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-        val = ['信義房屋',data['images'],data['address'],data['house_name'],data['url'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor']]
-        cursor.execute(sqlinsert,val)
+        # sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+        # val = ['信義房屋',data['images'],data['address'],data['house_name'],data['url'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor']]
+        # cursor.execute(sqlinsert,val)
+        sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+        change = [data['url'],data['house_money']]
+        cursor.execute(sqlinsert_moneychange,change)
         db.commit()
     print(f'Total: {len(result)}')
 
