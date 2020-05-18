@@ -284,6 +284,9 @@ $totalRows_Login = mysql_num_rows($Login);
             text-decoration: none;
             color: white;
         }
+		.mytext{/*搜尋列表,登出的樣式*/
+		border:1px solid white; border-radius:2px;
+		}
     </style>
 
 </head>
@@ -298,7 +301,9 @@ $totalRows_Login = mysql_num_rows($Login);
         </span>
 
         <div class="headerRight">
-            <a href="<?php echo $logoutAction ?>" style="border:1px solid white; border-radius:2px;">登出</a>        </div>
+        <a href="searchArea.php"  class="mytext">搜尋列表</a>
+        	<a href="userPage.php" class="mytext">嗨！<?php echo $row_Login['name']; ?></a>
+            <a href="<?php echo $logoutAction ?>" class="mytext">登出</a>        </div>
 </div>
 
     <div class="accountData">
@@ -312,7 +317,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
             <tr>
                 <td>已收藏</td>
-                <td>價格異動</td>
+                <td><a href="AllTransaction.php" >價格異動</a></td>
                 <td>為您推薦</td>
             </tr>
         </table>

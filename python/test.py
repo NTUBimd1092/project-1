@@ -1,5 +1,5 @@
 import requests
-
+from bs4 import BeautifulSoup
 
 def str2obj(s, s1=';', s2='='):
     li = s.split(s1)
@@ -18,7 +18,6 @@ def main(url, params='', data='', headers=''):
 
     json_data = requests.post(url, params=params, data=text, headers=headers)
     json_data.encoding = 'utf-8'
-
     print(json_data.text)
 
 if __name__ == '__main__':
@@ -46,6 +45,3 @@ if __name__ == '__main__':
     '''
     main(url, params, text, headers)
 
-for house in jsonData:
-    ineed=house.find(class_='house_block')
-    print(ineed)

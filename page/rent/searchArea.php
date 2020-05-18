@@ -1,7 +1,33 @@
 <?php require_once('Connections/cralwer.php'); ?>
 <?php
+//initialize the session
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+// ** Logout the current user. **
+$logoutAction = $_SERVER['PHP_SELF']."?doLogout=true";
+if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != "")){
+  $logoutAction .="&". htmlentities($_SERVER['QUERY_STRING']);
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+  //to fully log out a visitor we need to clear the session varialbles
+  $_SESSION['MM_Username'] = NULL;
+  $_SESSION['MM_UserGroup'] = NULL;
+  $_SESSION['PrevUrl'] = NULL;
+  unset($_SESSION['MM_Username']);
+  unset($_SESSION['MM_UserGroup']);
+  unset($_SESSION['PrevUrl']);
+	
+  $logoutGoTo = "login.php";
+  if ($logoutGoTo) {
+    header("Location: $logoutGoTo");
+    exit;
+  }
+}
+@session_start();
 mysql_query("SET NAMES 'utf8'");//修正中文亂碼問題
-session_start();
 if (!function_exists("GetSQLValueString")) {
   function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
   {
@@ -42,6 +68,7 @@ $startRow_page_data = $pageNum_page_data * $maxRows_page_data;
 if(@$_POST[SquareMeter]=NULL){
 $_POST[SquareMeter]="%s";
 }
+/*搜尋資料 半成*/
 mysql_select_db($database_cralwer, $cralwer);
 @$query_page_data = "SELECT * FROM page_data WHERE `house` LIKE '%$_POST[search]%'
 or `adress` LIKE '%$_POST[search]%' or `Webname` LIKE '%$_POST[search]%' and `square_meters` <= '$_POST[SquareMeter]'";
@@ -56,7 +83,7 @@ if (isset($_GET['totalRows_page_data'])) {
   $totalRows_page_data = mysql_num_rows($all_page_data);
 }
 $totalPages_page_data = ceil($totalRows_page_data / $maxRows_page_data) - 1;
-
+/*登入者訊息*/
 $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
   $colname_Login = $_SESSION['MM_Username'];
@@ -84,6 +111,58 @@ if (!empty($_SERVER['QUERY_STRING'])) {
   }
 }
 $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_data, $queryString_page_data);
+?>
+<?php
+if (!function_exists("GetSQLValueString")) {
+function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+{
+  $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+
+  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+
+  switch ($theType) {
+    case "text":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;    
+    case "long":
+    case "int":
+      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+      break;
+    case "double":
+      $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+      break;
+    case "date":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;
+    case "defined":
+      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+      break;
+  }
+  return $theValue;
+}
+}
+?>
+<?php
+$editFormAction = $_SERVER['PHP_SELF'];
+if (isset($_SERVER['QUERY_STRING'])) {
+  $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
+}
+
+if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "userid")) {
+  $updateSQL = sprintf("UPDATE money_change SET userid=%s WHERE Link=%s",
+                       GetSQLValueString($_POST['userid'], "int"),
+                       GetSQLValueString($_POST['Link'], "text"));
+
+  mysql_select_db($database_cralwer, $cralwer);
+  $Result1 = mysql_query($updateSQL, $cralwer) or die(mysql_error());
+
+  $updateGoTo = "searchArea.php";
+  if (isset($_SERVER['QUERY_STRING'])) {
+    $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
+    $updateGoTo .= $_SERVER['QUERY_STRING'];
+  }
+  header(sprintf("Location: %s", $updateGoTo));
+}
 ?>
 
 
@@ -358,8 +437,9 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
     </span>
 
     <div class="headerRight">
-      <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a>
-    </div>
+        <a href="searchArea.php" style="border:1px solid white; border-radius:2px;">搜尋列表</a>
+    <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a> 
+    <a href="<?php echo $logoutAction ?>" style="border:1px solid white; border-radius:2px;">登出</a> </div>
   </div>
 
   <div class="searchDiv">
@@ -367,9 +447,10 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
       <span><a href="searchArea.php"><b>區域搜尋</b></a>&nbsp;|&nbsp;<a href="searchMetro.php">捷運搜尋</a>&nbsp;|&nbsp;<a href="searchDestination.php">目的搜尋</a>&nbsp;|</span>
       <br>
       <form action="searchArea.php" method="post">
-        <input type="text" class="input"  name="search" class="light-table-filter" data-table="order-table" placeholder="台北市, 中正區">
+        <input type="text" class="input"  name="search" class="light-table-filter" data-table="order-table" placeholder="台北市, 中正區" >
         <button type="submit" class="search">搜尋</button>
       </form>
+
 
       <select name="priceRange" class="select">
         <option value="">房屋租金</option>
@@ -417,17 +498,32 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
 
     </div>
 
-
+     
    
     <?php if ($totalRows_page_data > 0) { // Show if recordset not empty ?>
-      <?php do { ?>
+      <?php do { 
+	  /*異動資訊*/
+	  	$Link=$row_page_data['Link'];
+		mysql_select_db($database_cralwer, $cralwer);
+		$query_money_change = "SELECT * FROM money_change WHERE Link = '$Link'";
+		$money_change = mysql_query($query_money_change, $cralwer) or die(mysql_error());
+		$row_money_change = mysql_fetch_assoc($money_change);
+		$totalRows_money_change = mysql_num_rows($money_change);
+	  ?>
       <div class="resultDiv">
         <table align="center" class="order-table" id="customers">
           <tr>
             <td rowspan="4" width="25%" align="center"><img width="150px" height="100px" src="<?php echo $row_page_data['images']; ?>"></td>
             <th colspan="2" width="38%" align="left" style="font-size:20px"><?php echo $row_page_data['house']; ?></th>
-            <td rowspan="4" width="2%" valign="top"><img src="images/favorite.png" alt="like" class="favorite"></td>
-            <td width="20%" align="center">來自：<?php echo $row_page_data['WebName']; ?></td>
+            <form action="<?php echo $editFormAction; ?>" name="userid" method="post">
+            <td rowspan="4" width="2%" valign="top"><button type="submit"><img src="images/favorite.png" alt="like" class="favorite"></button></td>
+            <input  name="userid" value="<?php echo $row_Login['id']; ?>" type="hidden">
+            <input name="Link" value="<?php echo $row_page_data['Link']; ?>" type="hidden">
+<input name="id" value="<?php echo $row_money_change['id'];?>" type="hidden">
+<input type="hidden" name="MM_update" value="userid">
+
+</form>
+<td width="20%" align="center">來自：<?php echo $row_page_data['WebName']; ?></td>
             <td width="15%" align="center">PRICE</td>
           </tr>
           <tr>
@@ -450,7 +546,7 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
           </tr>
         </table>
       </div>
-      <?php } while ($row_page_data = mysql_fetch_assoc($page_data)); ?>
+    <?php } while ($row_page_data = mysql_fetch_assoc($page_data)); ?>
       <div class="pages" style="color:#7E5322">
       <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data - 1), $queryString_page_data); ?>"><b>上一頁</a>&nbsp;|&nbsp;<a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, min($totalPages_page_data, $pageNum_page_data + 1), $queryString_page_data); ?>">下一頁</b></a>
     </div>
@@ -472,4 +568,5 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
 <?php
 mysql_free_result($page_data);
 mysql_free_result($Login);
+mysql_free_result($money_change);;
 ?>
