@@ -77,19 +77,18 @@ if __name__ == '__main__':
     text = 'County=%E5%8F%B0%E5%8C%97%E5%B8%82&District=&Rooms=&PriceMin=&PriceMax=&AreaNeeds=&Purpose=&CaseType=&BuildAge=&CaseFloor=&DirFace=&ParkingSpace=&KeyWord=&Group=&ListMode=PhotosAndWords&PageCount=40&CurrentPage=1&CurrentRange=1&Sequence=&SearchMode=1&BuildNo=&BuildingID=&RoadName=&MainShopID='
 
     headers = '''
-        Host: rent.yungching.com.tw
-        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0
-        Accept: */*
-        Accept-Language: zh-TW,zh;q=0.8,en-US;q=0.5,en;q=0.3
-        Accept-Encoding: gzip, deflate
-        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-        X-Requested-With: XMLHttpRequest
-        Origin: http://rent.yungching.com.tw
-        Connection: keep-alive
-        Referer: http://rent.yungching.com.tw/
-        Cookie: TRID_G=d3060fbf-30de-4d92-bf2a-cd4f51b193a5; _gcl_au=1.1.80411668.1588681600; __auc=e88ca31c171e4cd6b0c3276950d; _pk_id.20.e415=7bad8c09db4da47d.1588681600.2.1589610209.1589610207.; __lt__cid=8afd84ef-8d14-43a5-afec-d138d837d077; _ga=GA1.4.932627257.1588681601; ASP.NET_SessionId=deret2ao3q33hve3o2xxyjab; SEID_G=d79e8ec9-5ff7-42b6-9505-9dd9b5895089; OvertureRecord=OR=dWhxdzF8eHFqZmtscWoxZnJwMXd6Mg==&OQ=&WTMC_ID=; TS018a342d=01aebff4149825dd7ef5dd2634837449b9642cc8cf45be3f5c002e1c604a1c7443eb16102254f34338db7443e3216a5bde6201bf2d09454c026afdb97ceb072d8c0961bb9fe69adef3aad9bb9dc3a8275047afa132; TS013996a5=01aebff414ab6f91e2ea7bfc4eb04ef42d5616fe4448b97f2be85091cf3ac44c8e2361bb2120ab5da8f5ed177d3d9ba39b135280410663a2dad2e3598d0052f843b73f0879; ez2o_UNID=1589606523379379; isMember=N; WMX_Channel=,10,; __ltmwga=utmcsr=(direct)|utmcmd=(none); _gid=GA1.4.1806008659.1589606524; __asc=c57c15d41721c26d754e9c10cf2; __lt__sid=cbd65f9e-6d8870c0; _pk_ses.20.e415=*
-        Cache-Control: max-age=0, no-cache
-        Pragma: no-cache
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Accept-Language: zh-TW,zh;q=0.9,zh-CN;q=0.8
+    Connection: keep-alive
+    Content-Length: 293
+    Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    Cookie: _gcl_au=1.1.949641578.1588681777; TRID_G=f8679cc4-0af9-4026-933d-0543a066503f; _ga=GA1.4.610099363.1588681794; __lt__cid=ce6a6036-bff1-4739-937e-7e2309044b27; __auc=d2190fc71721be0c67be5fb89bc; _gcl_aw=GCL.1589616696.Cj0KCQjwnv71BRCOARIsAIkxW9EJNCGaqlZLWTLJv5NhZS5WsOl8WydYRC720UwKcC-rMBMe3pjCKaoaAqIgEALw_wcB; __dmwsc=20170500d06ks0000u0000,br2fevvzrysv4hx1rwaqxmx5,dm00245; SEID_G=dd953113-bb1a-4537-badd-686723742a67; TS013996a5=01aebff414233388730273f13debc88808011b7fb3e2f82e3778ece6d1038a74447fe02e5f4109d7b9e841e8dca0897554c45da38609894a0727a3fdbe73a457f0e56f548f; ASP.NET_SessionId=gbkrq5o0mbwiod4tnezoqxon; OvertureRecord=OR=dWhxdzF8eHFqZmtscWoxZnJwMXd6Mg==&OQ=&WTMC_ID=; ez2o_UNID=1590161083425425; isMember=N; WMX_Channel=,10,; _gid=GA1.4.1127926449.1590161084; __asc=1abfac651723cfc8dddbcbc6cf6; __lt__sid=4d123914-71104324; __ltmwga=utmcsr=(direct)|utmcmd=(none); _pk_ses.20.e415=*; TS018a342d=01aebff4143f7b4b2fa7fa84be4e15f1de0b85f494057b4e4adcaf5705aac3b6d66ea4494d5f0e3f827a8f69f9785288a73b533d46a99fe9a272d42e3b9456fe2709d3ca3e0f03004b1ef2a52b57d9a439534e034a; _dc_gtm_UA-35108030-1=1; _pk_id.20.e415=fbb3bd40b923d897.1588681794.2.1590162206.1590161086.
+    Host: rent.yungching.com.tw
+    Origin: http://rent.yungching.com.tw
+    Referer: http://rent.yungching.com.tw/
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+    X-Requested-With: XMLHttpRequest
     '''
     main(url, params, text, headers)
 
