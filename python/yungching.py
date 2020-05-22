@@ -19,8 +19,8 @@ def str2obj(s, s1=';', s2='='):
     return res
 
 
-count=1
-while count<=50:
+count=6
+while count<=94:
     def main(url, params='', data='', headers=''):
         headers = str2obj(headers, '\n', ': ')
 
@@ -96,5 +96,6 @@ while count<=50:
         X-Requested-With: XMLHttpRequest
         '''
         main(url, params, text, headers)
+        print((f'=================第{count}頁=================='))
         count+=1
 
