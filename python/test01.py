@@ -1,8 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
-import re
 import json
-from re import sub
 
 def str2obj(s, s1=';', s2='='):
     li = s.split(s1)
@@ -16,57 +13,12 @@ def str2obj(s, s1=';', s2='='):
     return res
 
 
-
 def main(url, params='', data='', headers=''):
     headers = str2obj(headers, '\n', ': ')
-
     json_data = requests.post(url, params=params, data=text, headers=headers)
     json_data.encoding = 'utf-8'
-    # print(json_data)
-
-    soup = BeautifulSoup(json_data.text, 'html.parser')
-    result= list() 
-    for house in soup.find_all(class_='house_block'):
-        images=house.select_one('img')['src']
-        s=house.find_all('a')
-        name=s[0]['title']
-        Link=s[1]['href']
-        a=house.find_all('li')
-        address=a[0].string
-        c=house.find(class_='price')
-        price=c.find('span').string
-        money = int(sub(r'[^\d.]', '', price))#轉換資料型態
-        house_type=a[2].string[3:]
-        meters=a[1].string[3:-1]
-        floors=a[3].string[3:]
-        pattern=a[4].string[3:]
-
-        
-    result.append({
-        'images':images,
-        'name':name,
-        'Link':Link,
-        'address':address,
-        'money':money,
-        'house_type':house_type,
-        'meters':meters,
-        'floor':floors,
-        'pattern':pattern
-        
-        })
-    for i, data in enumerate(result):
-        print(f'#{i}: ')
-        print(data['images'])
-        print(data['name'])
-        print(data['Link'])
-        print(data['address'])
-        print(data['money'])
-        print(data['house_type'])
-        print(data['meters'])
-        print(data['floor'])
-        print(data['pattern'])
-        print()
-    print(f'Total: {len(result)}')
+    
+    print(json_data.text)
 
 
 if __name__ == '__main__':
@@ -84,6 +36,7 @@ if __name__ == '__main__':
         Accept-Encoding: gzip, deflate
         Content-Type: application/x-www-form-urlencoded; charset=UTF-8
         X-Requested-With: XMLHttpRequest
+        Content-Length: 293
         Origin: http://rent.yungching.com.tw
         Connection: keep-alive
         Referer: http://rent.yungching.com.tw/
@@ -92,4 +45,3 @@ if __name__ == '__main__':
         Pragma: no-cache
     '''
     main(url, params, text, headers)
-

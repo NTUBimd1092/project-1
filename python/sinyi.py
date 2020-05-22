@@ -19,7 +19,7 @@ def getData(url):
         url = f'''https://www.sinyi.com.tw/rent/{house.select_one('a')['href']}'''
         price_tag = house.find("div", class_="price_new")
         price = price_tag.find("span", class_="num").string
-        money = int(sub(r'[^\d.]', '', price))
+        money = int(sub(r'[^\d.]', '', price))#轉換資料型態
         house_info=house.find("div",class_="detail_line2")
         house_info2=house_info.find_all('span',class_="num")
         house_info3=[]
@@ -60,7 +60,7 @@ def getData(url):
 
 
 count=1#頁數
-while count<=2:
+while count<=161:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
     print(f'=================第{count}頁==================')
     print(pageURL)
