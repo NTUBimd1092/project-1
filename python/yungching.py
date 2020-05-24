@@ -19,8 +19,8 @@ def str2obj(s, s1=';', s2='='):
     return res
 
 
-count=6
-while count<=94:
+count=82
+while count<=93:
     def main(url, params='', data='', headers=''):
         headers = str2obj(headers, '\n', ': ')
 
@@ -41,7 +41,7 @@ while count<=94:
             price=c.find('span').string
             money = int(sub(r'[^\d.]', '', price))#轉換資料型態
             house_type=a[2].string[3:]
-            meters=a[1].string[3:-1]
+            meters=float(a[1].string[3:-1])
             floors=a[3].string[3:]
             pattern=a[4].string[3:]
             
@@ -72,8 +72,12 @@ while count<=94:
             sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
             val = ['永慶房屋',data['images'],data['address'],data['name'],data['Link'],data['money'],data['house_type'],data['pattern'],data['meters'],data['floor']]
             cursor.execute(sqlinsert,val)
+            sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+            change = [data['Link'],data['money']]
+            cursor.execute(sqlinsert_moneychange,change)
             db.commit()
         print(f'Total: {len(result)}')
+        
     if __name__ == '__main__':
         url = 'http://rent.yungching.com.tw/Ashx/ShowList.ashx'
 
@@ -86,7 +90,6 @@ while count<=94:
         Accept-Encoding: gzip, deflate
         Accept-Language: zh-TW,zh;q=0.9,zh-CN;q=0.8
         Connection: keep-alive
-        Content-Length: 293
         Content-Type: application/x-www-form-urlencoded; charset=UTF-8
         Cookie: _gcl_au=1.1.949641578.1588681777; TRID_G=f8679cc4-0af9-4026-933d-0543a066503f; _ga=GA1.4.610099363.1588681794; __lt__cid=ce6a6036-bff1-4739-937e-7e2309044b27; __auc=d2190fc71721be0c67be5fb89bc; _gcl_aw=GCL.1589616696.Cj0KCQjwnv71BRCOARIsAIkxW9EJNCGaqlZLWTLJv5NhZS5WsOl8WydYRC720UwKcC-rMBMe3pjCKaoaAqIgEALw_wcB; __dmwsc=20170500d06ks0000u0000,br2fevvzrysv4hx1rwaqxmx5,dm00245; SEID_G=dd953113-bb1a-4537-badd-686723742a67; TS013996a5=01aebff414233388730273f13debc88808011b7fb3e2f82e3778ece6d1038a74447fe02e5f4109d7b9e841e8dca0897554c45da38609894a0727a3fdbe73a457f0e56f548f; ASP.NET_SessionId=gbkrq5o0mbwiod4tnezoqxon; OvertureRecord=OR=dWhxdzF8eHFqZmtscWoxZnJwMXd6Mg==&OQ=&WTMC_ID=; ez2o_UNID=1590161083425425; isMember=N; WMX_Channel=,10,; _gid=GA1.4.1127926449.1590161084; __ltmwga=utmcsr=(direct)|utmcmd=(none); _pk_id.20.e415=fbb3bd40b923d897.1588681794.3.1590164735.1590164732.; TS018a342d=01aebff414dc76cdb364e12829b5c5cfc96c3412c0391e748bf5b7f70bf6f03318b676655a2f160636d8b216d6045dcecc487dc2a6c36450ac7a31e5c4ef3311f91bd7f2836c5d737f1b7a4fe09ff1fe9728efeca2
         Host: rent.yungching.com.tw

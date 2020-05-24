@@ -68,13 +68,13 @@ def getData(url):
             print(data['square_meters'])
             print('房型：'+data['pattern'])
             print()
-        sqlinsert = ("INSERT INTO page_data(WebName,images,Link,house,adress,money,house_type,floor,square_meters,pattern)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-        val = ['591房屋',data['image'],data['Link'],data['house_name'],data['address'],data['house_money'],data['house_type'],data['floor'],data['square_meters'],data['pattern']]
-        cursor.execute(sqlinsert,val)
-        sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
-        change = [data['Link'],data['house_money']]
-        cursor.execute(sqlinsert_moneychange,change)
-        db.commit()
+        # sqlinsert = ("INSERT INTO page_data(WebName,images,Link,house,adress,money,house_type,floor,square_meters,pattern)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+        # val = ['591房屋',data['image'],data['Link'],data['house_name'],data['address'],data['house_money'],data['house_type'],data['floor'],data['square_meters'],data['pattern']]
+        # cursor.execute(sqlinsert,val)
+        # sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+        # change = [data['Link'],data['house_money']]
+        # cursor.execute(sqlinsert_moneychange,change)
+        # db.commit()
     print(f'Total: {len(result)}')
 
 count=1#頁數

@@ -25,6 +25,8 @@ def getData(url):
         house_info3=[]
         for x in house_info2:
             house_info3.append(str(x.string))
+        if house_info3[0]=='土地':
+            continue
         result.append({
             'images': house_image,
             'house_name': house_name,
@@ -32,8 +34,8 @@ def getData(url):
             'url': url,
             'house_money':money,
             'house_type':house_info3[0],
-            'pattern':house_info3[2]+house_info3[3]+house_info3[4]+house_info3[5],
-            'square_meters':house_info3[1],
+            'pattern':house_info3[2]+'房'+house_info3[3]+'廳'+house_info3[4]+'衛'+house_info3[5]+'室',
+            'square_meters':float(house_info3[1]),
             'floor':house_info3[6]
         })
 
@@ -59,8 +61,9 @@ def getData(url):
     print(f'Total: {len(result)}')
 
 
+
 count=1#頁數
-while count<=161:
+while count<=162:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
     print(f'=================第{count}頁==================')
     print(pageURL)
