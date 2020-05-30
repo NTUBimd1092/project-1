@@ -2,32 +2,30 @@
 <?php
 //initialize the session
 if (!isset($_SESSION)) {
-  session_start();
+    session_start();
 }
 
 // ** Logout the current user. **
-$logoutAction = $_SERVER['PHP_SELF']."?doLogout=true";
-if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != "")){
-  $logoutAction .="&". htmlentities($_SERVER['QUERY_STRING']);
+$logoutAction = $_SERVER['PHP_SELF'] . "?doLogout=true";
+if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != "")) {
+    $logoutAction .= "&" . htmlentities($_SERVER['QUERY_STRING']);
 }
 
-if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
-  //to fully log out a visitor we need to clear the session varialbles
-  $_SESSION['MM_Username'] = NULL;
-  $_SESSION['MM_UserGroup'] = NULL;
-  $_SESSION['PrevUrl'] = NULL;
-  unset($_SESSION['MM_Username']);
-  unset($_SESSION['MM_UserGroup']);
-  unset($_SESSION['PrevUrl']);
-	
-  $logoutGoTo = "login.php";
-  if ($logoutGoTo) {
-    header("Location: $logoutGoTo");
-    exit;
-  }
+if ((isset($_GET['doLogout'])) && ($_GET['doLogout'] == "true")) {
+    //to fully log out a visitor we need to clear the session varialbles
+    $_SESSION['MM_Username'] = NULL;
+    $_SESSION['MM_UserGroup'] = NULL;
+    $_SESSION['PrevUrl'] = NULL;
+    unset($_SESSION['MM_Username']);
+    unset($_SESSION['MM_UserGroup']);
+    unset($_SESSION['PrevUrl']);
+
+    $logoutGoTo = "login.php";
+    if ($logoutGoTo) {
+        header("Location: $logoutGoTo");
+        exit;
+    }
 }
-?>
-<?php
 @session_start();
 if (!function_exists("GetSQLValueString")) {
     function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
@@ -57,12 +55,7 @@ if (!function_exists("GetSQLValueString")) {
         return $theValue;
     }
 }
-
-$editFormAction = $_SERVER['PHP_SELF'];
-if (isset($_SERVER['QUERY_STRING'])) {
-    $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
-}
-
+/*登入訊息*/
 $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
     $colname_Login = $_SESSION['MM_Username'];
@@ -72,6 +65,14 @@ $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueStr
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
+$userid=$row_Login['id'];
+
+/*訂閱訊息*/
+mysql_select_db($database_cralwer, $cralwer);
+$query_favorite = "SELECT * FROM subscription WHERE userid = $userid";
+$favorite = mysql_query($query_favorite, $cralwer) or die(mysql_error());
+$row_favorite = mysql_fetch_assoc($favorite);
+$totalRows_favorite = mysql_num_rows($favorite);
 ?>
 
 
@@ -185,6 +186,20 @@ $totalRows_Login = mysql_num_rows($Login);
             padding: 5px 10px;
         }
 
+        .accountData a {
+            text-decoration: none;
+        }
+
+        .accountData a:link {
+            text-decoration: none;
+            color: #707070;
+        }
+
+        .accountData a:visited {
+            text-decoration: none;
+            color: #707070;
+        }
+
         .container {
             padding: 10px;
             border: 1px solid white;
@@ -284,9 +299,12 @@ $totalRows_Login = mysql_num_rows($Login);
             text-decoration: none;
             color: white;
         }
-		.mytext{/*搜尋列表,登出的樣式*/
-		border:1px solid white; border-radius:2px;
-		}
+
+        .mytext {
+            /*搜尋列表,登出的樣式*/
+            border: 1px solid white;
+            border-radius: 2px;
+        }
     </style>
 
 </head>
@@ -301,23 +319,25 @@ $totalRows_Login = mysql_num_rows($Login);
         </span>
 
         <div class="headerRight">
-        <a href="searchArea.php"  class="mytext">搜尋列表</a>
-        	<a href="userPage.php" class="mytext">嗨！<?php echo $row_Login['name']; ?></a>
-            <a href="<?php echo $logoutAction ?>" class="mytext">登出</a>        </div>
-</div>
+            <a href="userPage.php" class="mytext">嗨！<?php echo $row_Login['name']; ?></a>
+            <a href="searchArea.php">搜尋列表</a>
+            <a href="<?php echo $logoutAction ?>">登出</a>
+        </div>
+
+    </div>
 
     <div class="accountData">
         <table>
             <tr>
-                <th rowspan="2">USERNAME</th>
-                <td>FAVORITES</td>
-                <td>VARIATION</td>
+                <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+                <td><a href="favorite.php"><?php echo $totalRows_favorite ?> </a></td>
+              <td>VARIATION</td>
                 <td>RECOMMEND</td>
             </tr>
 
             <tr>
-                <td>已收藏</td>
-                <td><a href="AllTransaction.php" >價格異動</a></td>
+                <td><a href="favorite.php">已收藏</a></td>
+                <td>價格異動</td>
                 <td>為您推薦</td>
             </tr>
         </table>
@@ -376,4 +396,6 @@ $totalRows_Login = mysql_num_rows($Login);
 
 <?php
 mysql_free_result($Login);
+
+mysql_free_result($favorite);
 ?>

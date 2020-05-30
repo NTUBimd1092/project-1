@@ -35,7 +35,7 @@ def getData(url):
             meters_start=house_info.find('衛')+13
         meters_end=house_info.find('坪')#結束
         if len(house_info[meters_start:meters_end])<5:
-            meters=house_info[meters_start:meters_end]
+            meters=float(house_info[meters_start:meters_end])
         else:
             meters=' '  
         

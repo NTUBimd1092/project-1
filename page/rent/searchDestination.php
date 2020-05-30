@@ -360,10 +360,17 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
 
   <div class="searchDiv">
     <div class="searchCondition">
-      <span><a href="searchArea.php">區域搜尋</a>&nbsp;|&nbsp;<a href="searchMetro.php">捷運搜尋</a>&nbsp;|&nbsp;<a href="searchDestination.php"><b>目的搜尋</b></a>&nbsp;|</span>
+      <span><a href="searchArea.php">區域搜尋</a>
+        &nbsp;|&nbsp;
+        <a href="searchMetro.php">捷運搜尋</a>
+        &nbsp;|&nbsp;
+        <a href="searchDestination.php"><b>目的搜尋</b></a>
+        &nbsp;|&nbsp;
+        <img width="25px" src="images/map.png">
+      </span>
       <br>
       <form action="searchArea.php">
-        <input type="text" class="input" placeholder="台北市, 中正區">
+        <input type="text" class="input" placeholder="台北商業大學">
         <button type="submit" class="search">搜尋</button>
       </form>
 
@@ -433,7 +440,12 @@ $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_da
 
           <tr>
             <td>坪數：<?php echo $row_page_data['square_meters']; ?></td>
-            <td>形式：<?php echo $row_page_data['pattern']; ?></td>
+            <td>形式：
+              <?php echo substr($row_page_data['pattern'], 0, 1); ?>房
+              <?php echo substr($row_page_data['pattern'], 1, 1); ?>廳
+              <?php echo substr($row_page_data['pattern'], 2, 1); ?>衛
+              <?php echo substr($row_page_data['pattern'], 3, 1); ?>室
+            </td>
             <td align="center">PRICE</td>
           </tr>
 

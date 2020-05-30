@@ -180,6 +180,20 @@ $totalRows_Login = mysql_num_rows($Login);
       padding: 5px 10px;
     }
 
+    .accountData a {
+      text-decoration: none;
+    }
+
+    .accountData a:link {
+      text-decoration: none;
+      color: #707070;
+    }
+
+    .accountData a:visited {
+      text-decoration: none;
+      color: #707070;
+    }
+
     .container {
       padding: 20px 10px;
       border: 1px solid white;
@@ -295,7 +309,6 @@ $totalRows_Login = mysql_num_rows($Login);
       font-size: 25px;
       width: 100%;
       height: 45px;
-      position: fixed;
       position: absolute;
       bottom: 0;
       left: 0;
@@ -321,7 +334,6 @@ $totalRows_Login = mysql_num_rows($Login);
 <body>
 
   <div class="header">
-
     <span>
       <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a>
       <a href="home.php">作伙</a>
@@ -335,7 +347,7 @@ $totalRows_Login = mysql_num_rows($Login);
   <div class="accountData">
     <table>
       <tr>
-        <th rowspan="2">USERNAME</th>
+        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
         <td>FAVORITES</td>
         <td>VARIATION</td>
         <td>RECOMMEND</td>
@@ -355,15 +367,18 @@ $totalRows_Login = mysql_num_rows($Login);
         <tr>
           <td align="center"><img style="width:50px" src="images/<?php echo $row_Login['image']; ?>"></td>
           <td style="padding:0 15px">
-            <input type="file" name="file" id="file" value="<?php echo $row_Login['image']; ?>">
+            <input type="file" name="file" id="file" value="<?php echo $row_Login['image']; ?>" required>
             <input name="id" type="hidden" value="<?php echo $row_Login['id']; ?>">
             <?php
-            @move_uploaded_file(
-              $_FILES["file"]["tmp_name"],
-              @"images/" . $_FILES["file"]["name"]
-            );
+            if (!empty($_FILES["file"]["tmp_name"])) {
+              @move_uploaded_file(
+                $_FILES["file"]["tmp_name"],
+                @"images/" . $_FILES["file"]["name"]
+              );
+            } else {
+              $_FILES["file"]["tmp_name"] = $row_Login['image'];
+            }
             ?>
-            
           </td>
 
         </tr>

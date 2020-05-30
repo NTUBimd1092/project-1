@@ -6,12 +6,12 @@ if (!isset($_SESSION)) {
 }
 
 // ** Logout the current user. **
-$logoutAction = $_SERVER['PHP_SELF']."?doLogout=true";
-if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != "")){
-  $logoutAction .="&". htmlentities($_SERVER['QUERY_STRING']);
+$logoutAction = $_SERVER['PHP_SELF'] . "?doLogout=true";
+if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != "")) {
+  $logoutAction .= "&" . htmlentities($_SERVER['QUERY_STRING']);
 }
 
-if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+if ((isset($_GET['doLogout'])) && ($_GET['doLogout'] == "true")) {
   //to fully log out a visitor we need to clear the session varialbles
   $_SESSION['MM_Username'] = NULL;
   $_SESSION['MM_UserGroup'] = NULL;
@@ -19,15 +19,16 @@ if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
   unset($_SESSION['MM_Username']);
   unset($_SESSION['MM_UserGroup']);
   unset($_SESSION['PrevUrl']);
-	
+
   $logoutGoTo = "login.php";
   if ($logoutGoTo) {
     header("Location: $logoutGoTo");
     exit;
   }
 }
+
 @session_start();
-mysql_query("SET NAMES 'utf8'");//修正中文亂碼問題
+mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
 if (!function_exists("GetSQLValueString")) {
   function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
   {
@@ -65,13 +66,13 @@ if (isset($_GET['pageNum_page_data'])) {
   $pageNum_page_data = $_GET['pageNum_page_data'];
 }
 $startRow_page_data = $pageNum_page_data * $maxRows_page_data;
-if(@$_POST[SquareMeter]=NULL){
-$_POST[SquareMeter]="%s";
+if (@$_POST[SquareMeter] = NULL) {
+  $_POST[SquareMeter] = "%s";
 }
-/*搜尋資料 半成*/
+/*搜尋所有資料 半成*/
 mysql_select_db($database_cralwer, $cralwer);
 @$query_page_data = "SELECT * FROM page_data WHERE `house` LIKE '%$_POST[search]%'
-or `adress` LIKE '%$_POST[search]%' or `Webname` LIKE '%$_POST[search]%' and `square_meters` <= '$_POST[SquareMeter]'";
+or `adress` LIKE '%$_POST[search]%' or `WebName` LIKE '%$_POST[search]%' and `square_meters` <= '$_POST[SquareMeter]'";
 $query_limit_page_data = sprintf("%s LIMIT %d, %d", $query_page_data, $startRow_page_data, $maxRows_page_data);
 $page_data = mysql_query($query_limit_page_data, $cralwer) or die(mysql_error());
 $row_page_data = mysql_fetch_assoc($page_data);
@@ -83,6 +84,7 @@ if (isset($_GET['totalRows_page_data'])) {
   $totalRows_page_data = mysql_num_rows($all_page_data);
 }
 $totalPages_page_data = ceil($totalRows_page_data / $maxRows_page_data) - 1;
+
 /*登入者訊息*/
 $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
@@ -93,6 +95,7 @@ $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueStr
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
+$userid= $row_Login['id'];
 
 $queryString_page_data = "";
 if (!empty($_SERVER['QUERY_STRING'])) {
@@ -111,61 +114,28 @@ if (!empty($_SERVER['QUERY_STRING'])) {
   }
 }
 $queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_data, $queryString_page_data);
-?>
-<?php
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 
-  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
-
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
-}
-}
-?>
-<?php
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
 
-if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "userid")) {
-  $updateSQL = sprintf("UPDATE money_change SET userid=%s WHERE Link=%s",
+if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
+  $insertSQL = sprintf("INSERT INTO subscription (userid, Link) VALUES (%s, %s)",
                        GetSQLValueString($_POST['userid'], "int"),
                        GetSQLValueString($_POST['Link'], "text"));
 
   mysql_select_db($database_cralwer, $cralwer);
-  $Result1 = mysql_query($updateSQL, $cralwer) or die(mysql_error());
+  $Result1 = mysql_query($insertSQL, $cralwer) or die(mysql_error());
 
-  $updateGoTo = "searchArea.php";
+  $insertGoTo = "searchArea.php";
   if (isset($_SERVER['QUERY_STRING'])) {
-    $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
-    $updateGoTo .= $_SERVER['QUERY_STRING'];
+    $insertGoTo .= (strpos($insertGoTo, '?')) ? "&" : "?";
+    $insertGoTo .= $_SERVER['QUERY_STRING'];
   }
-  header(sprintf("Location: %s", $updateGoTo));
+  header(sprintf("Location: %s", $insertGoTo));
 }
 ?>
-
-
 <!DOCTYPE html>
 <html>
 
@@ -173,6 +143,18 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "userid")) {
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>作伙</title>
   <link rel="icon" href="images/logo.ico" type="image/x-icon">
+  <script>
+    function change() {
+      for (x = 0; x < 2; x++) {
+        if (x = 0) {
+          document.getElementById("photo").src = "favorite.png";
+        }
+        elseif(x = 1) {
+          document.getElementById("photo").src = "selectedFav.png";
+        }
+      }
+    }
+  </script>
   <style>
     body {
       font-family: 微軟正黑體;
@@ -437,17 +419,28 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "userid")) {
     </span>
 
     <div class="headerRight">
-        <a href="searchArea.php" style="border:1px solid white; border-radius:2px;">搜尋列表</a>
-    <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a> 
-    <a href="<?php echo $logoutAction ?>" style="border:1px solid white; border-radius:2px;">登出</a> </div>
+      <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a>
+      <a href="searchArea.php">搜尋列表</a>
+      <a href="<?php echo $logoutAction ?>">登出</a>
+    </div>
   </div>
 
   <div class="searchDiv">
     <div class="searchCondition">
-      <span><a href="searchArea.php"><b>區域搜尋</b></a>&nbsp;|&nbsp;<a href="searchMetro.php">捷運搜尋</a>&nbsp;|&nbsp;<a href="searchDestination.php">目的搜尋</a>&nbsp;|</span>
+      <span text-align="left">
+        <a href="searchArea.php"><b>區域搜尋</b></a>
+        &nbsp;|&nbsp;
+        <a href="searchMetro.php">捷運搜尋</a>
+        &nbsp;|&nbsp;
+        <a href="searchDestination.php">目的搜尋</a>
+        &nbsp;|&nbsp;
+        <a href="maps.php">
+        <img width="25px" src="images/map.png">
+        </a>
+      </span>
       <br>
       <form action="searchArea.php" method="post">
-        <input type="text" class="input"  name="search" class="light-table-filter" data-table="order-table" placeholder="台北市, 中正區" >
+        <input type="text" class="input" name="search" class="light-table-filter" data-table="order-table" placeholder="台北市, 中正區">
         <button type="submit" class="search">搜尋</button>
       </form>
 
@@ -498,59 +491,100 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "userid")) {
 
     </div>
 
-     
-   
-    <?php if ($totalRows_page_data > 0) { // Show if recordset not empty ?>
-      <?php do { 
-	  /*異動資訊*/
-	  	$Link=$row_page_data['Link'];
-		mysql_select_db($database_cralwer, $cralwer);
-		$query_money_change = "SELECT * FROM money_change WHERE Link = '$Link'";
-		$money_change = mysql_query($query_money_change, $cralwer) or die(mysql_error());
-		$row_money_change = mysql_fetch_assoc($money_change);
-		$totalRows_money_change = mysql_num_rows($money_change);
-	  ?>
-      <div class="resultDiv">
-        <table align="center" class="order-table" id="customers">
-          <tr>
-            <td rowspan="4" width="25%" align="center"><img width="150px" height="100px" src="<?php echo $row_page_data['images']; ?>"></td>
-            <th colspan="2" width="38%" align="left" style="font-size:20px"><?php echo $row_page_data['house']; ?></th>
-            <form action="<?php echo $editFormAction; ?>" name="userid" method="post">
-            <td rowspan="4" width="2%" valign="top"><button type="submit"><img src="images/favorite.png" alt="like" class="favorite"></button></td>
-            <input  name="userid" value="<?php echo $row_Login['id']; ?>" type="hidden">
-            <input name="Link" value="<?php echo $row_page_data['Link']; ?>" type="hidden">
-<input name="id" value="<?php echo $row_money_change['id'];?>" type="hidden">
-<input type="hidden" name="MM_update" value="userid">
 
-</form>
-<td width="20%" align="center">來自：<?php echo $row_page_data['WebName']; ?></td>
-            <td width="15%" align="center">PRICE</td>
-          </tr>
-          <tr>
-            <td colspan="2"><?php echo $row_page_data['adress']; ?></td>
-            <td rowspan="2" align="center" style="font-size:26px"><?php echo $row_page_data['money']; ?></td>
-            <td align="center">PRICE</td>
-          </tr>
-          <tr>
-            <td>坪數：<?php echo $row_page_data['square_meters']; ?></td>
-            <td>形式：<?php echo $row_page_data['pattern']; ?></td>
-            <td align="center">PRICE</td>
-          </tr>
-          <tr>
-            <td>樓層：<?php echo $row_page_data['floor']; ?></td>
-            <td style="color:rgb(227, 73, 73, 0.9)">特色：</td>
-            <td align="center"><button class="more">
-                <a href="<?php echo $row_page_data['Link']; ?>" target="_blank">查看更多</a>
-              </button></td>
-            <td align="center">PRICE</td>
-          </tr>
-        </table>
+
+    <?php if ($totalRows_page_data > 0) { // Show if recordset not empty 
+    ?>
+      <?php do {
+        $Link = $row_page_data['Link'];
+		$house_name= $row_page_data['house'];
+		
+		/*金額異動資料表 訂閱愛心用*/
+        mysql_select_db($database_cralwer, $cralwer);
+        $query_money_change = "SELECT * FROM money_change WHERE Link = '$Link'";
+        $money_change = mysql_query($query_money_change, $cralwer) or die(mysql_error());
+        $row_money_change = mysql_fetch_assoc($money_change);
+        $totalRows_money_change = mysql_num_rows($money_change);
+		
+		mysql_select_db($database_cralwer, $cralwer);
+		$query_sinyi = "SELECT * FROM page_data WHERE WebName = '信義房屋' && house='$house_name'";
+		$sinyi = mysql_query($query_sinyi, $cralwer) or die(mysql_error());
+		$row_sinyi = mysql_fetch_assoc($sinyi);
+		$totalRows_sinyi = mysql_num_rows($sinyi);
+		
+		mysql_select_db($database_cralwer, $cralwer);
+		$query_yungching = "SELECT * FROM page_data WHERE WebName = '永慶房屋' && house='$house_name'";
+		$yungching = mysql_query($query_yungching, $cralwer) or die(mysql_error());
+		$row_yungching = mysql_fetch_assoc($yungching);
+		$totalRows_yungching = mysql_num_rows($yungching);
+		
+		mysql_select_db($database_cralwer, $cralwer);
+		$query_subscription = "SELECT * FROM subscription WHERE userid = '$userid' && Link='$Link'";
+		$subscription = mysql_query($query_subscription, $cralwer) or die(mysql_error());
+		$row_subscription = mysql_fetch_assoc($subscription);
+		$totalRows_subscription = mysql_num_rows($subscription);
+				
+      ?>
+        <div class="resultDiv">
+          <table align="center" class="order-table" id="customers">
+            <tr>
+              <td rowspan="4" width="25%" align="center"><img width="150px" height="100px" src="<?php echo $row_page_data['images']; ?>"></td>
+              <th colspan="2" width="38%" align="left" style="font-size:20px"><?php echo $row_page_data['house']; ?></th>
+              <form action="<?php echo $editFormAction; ?>" name="favorite" method="POST">
+                <td rowspan="4" width="2%" valign="top"><?php if ($totalRows_subscription == 0) { // Show if recordset empty ?>
+                    <input type="image" src="images/favorite.png" width="20px" >
+                    <?php } /*Show if recordset emptye*/else{?><img src="images/selectedFav.png" width="20px" ><?php } ?></td>
+                <input name="userid" value="<?php echo $row_Login['id']; ?>" type="hidden">
+                <input name="Link" value="<?php echo $row_page_data['Link']; ?>" type="hidden">
+                <input type="hidden" name="MM_insert" value="favorite">
+               </form>
+              <td width="20%" align="center">來自：<?php echo $row_page_data['WebName']; ?></td>
+              <td width="15%" align="center" style="color:#00CC33">
+			  <?php 
+			  if($row_sinyi['money'] == $row_page_data['money'] || $row_sinyi['money']==0){echo 'PRICE';}else{?>信義：<?php echo $row_sinyi['money']-$row_page_data['money']; ?>$<?php }?>
+			  </td>
+            </tr>
+            <tr>
+              <td colspan="2"><?php echo $row_page_data['adress']; ?></td>
+              <td rowspan="2" align="center" style="font-size:26px"><?php echo $row_page_data['money']; ?></td>
+              <td align="center" style="color:#FF0000">
+			  <?php 
+			  if($row_yungching['money'] == $row_page_data['money'] || $row_yungching['money']==0 ){echo 'PRICE';}else{?>永慶：<?php echo $row_yungching['money']-$row_page_data['money']; ?>$<?php }?>
+              </td>
+            </tr>
+            <tr>
+              <td>坪數：<?php echo $row_page_data['square_meters']; ?></td>
+              <td>形式：
+                <?php echo $row_page_data['pattern'];?>
+              </td>
+              <td align="center">PRICE</td>
+            </tr>
+            <tr>
+              <td>樓層：<?php echo $row_page_data['floor']; ?></td>
+              <td style="color:rgb(227, 73, 73, 0.9)">特色：</td>
+              <td align="center"><button class="more">
+                  <a href="<?php echo $row_page_data['Link']; ?>" target="_blank">查看更多</a>
+                </button></td>
+              <td align="center">PRICE</td>
+            </tr>
+          </table>
+        </div>
+      <?php } while ($row_page_data = mysql_fetch_assoc($page_data)); ?>
+      <div class="pages" style="color:#D1B390;">
+        <a "href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data - 1), $queryString_page_data); ?>"><b>上</a>
+        <?php for ( $i=-3 ; $i<0 ; $i++ ){?>
+         <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data + $i), $queryString_page_data); ?>">
+		 <?php if($pageNum_page_data+$i>=0){echo $pageNum_page_data +$i+1;}?>
+         </a><?php }?>
+         <span><?php echo $pageNum_page_data+1;?></span>
+		<?php for ( $i=1 ; $i<3 ; $i++ ){?>
+         <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, min($totalPages_page_data, $pageNum_page_data + $i), $queryString_page_data); ?>"><?php echo  $pageNum_page_data + $i+1;?></a><?php }?>
+         <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, min($totalPages_page_data, $pageNum_page_data + 1), $queryString_page_data); ?>">下</b></a>
       </div>
-    <?php } while ($row_page_data = mysql_fetch_assoc($page_data)); ?>
-      <div class="pages" style="color:#7E5322">
-      <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data - 1), $queryString_page_data); ?>"><b>上一頁</a>&nbsp;|&nbsp;<a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, min($totalPages_page_data, $pageNum_page_data + 1), $queryString_page_data); ?>">下一頁</b></a>
-    </div>
-<?php }else{?><h1><div class="pages" style="color:#7E5322"><?php echo"查無資料";?></div></h1> <?php } // Show if recordset not empty ?>
+    <?php } else { ?><h1>
+        <div class="pages" style="color:#7E5322"><?php echo "查無資料"; ?></div>
+      </h1> <?php } // Show if recordset not empty 
+            ?>
 
 
 
@@ -568,5 +602,8 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "userid")) {
 <?php
 mysql_free_result($page_data);
 mysql_free_result($Login);
-mysql_free_result($money_change);;
+@mysql_free_result($sinyi);
+@mysql_free_result($yungching);
+@mysql_free_result($subscription);
+@mysql_free_result($money_change);
 ?>

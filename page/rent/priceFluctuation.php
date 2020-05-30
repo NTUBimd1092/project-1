@@ -58,49 +58,6 @@ if (!function_exists("GetSQLValueString")) {
     return $theValue;
   }
 }
-
-/* pages */
-$currentPage = $_SERVER["PHP_SELF"];
-$maxRows_page_data = 10;
-$pageNum_page_data = 0;
-if (isset($_GET['pageNum_page_data'])) {
-  $pageNum_page_data = $_GET['pageNum_page_data'];
-}
-$startRow_page_data = $pageNum_page_data * $maxRows_page_data;
-
-mysql_select_db($database_cralwer, $cralwer);
-@$query_page_data = "SELECT * FROM page_data WHERE `house` LIKE '%$_POST[search]%'
-or `adress` LIKE '%$_POST[search]%' or `Webname` LIKE '%$_POST[search]%' and `square_meters` <= '$_POST[SquareMeter]'";
-$query_limit_page_data = sprintf("%s LIMIT %d, %d", $query_page_data, $startRow_page_data, $maxRows_page_data);
-$page_data = mysql_query($query_limit_page_data, $cralwer) or die(mysql_error());
-$row_page_data = mysql_fetch_assoc($page_data);
-
-if (isset($_GET['totalRows_page_data'])) {
-  $totalRows_page_data = $_GET['totalRows_page_data'];
-} else {
-  $all_page_data = mysql_query($query_page_data);
-  $totalRows_page_data = mysql_num_rows($all_page_data);
-}
-$totalPages_page_data = ceil($totalRows_page_data / $maxRows_page_data) - 1;
-
-$queryString_page_data = "";
-if (!empty($_SERVER['QUERY_STRING'])) {
-  $params = explode("&", $_SERVER['QUERY_STRING']);
-  $newParams = array();
-  foreach ($params as $param) {
-    if (
-      stristr($param, "pageNum_page_data") == false &&
-      stristr($param, "totalRows_page_data") == false
-    ) {
-      array_push($newParams, $param);
-    }
-  }
-  if (count($newParams) != 0) {
-    $queryString_page_data = "&" . htmlentities(implode("&", $newParams));
-  }
-}
-$queryString_page_data = sprintf("&totalRows_page_data=%d%s", $totalRows_page_data, $queryString_page_data);
-
 /*登入資料查詢*/
 $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
@@ -141,7 +98,7 @@ $totalRows_favorite = mysql_num_rows($favorite);
       width: 100%;
       height: 45px;
       position: fixed;
-      /*position: absolute;*/
+      position: absolute;
       top: 0;
       left: 0;
     }
@@ -208,7 +165,6 @@ $totalRows_favorite = mysql_num_rows($favorite);
       position: absolute;
       top: 45px;
       left: 0;
-      z-index: -1;
     }
 
     .accountData table {
@@ -224,12 +180,12 @@ $totalRows_favorite = mysql_num_rows($favorite);
     }
 
     .accountData th {
-      font-size: 16px;
-      padding: 5px 20px;
+      font-size: 18px;
+      padding: 0 25px;
     }
 
     .accountData td {
-      padding: 5px 10px;
+      padding: 0 25px;
     }
 
     .accountData a {
@@ -260,8 +216,21 @@ $totalRows_favorite = mysql_num_rows($favorite);
       top: 50%;
       left: 50%;
       margin: 10px auto;
-      align-items: center;
-      justify-content: center;
+      transform: translateY(138%);
+      -webkit-transform: translateY(138%);
+    }
+
+    .noData{
+      top: 50%;
+      left: 50%;
+      text-align: center;
+      vertical-align: middle;
+      margin-top: 20px;
+      margin-left: -70px;
+      position: absolute;
+      color: #7E5322;
+      font-size: 30px;
+      font-family: 微軟正黑體;
     }
 
     .resultDiv table {
@@ -322,8 +291,8 @@ $totalRows_favorite = mysql_num_rows($favorite);
 
     .pages {
       text-align: center;
-      margin-top: 20px;
-      margin-bottom: 30px;
+      margin-top: 60px;
+      margin-bottom: 80px;
     }
 
     .pages a {
@@ -346,7 +315,8 @@ $totalRows_favorite = mysql_num_rows($favorite);
       font-size: 25px;
       width: 100%;
       height: 45px;
-      position: absolute;
+      position: fixed;
+      bottom: 0;
       left: 0;
     }
 
@@ -384,10 +354,10 @@ $totalRows_favorite = mysql_num_rows($favorite);
   <div class="accountData">
     <table>
       <tr>
-        <th rowspan="2"><img width="60px" height="60px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
-        <td><a href="favorite.php">FAVORITES</a></td>
-        <td><a href="priceFluctuation.php">VARIATION</a></td>
-        <td>RECOMMEND</td>
+        <td rowspan="2"><img width="60px" height="60px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+        <th><a href="favorite.php"><?php echo $totalRows_favorite ?></a></td>
+        <th><a href="priceFluctuation.php">0</a></th>
+        <th>0</th>
       </tr>
 
       <tr>
@@ -398,9 +368,11 @@ $totalRows_favorite = mysql_num_rows($favorite);
     </table>
   </div>
 
-  <div style="margin-top:205px"></div>
+  <div class="noData">無價格異動資料</div>
 
-  <?php do {
+
+  
+  <!--<?php do {
     /* 關聯page_data與money_change */
     $Link = $row_favorite['Link'];
 
@@ -444,14 +416,7 @@ $totalRows_favorite = mysql_num_rows($favorite);
   <?php } while ($row_favorite = mysql_fetch_assoc($favorite)); ?>
 
 
-  <div class="pages" style="color:#7E5322">
-    <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data - 1), $queryString_page_data); ?>"><b>上一頁</a>&nbsp;|&nbsp;<a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, min($totalPages_page_data, $pageNum_page_data + 1), $queryString_page_data); ?>">下一頁</b></a>
-  </div>
-
-
-
-
-  <!--<?php echo $row_Login['id']; ?>
+  <?php echo $row_Login['id']; ?>
   <hr />
   全部異動紀錄：<br />
   <hr />
@@ -473,6 +438,7 @@ $totalRows_favorite = mysql_num_rows($favorite);
     <hr />
   <?php } while ($row_favorite = mysql_fetch_assoc($favorite)); ?> -->
 
+  
 
   <div class="footer">
     <span><a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a></span>
