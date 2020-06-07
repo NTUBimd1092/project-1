@@ -66,13 +66,15 @@ if (isset($_GET['pageNum_page_data'])) {
   $pageNum_page_data = $_GET['pageNum_page_data'];
 }
 $startRow_page_data = $pageNum_page_data * $maxRows_page_data;
+
 if (@$_POST[SquareMeter] = NULL) {
   $_POST[SquareMeter] = "%s";
 }
+
 /*搜尋所有資料 半成*/
 mysql_select_db($database_cralwer, $cralwer);
 @$query_page_data = "SELECT * FROM page_data WHERE `house` LIKE '%$_POST[search]%'
-or `adress` LIKE '%$_POST[search]%' or `WebName` LIKE '%$_POST[search]%' and `square_meters` <= '$_POST[SquareMeter]'";
+or `adress` LIKE '%$_POST[search]%' or `WebName` LIKE '%$_POST[search]%' ORDER BY `money` DESC";
 $query_limit_page_data = sprintf("%s LIMIT %d, %d", $query_page_data, $startRow_page_data, $maxRows_page_data);
 $page_data = mysql_query($query_limit_page_data, $cralwer) or die(mysql_error());
 $row_page_data = mysql_fetch_assoc($page_data);
@@ -119,7 +121,7 @@ $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
-
+//新增訂閱
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
   $insertSQL = sprintf("INSERT INTO subscription (userid, Link) VALUES (%s, %s)",
                        GetSQLValueString($_POST['userid'], "int"),
@@ -135,6 +137,14 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
   }
   header(sprintf("Location: %s", $insertGoTo));
 }
+//刪除訂閱
+@$deluid=base64_decode($_GET['userid']);
+@$delLink=base64_decode($_GET['Link']);
+if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
+  $deleteSQL = sprintf("DELETE FROM `crawler`.`subscription` WHERE `subscription`.`userid` ='$deluid' AND `subscription`.`Link` ='$delLink'");
+  mysql_select_db($database_cralwer, $cralwer);
+  $Result1 = mysql_query($deleteSQL, $cralwer) or die(mysql_error());
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -142,25 +152,16 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>作伙</title>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <link rel="icon" href="images/logo.ico" type="image/x-icon">
-  <script>
-    function change() {
-      for (x = 0; x < 2; x++) {
-        if (x = 0) {
-          document.getElementById("photo").src = "favorite.png";
-        }
-        elseif(x = 1) {
-          document.getElementById("photo").src = "selectedFav.png";
-        }
-      }
-    }
-  </script>
   <style>
     body {
       font-family: 微軟正黑體;
       background-color: #EFEFEF;
     }
-
+	body::-webkit-scrollbar {
+    display: none;
+	}
     .header {
       background-color: rgb(126, 83, 34);
       color: white;
@@ -407,7 +408,25 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
       color: white;
     }
   </style>
-
+    <script>
+		var counter=0;
+        $(window).scroll(function () {
+            if ($(window).scrollTop() == $(document).height() - $(window).height() && counter < 2) {
+                appendData();
+            }
+        });
+        function appendData() {
+            var html = '';
+            for (i = 0; i < 10; i++) {
+                html += '<p class="dynamic">Dynamic Data :  This is test data.<br />Next line.</p>';
+            }
+            $('#myScroll').append(html);
+			counter++;
+			
+			if(counter==2)
+			$('#myScroll').append('<button id="uniqueButton" style="margin-left: 50%; background-color: powderblue;">Click</button><br /><br />');
+        }
+    </script>
 </head>
 
 <body>
@@ -440,14 +459,14 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
       </span>
       <br>
       <form action="searchArea.php" method="post">
-        <input type="text" class="input" name="search" class="light-table-filter" data-table="order-table" placeholder="台北市, 中正區">
+        <input type="text" class="input" name="search" class="light-table-filter" data-table="order-table" placeholder="Search..." value="<?php echo @$_POST['search'];?>">
         <button type="submit" class="search">搜尋</button>
       </form>
 
-
-      <select name="priceRange" class="select">
+	<form action="searchArea.php" method="post">
+      <select name="priceRange"  class="select" >
         <option value="">房屋租金</option>
-        <option value="5Thousand">5000元以下</option>
+        <option value="0 AND 5000">5000元以下</option>
         <option value="10Thousand">5000-10000元</option>
         <option value="20Thousand">10000-20000元</option>
         <option value="30Thousand">20000-30000元</option>
@@ -488,10 +507,9 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
       <select name="otherCondition" class="select">
         <option value="">其他條件</option>
       </select>
-
+      </form>
+      <div align="center">共搜尋出：<?php echo $totalRows_page_data;?>筆</div>
     </div>
-
-
 
     <?php if ($totalRows_page_data > 0) { // Show if recordset not empty 
     ?>
@@ -530,14 +548,16 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
             <tr>
               <td rowspan="4" width="25%" align="center"><img width="150px" height="100px" src="<?php echo $row_page_data['images']; ?>"></td>
               <th colspan="2" width="38%" align="left" style="font-size:20px"><?php echo $row_page_data['house']; ?></th>
-              <form action="<?php echo $editFormAction; ?>" name="favorite" method="POST">
+
                 <td rowspan="4" width="2%" valign="top"><?php if ($totalRows_subscription == 0) { // Show if recordset empty ?>
+				 <form action="<?php echo $editFormAction; ?>" name="favorite" method="POST">
                     <input type="image" src="images/favorite.png" width="20px" >
-                    <?php } /*Show if recordset emptye*/else{?><img src="images/selectedFav.png" width="20px" ><?php } ?></td>
-                <input name="userid" value="<?php echo $row_Login['id']; ?>" type="hidden">
-                <input name="Link" value="<?php echo $row_page_data['Link']; ?>" type="hidden">
-                <input type="hidden" name="MM_insert" value="favorite">
-               </form>
+                    <input name="userid" value="<?php echo $row_Login['id']; ?>" type="hidden">
+                    <input name="Link" value="<?php echo $row_page_data['Link']; ?>" type="hidden">
+                    <input type="hidden" name="MM_insert" value="favorite">
+                   </form>
+                    <?php } /*Show if recordset emptye*/else{?><a href="searchArea.php?del=1&userid=<?php echo base64_encode($row_Login['id']);?>&Link=<?php echo base64_encode($row_page_data['Link']);?>"><img src="images/selectedFav.png" width="20px" ></a><?php } ?></td>
+
               <td width="20%" align="center">來自：<?php echo $row_page_data['WebName']; ?></td>
               <td width="15%" align="center" style="color:#00CC33">
 			  <?php 
@@ -571,7 +591,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "favorite")) {
         </div>
       <?php } while ($row_page_data = mysql_fetch_assoc($page_data)); ?>
       <div class="pages" style="color:#D1B390;">
-        <a "href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data - 1), $queryString_page_data); ?>"><b>上</a>
+        <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data - 1), $queryString_page_data); ?>">上</b></a>
         <?php for ( $i=-3 ; $i<0 ; $i++ ){?>
          <a href="<?php printf("%s?pageNum_page_data=%d%s", $currentPage, max(0, $pageNum_page_data + $i), $queryString_page_data); ?>">
 		 <?php if($pageNum_page_data+$i>=0){echo $pageNum_page_data +$i+1;}?>

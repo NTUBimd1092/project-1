@@ -5,9 +5,8 @@ from re import sub
 db = pymysql.connect("localhost","root","1234","crawler")
 cursor = db.cursor()
 
-
 def getData(url):
-    resources = requests.get(url)
+    resources = requests.get(url,verify=False)
     soup = BeautifulSoup(resources.text, 'html.parser')
 
     result= list()
@@ -60,10 +59,8 @@ def getData(url):
         db.commit()
     print(f'Total: {len(result)}')
 
-
-
 count=1#頁數
-while count<=162:
+while count<=156:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
     print(f'=================第{count}頁==================')
     print(pageURL)

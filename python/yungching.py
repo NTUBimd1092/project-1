@@ -18,9 +18,8 @@ def str2obj(s, s1=';', s2='='):
 
     return res
 
-
-count=1
-while count<=93:
+count=13
+while count<=94:
     def main(url, params='', data='', headers=''):
         headers = str2obj(headers, '\n', ': ')
 
@@ -36,14 +35,23 @@ while count<=93:
             name=s[0]['title']
             Link=s[1]['href']
             a=house.find_all('li')
-            address=a[0].string
+            address=a[0].string#地址
             c=house.find(class_='price')
-            price=c.find('span').string
+            price=c.find('span').string#金額
             money = int(sub(r'[^\d.]', '', price))#轉換資料型態
-            house_type=a[2].string[3:]
-            meters=float(a[1].string[3:-1])
-            floors=a[3].string[3:]
-            pattern=a[4].string[3:]
+            house_type=a[2].string[3:]#型態
+            if house_type!="":
+                house_type=a[2].string[3:]
+            else:
+                house_type='無'
+            if a[1].string !="":
+                meters_start=a[1].string.find('坪數:')
+                meters_end=a[1].string.find('坪<')
+                meters=a[1].string[meters_start+4:meters_end]#坪數
+            else:
+                meters=0
+            floors=a[3].string[3:]#樓情
+            pattern=a[4].string[3:]#房型
             
             result.append({
             'images':images,

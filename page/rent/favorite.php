@@ -95,7 +95,7 @@ if (isset($_GET['pageNum_webinfo'])) {
 $startRow_webinfo = $pageNum_webinfo * $maxRows_webinfo;
 
 mysql_select_db($database_cralwer, $cralwer);
-$query_webinfo = "SELECT * FROM page_data where Link IN(SELECT Link FROM subscription where userid='7')";
+$query_webinfo = "SELECT * FROM page_data where Link IN(SELECT Link FROM subscription where userid='$userid')";
 $query_limit_webinfo = sprintf("%s LIMIT %d, %d", $query_webinfo, $startRow_webinfo, $maxRows_webinfo);
 $webinfo = mysql_query($query_limit_webinfo, $cralwer) or die(mysql_error());
 $row_webinfo = mysql_fetch_assoc($webinfo);
@@ -123,6 +123,15 @@ if (!empty($_SERVER['QUERY_STRING'])) {
   }
 }
 $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $queryString_webinfo);
+
+//刪除訂閱
+@$deluid=base64_decode($_GET['userid']);
+@$delLink=base64_decode($_GET['Link']);
+if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
+  $deleteSQL = sprintf("DELETE FROM `crawler`.`subscription` WHERE `subscription`.`userid` ='$deluid' AND `subscription`.`Link` ='$delLink'");
+  mysql_select_db($database_cralwer, $cralwer);
+  $Result1 = mysql_query($deleteSQL, $cralwer) or die(mysql_error());
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -403,12 +412,13 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
 
   <div style="margin-top:205px"></div>
     <div class="resultDiv">
+      <?php if ($totalRows_webinfo > 0) { // Show if recordset not empty ?>
       <?php do { ?>
       <table align="center" id="customers" style="margin-top:10px">
           <tr>
             <td rowspan="4" width="25%" align="center" valign="center"><img width="160px" src="<?php echo $row_webinfo['images']; ?>"></td>
             <th colspan="2" width="38%" align="left" style="font-size:20px"><?php echo $row_webinfo['house']; ?></th>
-            <td rowspan="4" width="2%" valign="top"><img src="images/selectedFav.png" alt="like" class="favorite"></td>
+            <td rowspan="4" width="2%" valign="top"><a href="favorite.php?del=1&userid=<?php echo base64_encode($row_Login['id']);?>&Link=<?php echo base64_encode($row_webinfo['Link']);?>"><img src="images/selectedFav.png" alt="like" class="favorite"></a></td>
             <td width="20%" align="center" style="font-size:12.5px">來自：<?php echo $row_webinfo['WebName']; ?></td>
             <td width="15%" align="center">PRICE</td>
           </tr>
@@ -433,14 +443,12 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
             <td align="center">PRICE</td>
           </tr>
       </table>
-        <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?></div>
+        <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
+        <?php }else{echo '<div class="pages" style="color:#7E5322"><h2>你還沒有訂閱喔~!</h2></div>';}?>
+    </div>
 
 
 
-  <div class="pages" style="color:#7E5322">
-  <a href="<?php printf("%s?pageNum_webinfo=%d%s", $currentPage, max(0, $pageNum_webinfo - 1), $queryString_webinfo); ?>">上一頁</a>
-<a href="<?php printf("%s?pageNum_webinfo=%d%s", $currentPage, min($totalPages_webinfo, $pageNum_webinfo + 1), $queryString_webinfo); ?>">下一頁</a>
-  </div>
 
 
  
