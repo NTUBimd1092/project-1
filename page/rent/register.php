@@ -29,16 +29,18 @@ if (!function_exists("GetSQLValueString")) {
     }
 }
 
+
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "from2") and (@$_POST['password'] == @$_POST['repassword'])) {
+	include 'encrypt.php';//加解密檔
     $insertSQL = sprintf(
         "INSERT INTO `user` (account, password, name, phone, birth) VALUES (%s, %s, %s, %s, %s)",
         GetSQLValueString($_POST['account'], "text"),
-        GetSQLValueString($_POST['password'], "text"),
+        GetSQLValueString(encryptthis($_POST['password'], $key),"text"),
         GetSQLValueString($_POST['name'], "text"),
         GetSQLValueString($_POST['phone'], "text"),
         GetSQLValueString($_POST['birth'], "date")

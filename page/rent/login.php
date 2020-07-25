@@ -46,19 +46,28 @@ if (isset($_GET['accesscheck'])) {
   $_SESSION['PrevUrl'] = $_GET['accesscheck'];
 }
 
+
+include 'encrypt.php';
+
 if (isset($_POST['account'])) {
   $loginUsername = $_POST['account'];
-  $password = $_POST['password'];
+  $Pass_query="SELECT account,password from `user` where account='$loginUsername'";
+  $Pass_Select = mysql_query($Pass_query, $cralwer) or die(mysql_error());
+  $row_pass=mysql_fetch_assoc($Pass_Select);
+  if($_POST['password']==decryptthis($row_pass['password'],$key)){
+    $password=$row_pass['password'];
+  }
+  
   $MM_fldUserAuthorization = "";
   $MM_redirectLoginSuccess = "home.php";
-  $MM_redirectLoginFailed = "login.php?check=err" ;
+  $MM_redirectLoginFailed = "login.php?check=err";
   $MM_redirecttoReferrer = false;
   mysql_select_db($database_cralwer, $cralwer);
 
   $LoginRS__query = sprintf(
     "SELECT account, password FROM `user` WHERE account=%s AND password=%s",
     GetSQLValueString($loginUsername, "text"),
-    GetSQLValueString($password, "text")
+  	GetSQLValueString($password, "text")
   );
 
   $LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
@@ -190,6 +199,15 @@ if (isset($_POST['account'])) {
   </div>
 
   <div class="container">
+  <div>
+  <?php 
+	// $asdf="SELECT account,password FROM `user` where account='kkbox@s.s'";
+  // $qwer = mysql_query($asdf, $cralwer) or die(mysql_error());
+  // $row = mysql_fetch_assoc($qwer);
+  // echo $row['password'];
+
+  ?>
+  </div>
     <div align="center" style="margin-bottom: 18px;">
       <img src="images/BrownIcon.png" alt="logo" class="HomeIcon">
       <span style="font-size:22px; font-weight:bold; color:rgb(126, 83, 34, 0.85)"> | 登入尋找喜歡的房！</span>
