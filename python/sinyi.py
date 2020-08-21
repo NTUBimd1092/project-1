@@ -4,8 +4,10 @@ import pymysql
 from re import sub
 db = pymysql.connect("localhost","root","1234","crawler")
 cursor = db.cursor()
+Ccursor=db.cursor()
 
 def getData(url):
+    requests.packages.urllib3.disable_warnings()
     resources = requests.get(url,verify=False)
     soup = BeautifulSoup(resources.text, 'html.parser')
 
@@ -50,17 +52,23 @@ def getData(url):
         print(data['square_meters'])
         print(data['floor'])
         print()
-        sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-        val = ['信義房屋',data['images'],data['address'],data['house_name'],data['url'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor']]
-        cursor.execute(sqlinsert,val)
-        sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
-        change = [data['url'],data['house_money']]
-        cursor.execute(sqlinsert_moneychange,change)
-        db.commit()
+        checker=f"""SELECT COUNT(*) FROM page_data WHERE `Link`='{data['url']}'"""
+        Ccursor.execute(checker)
+        count=Ccursor.fetchone()
+        if count[0]==0:
+            sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+            val = ['信義房屋',data['images'],data['address'],data['house_name'],data['url'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor']]
+            cursor.execute(sqlinsert,val)
+            sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+            change = [data['url'],data['house_money']]
+            cursor.execute(sqlinsert_moneychange,change)
+            db.commit()
+        else:
+            print('已重複')
     print(f'Total: {len(result)}')
 
-count=1#頁數
-while count<=156:
+count=1#頁數156
+while count<=3:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
     print(f'=================第{count}頁==================')
     print(pageURL)
