@@ -6,6 +6,7 @@ from re import sub
 import pymysql
 db = pymysql.connect("localhost","root","1234","crawler")
 cursor = db.cursor()
+Ccursor=db.cursor()
 
 def str2obj(s, s1=';', s2='='):
     li = s.split(s1)
@@ -18,8 +19,8 @@ def str2obj(s, s1=';', s2='='):
 
     return res
 
-count=13
-while count<=94:
+count=1
+while count<=5:
     def main(url, params='', data='', headers=''):
         headers = str2obj(headers, '\n', ': ')
 
@@ -77,13 +78,19 @@ while count<=94:
             print(data['floor'])
             print(data['pattern'])
             print()
-            sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-            val = ['永慶房屋',data['images'],data['address'],data['name'],data['Link'],data['money'],data['house_type'],data['pattern'],data['meters'],data['floor']]
-            cursor.execute(sqlinsert,val)
-            sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
-            change = [data['Link'],data['money']]
-            cursor.execute(sqlinsert_moneychange,change)
-            db.commit()
+            checker=f"""SELECT COUNT(*) FROM page_data WHERE `Link`='{data['Link']}'"""
+            Ccursor.execute(checker)
+            count=Ccursor.fetchone()
+            if count[0]==0:
+                sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+                val = ['永慶房屋',data['images'],data['address'],data['name'],data['Link'],data['money'],data['house_type'],data['pattern'],data['meters'],data['floor']]
+                cursor.execute(sqlinsert,val)
+                sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+                change = [data['Link'],data['money']]
+                cursor.execute(sqlinsert_moneychange,change)
+                db.commit()
+            else:
+                print('已重複')
         print(f'Total: {len(result)}')
         
     if __name__ == '__main__':
