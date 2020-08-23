@@ -1,447 +1,335 @@
 <?php require_once('Connections/cralwer.php'); ?>
 <?php
+//initialize the session
+if (!isset($_SESSION)) {
+    session_start();
+}
+
+// ** Logout the current user. **
+$logoutAction = $_SERVER['PHP_SELF'] . "?doLogout=true";
+if ((isset($_SERVER['QUERY_STRING'])) && ($_SERVER['QUERY_STRING'] != "")) {
+    $logoutAction .= "&" . htmlentities($_SERVER['QUERY_STRING']);
+}
+
+if ((isset($_GET['doLogout'])) && ($_GET['doLogout'] == "true")) {
+    //to fully log out a visitor we need to clear the session varialbles
+    $_SESSION['MM_Username'] = NULL;
+    $_SESSION['MM_UserGroup'] = NULL;
+    $_SESSION['PrevUrl'] = NULL;
+    unset($_SESSION['MM_Username']);
+    unset($_SESSION['MM_UserGroup']);
+    unset($_SESSION['PrevUrl']);
+
+    $logoutGoTo = "login.php";
+    if ($logoutGoTo) {
+        header("Location: $logoutGoTo");
+        exit;
+    }
+}
 @session_start();
 if (!function_exists("GetSQLValueString")) {
-  function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
-  {
-    $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+    {
+        $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 
-    $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+        $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
 
-    switch ($theType) {
-      case "text":
-        $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-        break;
-      case "long":
-      case "int":
-        $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-        break;
-      case "double":
-        $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-        break;
-      case "date":
-        $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-        break;
-      case "defined":
-        $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-        break;
+        switch ($theType) {
+            case "text":
+                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+                break;
+            case "long":
+            case "int":
+                $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+                break;
+            case "double":
+                $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+                break;
+            case "date":
+                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+                break;
+            case "defined":
+                $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+                break;
+        }
+        return $theValue;
     }
-    return $theValue;
-  }
 }
 
-$editFormAction = $_SERVER['PHP_SELF'];
-if (isset($_SERVER['QUERY_STRING'])) {
-  $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
-}
-
-if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "modify")) {
-  $updateSQL = sprintf(
-    "UPDATE `user` SET image=%s, account=%s, password=%s, name=%s, phone=%s, birth=%s WHERE id=%s",
-    GetSQLValueString($_FILES["file"]["name"], "text"),
-    GetSQLValueString($_POST['account'], "text"),
-    GetSQLValueString($_POST['password'], "text"),
-    GetSQLValueString($_POST['name'], "text"),
-    GetSQLValueString($_POST['phone'], "text"),
-    GetSQLValueString($_POST['birth'], "date"),
-    GetSQLValueString($_POST['id'], "int")
-  );
-
-  mysql_select_db($database_cralwer, $cralwer);
-  $Result1 = mysql_query($updateSQL, $cralwer) or die(mysql_error());
-
-  $updateGoTo = "userPage.php";
-  if (isset($_SERVER['QUERY_STRING'])) {
-    $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
-    $updateGoTo .= $_SERVER['QUERY_STRING'];
-  }
-  header(sprintf("Location: %s", $updateGoTo));
-}
-
+/* 登入訊息 */
 $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
-  $colname_Login = $_SESSION['MM_Username'];
+    $colname_Login = $_SESSION['MM_Username'];
 }
 mysql_select_db($database_cralwer, $cralwer);
 $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueString($colname_Login, "text"));
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
+$userid = $row_Login['id'];
+
+/* 訂閱訊息 */
+mysql_select_db($database_cralwer, $cralwer);
+$query_favorite = "SELECT * FROM subscription WHERE userid = $userid";
+$favorite = mysql_query($query_favorite, $cralwer) or die(mysql_error());
+$row_favorite = mysql_fetch_assoc($favorite);
+$totalRows_favorite = mysql_num_rows($favorite);
+
+/* 資料修改 */
+$editFormAction = $_SERVER['PHP_SELF'];
+if (isset($_SERVER['QUERY_STRING'])) {
+    $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
+}
+
+if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "modify")) {
+    $updateSQL = sprintf(
+        "UPDATE `user` SET account=%s, password=%s, name=%s, phone=%s, birth=%s, subscribe=%s WHERE id=%s",
+        GetSQLValueString($_POST['account'], "text"),
+        GetSQLValueString($_POST['password'], "text"),
+        GetSQLValueString($_POST['name'], "text"),
+        GetSQLValueString($_POST['phone'], "text"),
+        GetSQLValueString($_POST['birth'], "date"),
+        GetSQLValueString($_POST['subscribe'], "text"),
+        GetSQLValueString($_POST['id'], "int")
+    );
+
+    mysql_select_db($database_cralwer, $cralwer);
+    $Result1 = mysql_query($updateSQL, $cralwer) or die(mysql_error());
+
+    $updateGoTo = "userPage.php";
+    if (isset($_SERVER['QUERY_STRING'])) {
+        $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
+        $updateGoTo .= $_SERVER['QUERY_STRING'];
+    }
+    header(sprintf("Location: %s", $updateGoTo));
+}
 ?>
 
 
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>作伙</title>
-  <link rel="icon" href="images/logo.ico" type="image/x-icon">
-  <style>
-    body {
-      font-family: 微軟正黑體;
-      background-color: #EFEFEF;
-    }
+    <title>作伙</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="images/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="src/usermodify.css">
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' rel='stylesheet'>
+    </link>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- 更改頭像DIALOG -->
+    <link rel="stylesheet" href="src/uploadDialog.css">
+    <script src="src/uploadDialog.js"></script>
+    <style>
+        body {
+            font-family: 微軟正黑體;
+            background-color: #EFEFEF;
+        }
 
-    .header {
-      background-color: rgb(126, 83, 34);
-      color: white;
-      font-size: 25px;
-      width: 100%;
-      height: 45px;
-      position: fixed;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .header a {
-      text-decoration: none;
-    }
-
-    .header a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .header a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight {
-      float: right;
-      font-size: 15px;
-      line-height: 40px;
-      padding-top: 3px;
-      padding-right: 15px;
-      color: white;
-    }
-
-    .headerRight a {
-      text-decoration: none;
-      font-size: 16px;
-      padding: 3px 8px;
-    }
-
-    .headerRight a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight a:hover {
-      color: rgb(126, 83, 34, 0.85);
-      background-color: white;
-      border-radius: 3px;
-    }
-
-    .HomeIcon {
-      height: 25px;
-      padding-top: 8px;
-      padding-right: 3px;
-      padding-left: 8px;
-    }
-
-    .accountData {
-      background-color: #D0B392;
-      color: #707070;
-      font-size: 16px;
-      width: 100%;
-      height: 150px;
-      position: fixed;
-      position: absolute;
-      top: 45px;
-      left: 0;
-    }
-
-    .accountData table {
-      text-align: center;
-      vertical-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .accountData th {
-      font-size: 16px;
-      padding: 5px 20px;
-    }
-
-    .accountData td {
-      padding: 5px 10px;
-    }
-
-    .accountData a {
-      text-decoration: none;
-    }
-
-    .accountData a:link {
-      text-decoration: none;
-      color: #707070;
-    }
-
-    .accountData a:visited {
-      text-decoration: none;
-      color: #707070;
-    }
-
-    .container {
-      padding: 20px 10px;
-      border: 1px solid white;
-      border-radius: 5px;
-      background-color: #FFFFFF;
-      width: 500px;
-      height: 330px;
-      vertical-align: middle;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -30%);
-      z-index: -1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .containter table {
-      width: 70%;
-      border-collapse: collapse;
-      vertical-align: center;
-    }
-
-    .container th {
-      font-size: 14px;
-      border-bottom: 1px solid #ddd;
-      padding: 5px 10px;
-    }
-
-    .container td {
-      border-bottom: 1px solid #ddd;
-      padding: 5px 10px;
-    }
-
-    .disperse {
-      text-align: justify;
-      text-justify: distribute-all-lines;
-      text-align-last: justify;
-    }
-
-    .disperse::after {
-      content: ".";
-      display: inline-block;
-      width: 100%;
-      visibility: hidden;
-      height: 0;
-      overflow: hidden;
-    }
-
-    .modifyData {
-      width: 230px;
-      height: 20px;
-      padding: 3px 5px;
-      margin: 0 5px;
-      border: 1px solid #707070;
-      border-radius: 3px;
-    }
-
-    .cancel {
-      font-size: 13px;
-      width: 85px;
-      margin-right: 5px;
-      color: white;
-      background-color: rgb(126, 83, 34, 0.85);
-      border: 1px solid rgb(126, 83, 34, 0.85);
-      border-radius: 5px;
-      font-family: 微軟正黑體;
-    }
-
-    .cancel a {
-      text-decoration: none;
-    }
-
-    .cancel a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .cancel a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .saveChange {
-      font-size: 13px;
-      width: 60px;
-      margin-left: 5px;
-      color: white;
-      background-color: rgb(126, 83, 34, 0.85);
-      border: 1px solid rgb(126, 83, 34, 0.85);
-      border-radius: 5px;
-      font-family: 微軟正黑體;
-    }
-
-    .saveChange a {
-      text-decoration: none;
-    }
-
-    .saveChange a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .saveChange a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .footer {
-      background-color: rgb(126, 83, 34);
-      color: white;
-      font-size: 25px;
-      width: 100%;
-      height: 45px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .footer a {
-      text-decoration: none;
-    }
-
-    .footer a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .footer a:visited {
-      text-decoration: none;
-      color: white;
-    }
-  </style>
-
+        input[type=button] {
+            background-color: rgb(126, 83, 34, 0.85);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            width: 25%;
+            padding: 5px 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="header">
-    <span>
-      <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a>
-      <a href="home.php">作伙</a>
-    </span>
+    <!-- navbar -->
+    <nav class="navbar navbar-dark navbar-fixed-top myHeader">
+        <div class="container-fluid">
 
-    <div class="headerRight">
-      <a href="login.php" style="border:1px solid white; border-radius:2px;">登出</a>
-    </div>
-  </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="home.php">
+                    <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top" alt="logo">
+                </a>
+                <a class="navbar-brand" style="font-size: 23px;" href="home.php">作伙</a>
+            </div>
 
-  <div class="accountData">
-    <table>
-      <tr>
-        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
-        <td>FAVORITES</td>
-        <td>VARIATION</td>
-        <td>RECOMMEND</td>
-      </tr>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
 
-      <tr>
-        <td>已收藏</td>
-        <td>價格異動</td>
-        <td>為您推薦</td>
-      </tr>
-    </table>
-  </div>
+                    <?php if ($totalRows_Login > 0) { // 登入後顯示 
+                    ?>
+                        <li><a href="searchArea.php">搜尋列表</a></li>
+                        <li><a href="<?php echo $logoutAction ?>">登出</a></li>
+                    <?php } // Show if recordset not empty 
+                    ?>
 
-  <div class="container">
-    <form action="<?php echo $editFormAction; ?>" method="POST" name="modify" enctype="multipart/form-data">
-      <table>
-        <tr>
-          <td align="center"><img style="width:50px" src="images/<?php echo $row_Login['image']; ?>"></td>
-          <td style="padding:0 15px">
-            <input type="file" name="file" id="file" value="<?php echo $row_Login['image']; ?>" required>
-            <input name="id" type="hidden" value="<?php echo $row_Login['id']; ?>">
-            <?php
-            if (!empty($_FILES["file"]["tmp_name"])) {
-              @move_uploaded_file(
-                $_FILES["file"]["tmp_name"],
-                @"images/" . $_FILES["file"]["name"]
-              );
-            } else {
-              $_FILES["file"]["tmp_name"] = $row_Login['image'];
-            }
-            ?>
-          </td>
+                </ul>
+            </div>
 
-        </tr>
-        <tr><input type="hidden" name="id" value="<?php echo $row_Login['id']; ?>" />
-          <th style="text-align:justify; text-justify:distribute-all-lines; text-align-last:justify">姓名</th>
-          <td style="color: #707070"><input class="modifyData" name="name" type="text" value="<?php echo $row_Login['name']; ?>" /></td>
+        </div>
+    </nav>
 
-        </tr>
+    <!-- account data -->
+    <div class="container-fluid">
+        <div class="accountBg">
+            <table class="accountData text-center">
+                <tr>
+                    <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+                    <th class="text-center"><?php echo $totalRows_favorite ?></th>
+                    <th class="text-center">(num)</th>
+                    <th class="text-center">(num)</th>
+                </tr>
 
-        <tr>
-          <th style="text-align:justify; text-justify:distribute-all-lines; text-align-last:justify">生日</th>
-          <td style="color: #707070"><input class="modifyData" type="date" name="birth" value="<?php echo $row_Login['birth']; ?>" /></td>
+                <tr>
+                    <td>已收藏</td>
+                    <td>價格異動</td>
+                    <td>為您推薦</td>
+                </tr>
+            </table>
+        </div>
 
-        </tr>
+        <!-- modify table -->
+        <div class="col-12 col-md-4 col-sm-4"></div>
+        <div class="col-12 col-md-4 col-sm-4 userBg">
+            <table class="table table-sm dataTable">
+                <thead>
+                    <tr>
+                        <td align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+                        <td style="vertical-align:middle">
+                            <form id="form">
+                                <label class="btn btn-light btn-lg btn-block">
+                                    <input id="upload_img" style="display:none;" onclick="changePic();">
+                                    <i class="fa fa-photo"></i> 更改頭像
+                                </label>
+                            </form>
+                        </td>
+                    </tr>
+                </thead>
 
-        <tr>
-          <th style="text-align:justify; text-justify:distribute-all-lines; text-align-last:justify">電話</th>
-          <td style="color: #707070"><input class="modifyData" type="number" name="phone" value="<?php echo $row_Login['phone']; ?>" /></td>
 
-        </tr>
+                <form action="<?php echo $editFormAction; ?>" method="POST" name="modify">
+                    <tbody>
+                        <tr>
+                            <input type="hidden" name="id" value="<?php echo $row_Login['id']; ?>">
+                            <th>姓名</th>
+                            <td><input class="form-control" name="name" type="text" value="<?php echo $row_Login['name']; ?>"></td>
+                        </tr>
 
-        <tr>
-          <th style="text-align:justify; text-justify:distribute-all-lines; text-align-last:justify">帳號(信箱)</th>
-          <td style="color: #707070"><input class="modifyData" type="email" name="account" value="<?php echo $row_Login['account']; ?>" /></td>
+                        <tr>
+                            <th>生日</th>
+                            <td><input class="form-control" type="date" name="birth" value="<?php echo $row_Login['birth']; ?>"></td>
+                        </tr>
 
-        </tr>
+                        <tr>
+                            <th>電話</th>
+                            <td><input class="form-control" type="number" name="phone" value="<?php echo $row_Login['phone']; ?>"></td>
+                        </tr>
 
-        <tr>
-          <th style="text-align:justify; text-justify:distribute-all-lines; text-align-last:justify">密碼</th>
-          <td style="color: #707070"><input class="modifyData" type="text" name="password" value="<?php echo $row_Login['password']; ?>" /></td>
-        </tr>
+                        <tr>
+                            <th>電子郵件</th>
+                            <td><input class="form-control" type="email" name="account" value="<?php echo $row_Login['account']; ?>"></td>
+                        </tr>
 
-        <tr>
-          <th style="text-align:justify; text-justify:distribute-all-lines; text-align-last:justify">訂閱通知</th>
-          <td style="color: #707070">
-            <form>
-              <input type="radio" name="suscribe" value="yes">
-              <label for="yes">是</label>
-              <input type="radio" name="suscribe" value="no">
-              <label for="no">否</label>
+                        <tr>
+                            <th>密碼</th>
+                            <td><input class="form-control" type="text" name="password" value="<?php echo $row_Login['password']; ?>"></td>
+                        </tr>
+
+                        <tr>
+                            <th>訂閱通知</th>
+                            <td>
+                                <!-- 判斷是否訂閱 -->
+                                <?php if ($row_Login['subscribe'] == "是") { ?>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="subscribe" value="是" checked="checked">是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="subscribe" value="否">否
+                                    </label>
+                                <?php } ?>
+
+                                <?php if ($row_Login['subscribe'] == "否") { ?>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="subscribe" value="是">是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="subscribe" value="否" checked="checked">否
+                                    </label>
+                                <?php } ?>
+                            </td>
+                        </tr>
+
+                    </tbody>
+            </table>
+
+            <table class="table table-borderless">
+                <tr>
+                    <td align="right"><button class="btn btnGo" onclick="javascript:location.href='userPage.php'">取消變更</button></td>
+                    <td>
+                        <button class="btn btnGo" type="submit">儲存變更</button>
+                        <input type="hidden" name="MM_update" value="modify">
+                    </td>
+                </tr>
+            </table>
+
             </form>
-          </td>
-        </tr>
-        <tr>
-          <td colspan=" 2" style="text-align:center; border:none; padding-top:10px">
-            <button class="cancel" style="padding: 5px"><a href="userPage.php">回個人資料</a></button>
-            <button class="saveChange" style="padding: 5px" type="submit">儲存</button>
-            <input type="hidden" name="MM_update" value="modify" />
-          </td>
-        </tr>
-      </table>
-    </form>
-  </div>
 
-  <div class="footer">
-    <span><a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a></span>
-    <span><a href="home.php">作伙</a></span>
-  </div>
+        </div>
+        <div class="col-12 col-md-4 col-sm-4"></div>
+    </div>
 
+    <div class="footer">
+        <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
+    </div>
+
+
+    <script>
+        var selectedImages = [];
+
+        function changePic() {
+
+            $.FileDialog({
+                "accept": "image/*"
+            }).on("files.bs.filedialog", function(event) {
+                selectedImages.push(event.files[0].name);
+
+                var form = document.getElementById("form");
+                var formData = new FormData(form);
+                formData.append("images", selectedImages[0]);
+                formData.append("id", "<?php echo $row_Login['id']; ?>");
+                var ajax = new XMLHttpRequest();
+                ajax.open("POST", "uploadDialog.php", false);
+                ajax.send(formData);
+                window.location.reload();
+            });
+
+        }
+
+        // function submitForm() {
+        //     var form = document.getElementById("form");
+        //     var formData = new FormData(form);
+        //     // formData.append("images[0]", selectedImages);
+        //     formData.append("images", selectedImages[0]);
+        //     // alert(selectedImages[0]);
+        //     var ajax = new XMLHttpRequest();
+        //     ajax.open("POST", "Http.php", true);
+        //     ajax.send(formData);
+
+        //     return false;
+        // }
+    </script>
 </body>
 
 </html>
-
 <?php
 mysql_free_result($Login);
+
+mysql_free_result($favorite);
 ?>

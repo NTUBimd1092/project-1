@@ -4,13 +4,12 @@ function window_onload(){
 	},200);
 }
 
-function TopFunction() {
-  $(window).scrollTop("0");
-}
-
 $(document).ready(function(){
 	$(".btnquery").click(function(){
   		$("#TopForm").toggle("normal");
   	});
 	
 });
+
+
+

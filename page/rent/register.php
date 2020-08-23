@@ -65,159 +65,101 @@ $totalRows_user = mysql_num_rows($user);
 ?>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>作伙</title>
+    <meta charset="utf-8">
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="src/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         body {
             font-family: 微軟正黑體;
-            background-image: url('images/RegisterBackground.jpg');
+            background-image: url('images/HomeBackground.jpg');
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
-        }
-
-        .header {
-            background-color: rgb(126, 83, 34);
-            color: white;
-            font-size: 25px;
-            width: 100%;
-            height: 45px;
-            text-align: center;
-            position: fixed;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .header a {
-            text-decoration: none;
-        }
-
-        .header a:link {
-            text-decoration: none;
-            color: white;
-        }
-
-        .header a:visited {
-            text-decoration: none;
-            color: white;
-        }
-
-        .HomeIcon {
-            height: 25px;
-            padding-top: 8px;
-            padding-right: 3px;
-            padding-left: 8px;
-        }
-
-        .container {
-            padding: 20px;
-            border: 3px solid white;
-            border-radius: 10px;
-            background-color: white;
-            width: 300px;
-            vertical-align: middle;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin: -260px 0px 30px -160px;
-            z-index: -1;
-        }
-
-        .content {
-            width: 280px;
-            height: 20px;
-            margin: 5px;
-            font-family: Arial, 微軟正黑體;
-        }
-
-        .register {
-            width: 285px;
-            height: 30px;
-            margin: 5px;
-            color: white;
-            font-size: 13px;
-            font-family: 微軟正黑體;
-            background-color: rgb(126, 83, 34, 0.85);
-        }
-
-        .login {
-            font-size: 12.5px;
-            color: #666666;
-            padding: 5px;
-        }
-
-        .login a {
-            color: #666666;
-        }
-
-        .login a:link {
-            color: #666666;
-        }
-
-        .login a:visited {
-            color: #666666;
+            padding-bottom: 30px;
         }
     </style>
-
 </head>
 
 <body>
 
-    <div class="header">
-        <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a>
-        <a href="home.php">作伙</a>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark myHeader">
+        <a class="navbar-brand" href="home.php">
+            <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
+            作伙
+        </a>
+    </nav>
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+
+            <div class="col-12 col-sm-10 col-md-8 col-lg-4">
+                <form class="formContainer" action="<?php echo $editFormAction; ?>" name="from2" method="POST">
+                    <section class="title">
+                        <img src="images/BrownIcon.png" alt="logo" class="HomeIcon"> | 加入作伙，找一個家
+                    </section>
+
+                    <div class="form-group">
+                        <label for="EmailAddress"><b>電子郵件&nbsp;|&nbsp;Email&nbsp;Address</b></label>
+                        <input class="form-control" type="email" name="account" id="email" placeholder="xxxxx@gmail.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Password"><b>密碼&nbsp;|&nbsp;Password</b></label>
+                        <input class="form-control" type="password" name="password" id="password" onblur="checkpas1();" placeholder="輸入密碼" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Password"><b>重新輸入密碼&nbsp;|&nbsp;CheckPassword</b></label>
+                        <input class="form-control" type="password" name="repassword" id="repassword" onChange="checkpas();" placeholder="重新輸入密碼" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="uname"><b>姓名&nbsp;|&nbsp;Name</b></label>
+                        <input class="form-control" type="text" name="name" placeholder="Zachary Walton" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone"><b>電話&nbsp;|&nbsp;PhoneNumber</b></label>
+                        <input class="form-control" type="tel" pattern="[0-9]{10}" name="phone" placeholder="0912345678" required>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthday"><b>生日&nbsp;|&nbsp;Birthday</b></label>
+                        <input class="form-control" type="date" name="birth" placeholder="您的生日" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="CAPTCHA"><b>驗證碼&nbsp;|&nbsp;CAPTCHA</b></label>
+                        <table>
+                            <tr>
+                                <td width="70%"><input class="form-control" id="captcha" type="text" placeholder="輸入驗證碼" required></td>
+                                <td width="30%" style="padding-left:5px"><canvas id="canvas" width="125" height="40"></canvas></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <button type="submit" class="btn btn-block btnGo" onclick="checkpas2();">註冊！</button>
+                    <small class="form-text text-muted">已經是會員了嗎？<b><a href="login.php">登入</a></b></small>
+                    <input type="hidden" name="MM_insert" value="from2" />
+                </form>
+            </div>
+            
+        </div>
     </div>
 
-    <div class="container">
-        <div align="center" style="margin-bottom: 18px;">
-            <img src="images/BrownIcon.png" alt="logo" class="HomeIcon">
-            <span style="font-size:22px; font-weight:bold; color:rgb(126, 83, 34, 0.85)"> | 加入作伙，找一個家</span>
-        </div>
-        <form action="<?php echo $editFormAction; ?>" name="from2" method="POST">
-            <label for="EmailAddress" style="margin:0px 10px; font-size: 12.5px;"><b>電子郵件 | Email Address</b></label>
-            <input type="email" class="content" name="account" style="padding:3px;" placeholder="xxxxx@gmail.com" required>
-            <br>
-            <label for="Password" style="margin:0px 10px; font-size: 12.5px;"><b>密碼&nbsp;|&nbsp;Password</b></label>
-            <input type="password" class="content" id="password" onblur="checkpas1();" name="password" style="padding:3px;" placeholder="輸入密碼" required>
-            <br>
-            <label for="Password" style="margin:0px 10px; font-size: 12.5px;"><b>重新輸入密碼&nbsp;|&nbsp;CheckPassword</b></label>
-            <input type="password" class="content" id="repassword" onChange="checkpas();" name="repassword" style="padding:3px;" placeholder="重新輸入密碼" required>
-            <br>
-            <label for="uname" style="margin:0px 10px; font-size: 12.5px;"><b>姓名&nbsp;|&nbsp;Name</b></label>
-            <input type="text" class="content" name="name" style="padding:3px;" placeholder="Zachary Walton" required>
-            <br>
-            <label for="phone" style="margin:0px 10px; font-size: 12.5px;"><b>電話&nbsp;|&nbsp;PhoneNumber</b></label>
-            <input type="tel" pattern="[0-9]{10}" name="phone" class="content" style="padding:3px;" placeholder="0912345678" required>
-            <br>
-            <label for="birthday" style="margin:0px 10px; font-size: 12.5px;"><b>生日&nbsp;|&nbsp;Birthday</b></label>
-            <input type="date" class="content" name="birth" style="height: 25px; width: 285px;" placeholder="您的生日" required>
-            <br>
-            <label for="CAPTCHA" style="margin:0px 10px; font-size: 12.5px;"><b>驗證碼&nbsp;|&nbsp;CAPTCHA</b></label>
-            <br>
-            <table>
-                <tr>
-                    <td><input id="captcha" type="text" style="padding:3px; margin:3px; width: 140px; height: 20px; font-family: Arial, 微軟正黑體;" placeholder="輸入驗證碼" required></td>
-                    <td><canvas id="canvas" width="125" height="40"></canvas></td>
-                </tr>
-            </table>
-            <button type="submit" onclick="checkpas2();" class="register" style="border:none">註冊！</button> <br>
-            <input type="hidden" name="MM_insert" value="from2" />
-        </form>
-
-        <div class="login">
-            <span>已經是會員了嗎？</span>
-            <a href="login.php">登入</a>
-        </div>
-    </div>
-
-    <script src="captcha.js"></script>
+    <script src="src/captcha.js"></script>
     <script>
         //確認兩個密碼框中是否一致
         $(".tip").hide();
@@ -253,7 +195,6 @@ $totalRows_user = mysql_num_rows($user);
 </body>
 
 </html>
-
 <?php
 mysql_free_result($user);
 ?>
