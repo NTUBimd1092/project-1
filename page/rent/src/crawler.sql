@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主機: localhost
--- 產生日期: 2020 年 05 月 29 日 09:31
+-- 產生日期: 2020 年 08 月 23 日 12:44
 -- 伺服器版本: 5.6.12-log
 -- PHP 版本: 5.4.12
 
@@ -16843,21 +16843,24 @@ CREATE TABLE IF NOT EXISTS `subscription` (
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `account` varchar(30) NOT NULL,
-  `password` varchar(30) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `image` varchar(255) NOT NULL DEFAULT 'avatar.png',
   `phone` varchar(255) NOT NULL,
   `birth` date NOT NULL,
-  `subscribe` varchar(1) NOT NULL DEFAULT '0' COMMENT '1有通知;0無通知',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+  `subscribe` varchar(1) NOT NULL DEFAULT '否',
+  PRIMARY KEY (`id`),
+  KEY `subscribe` (`subscribe`),
+  KEY `subscribe_2` (`subscribe`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- 轉存資料表中的資料 `user`
 --
 
 INSERT INTO `user` (`id`, `account`, `password`, `name`, `image`, `phone`, `birth`, `subscribe`) VALUES
-(7, 'user@a.a', '1234', 'User1', 'avatar.png', '0912345678', '2020-05-06', '0');
+(1, 'user@yahoo.com', '1234', 'User1', 'avatar.png', '0912345678', '2020-05-06', '否'),
+(2, '10836017@ntub.edu.tw', 'Y0xQRUd3Z0RoNWJKMGpiYnRvUmkxZz09OjpUcgxgg6DyOH57S8fHA83E', 'pony', 'RimaZeidan.jpg', '0988758624', '2020-08-13', '是');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

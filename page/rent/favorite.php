@@ -81,7 +81,7 @@ if (isset($_GET['totalRows_Login'])) {
   $all_Login = mysql_query($query_Login);
   $totalRows_Login = mysql_num_rows($all_Login);
 }
-$totalPages_Login = ceil($totalRows_Login/$maxRows_Login)-1;
+$totalPages_Login = ceil($totalRows_Login / $maxRows_Login) - 1;
 $userid = $row_Login['id'];
 
 /*此帳號訂閱查詢*/
@@ -106,15 +106,17 @@ if (isset($_GET['totalRows_webinfo'])) {
   $all_webinfo = mysql_query($query_webinfo);
   $totalRows_webinfo = mysql_num_rows($all_webinfo);
 }
-$totalPages_webinfo = ceil($totalRows_webinfo/$maxRows_webinfo)-1;
+$totalPages_webinfo = ceil($totalRows_webinfo / $maxRows_webinfo) - 1;
 
 $queryString_webinfo = "";
 if (!empty($_SERVER['QUERY_STRING'])) {
   $params = explode("&", $_SERVER['QUERY_STRING']);
   $newParams = array();
   foreach ($params as $param) {
-    if (stristr($param, "pageNum_webinfo") == false && 
-        stristr($param, "totalRows_webinfo") == false) {
+    if (
+      stristr($param, "pageNum_webinfo") == false &&
+      stristr($param, "totalRows_webinfo") == false
+    ) {
       array_push($newParams, $param);
     }
   }
@@ -125,337 +127,124 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $queryString_webinfo);
 
 //刪除訂閱
-@$deluid=base64_decode($_GET['userid']);
-@$delLink=base64_decode($_GET['Link']);
+@$deluid = base64_decode($_GET['userid']);
+@$delLink = base64_decode($_GET['Link']);
 if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
   $deleteSQL = sprintf("DELETE FROM `crawler`.`subscription` WHERE `subscription`.`userid` ='$deluid' AND `subscription`.`Link` ='$delLink'");
   mysql_select_db($database_cralwer, $cralwer);
   $Result1 = mysql_query($deleteSQL, $cralwer) or die(mysql_error());
 }
 ?>
+
+
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>作伙</title>
+  <meta charset="utf-8">
   <link rel="icon" href="images/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <style>
     body {
       font-family: 微軟正黑體;
       background-color: #EFEFEF;
     }
-
-    .header {
-      background-color: rgb(126, 83, 34);
-      color: white;
-      font-size: 25px;
-      width: 100%;
-      height: 45px;
-      position: fixed;
-      /*position: absolute;*/
-      top: 0;
-      left: 0;
-    }
-
-    .header a {
-      text-decoration: none;
-    }
-
-    .header a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .header a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight {
-      float: right;
-      font-size: 15px;
-      line-height: 40px;
-      padding-top: 3px;
-      padding-right: 15px;
-      color: white;
-    }
-
-    .headerRight a {
-      text-decoration: none;
-      font-size: 16px;
-      padding: 3px 8px;
-    }
-
-    .headerRight a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight a:hover {
-      color: rgb(126, 83, 34, 0.85);
-      background-color: white;
-      border-radius: 3px;
-    }
-
-    .HomeIcon {
-      height: 25px;
-      padding-top: 8px;
-      padding-right: 3px;
-      padding-left: 8px;
-    }
-
-    .accountData {
-      background-color: #D0B392;
-      color: #707070;
-      font-size: 16px;
-      width: 100%;
-      height: 150px;
-      position: fixed;
-      position: absolute;
-      top: 45px;
-      left: 0;
-      z-index: -1;
-    }
-
-    .accountData table {
-      text-align: center;
-      vertical-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .accountData th {
-      font-size: 18px;
-      padding: 0 25px;
-    }
-
-    .accountData td {
-      padding: 0 25px;
-    }
-
-    .accountData a {
-      text-decoration: none;
-    }
-
-    .accountData a:link {
-      text-decoration: none;
-      color: #707070;
-    }
-
-    .accountData a:visited {
-      text-decoration: none;
-      color: #707070;
-    }
-
-    .input {
-      width: 470px;
-      height: 28px;
-      margin: 5px 3px;
-      padding: 1.5px 8px;
-      font-family: Arial, 微軟正黑體;
-      border: 0 none;
-      border-radius: 5px;
-    }
-
-    .resultDiv {
-      top: 50%;
-      left: 50%;
-      margin: 10px auto;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .resultDiv table {
-      width: 750px;
-      padding: 5px;
-      background-color: #FFFFFF;
-      color: #726A6A;
-      border: 1px solid #FFFFFF;
-      border-collapse: separate;
-      border-spacing: 0;
-      border-radius: 10px;
-      line-height: 15px;
-      font-size: 14px;
-    }
-
-    th {
-      padding: 5px;
-      color: rgb(114, 106, 106, 0.9);
-      vertical-align: center;
-    }
-
-    td {
-      padding: 5px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      vertical-align: center;
-    }
-
-    .favorite {
-      width: 20px;
-      padding-top: 5px;
-    }
-
-    .more {
-      width: 75%;
-      padding: 3px;
-      color: white;
-      font-size: 12px;
-      font-family: 微軟正黑體;
-      border: rgb(126, 83, 34, 0.85);
-      background-color: rgb(126, 83, 34, 0.85);
-    }
-
-    .more a {
-      text-decoration: none;
-    }
-
-    .more a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .more a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .pages {
-      text-align: center;
-      margin-top: 20px;
-      margin-bottom: 30px;
-    }
-
-    .pages a {
-      text-decoration: none;
-    }
-
-    .pages a:link {
-      text-decoration: none;
-      color: #7E5322;
-    }
-
-    .pages a:visited {
-      text-decoration: none;
-      color: #7E5322;
-    }
-
-    .footer {
-      background-color: rgb(126, 83, 34);
-      color: white;
-      font-size: 25px;
-      width: 100%;
-      height: 45px;
-      position: absolute;
-      left: 0;
-    }
-
-    .footer a {
-      text-decoration: none;
-    }
-
-    .footer a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .footer a:visited {
-      text-decoration: none;
-      color: white;
-    }
   </style>
-
 </head>
 
 <body>
+  <section class="myBody">
 
-  <div class="header">
-    <span>
-      <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a>
-      <a href="home.php">作伙</a>
-    </span>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top myHeader">
+      <a class="navbar-brand" href="home.php">
+        <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
+        作伙
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav ml-auto">
+          <?php if ($totalRows_Login > 0) { // 登入後顯示 
+          ?>
+            <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
+            <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
+          <?php } // Show if recordset not empty 
+          ?>
+        </ul>
+      </div>
+    </nav>
 
-    <div class="headerRight">
-      <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a>
-      <a href="searchArea.php">搜尋列表</a>
-      <a href="<?php echo $logoutAction ?>">登出</a> </div>
-  </div>
-
-  <div class="accountData">
-    <table>
-      <tr>
-        <td rowspan="2"><img width="60px" height="60px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
-        <th><?php echo $totalRows_webinfo; ?> </th>
-        <th><a href="priceFluctuation.php">0</a></th>
-        <th>0</th>
-      </tr>
-
-      <tr>
-        <td><a href="favorite.php">已收藏</a></td>
-        <td><a href="priceFluctuation.php">價格異動</a></td>
-        <td>為您推薦</td>
-      </tr>
-    </table>
-  </div>
-
-  <div style="margin-top:205px"></div>
-    <div class="resultDiv">
-      <?php if ($totalRows_webinfo > 0) { // Show if recordset not empty ?>
-      <?php do { ?>
-      <table align="center" id="customers" style="margin-top:10px">
+    <!-- account data -->
+    <div class="container-fluid">
+      <div class="accountBg">
+        <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
           <tr>
-            <td rowspan="4" width="25%" align="center" valign="center"><img width="160px" src="<?php echo $row_webinfo['images']; ?>"></td>
-            <th colspan="2" width="38%" align="left" style="font-size:20px"><?php echo $row_webinfo['house']; ?></th>
-            <td rowspan="4" width="2%" valign="top"><a href="favorite.php?del=1&userid=<?php echo base64_encode($row_Login['id']);?>&Link=<?php echo base64_encode($row_webinfo['Link']);?>"><img src="images/selectedFav.png" alt="like" class="favorite"></a></td>
-            <td width="20%" align="center" style="font-size:12.5px">來自：<?php echo $row_webinfo['WebName']; ?></td>
-            <td width="15%" align="center">PRICE</td>
+            <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+            <th><a href="favorite.php"><?php echo $totalRows_webinfo ?> </a></th>
+            <th><a href="priceFluctuation.php">(num)</a></th>
+            <th><a href="#">(num)</a></th>
           </tr>
+
           <tr>
-            <td colspan="2"><?php echo $row_webinfo['adress']; ?></td>
-            <td rowspan="2" align="center" style="font-size:26px"><?php echo $row_webinfo['money']; ?></td>
-            <td align="center">PRICE</td>
+            <td><a href="favorite.php">已收藏</a></td>
+            <td><a href="priceFluctuation.php">價格異動</a></td>
+            <td><a href="#">為您推薦</a></td>
           </tr>
-          <tr>
-            <td>坪數：<?php echo $row_webinfo['square_meters']; ?></td>
-            <td>形式：
-              <?php echo $row_webinfo['pattern'];?>            </td>
-            <td align="center">PRICE</td>
-          </tr>
-          <tr>
-            <td>樓層：<?php echo $row_webinfo['floor']; ?></td>
-            <td style="color:rgb(227, 73, 73, 0.9)">特色：</td>
-            <td align="center">
-              <button class="more">
-              <a href="<?php echo $row_webinfo['Link'];?>" target="_blank">查看更多</a>
-              </button>            </td>
-            <td align="center">PRICE</td>
-          </tr>
-      </table>
-        <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
-        <?php }else{echo '<div class="pages" style="color:#7E5322"><h2>你還沒有訂閱喔~!</h2></div>';}?>
+        </table>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+          <?php if ($totalRows_webinfo > 0) { // Show if recordset not empty 
+          ?>
+            <?php do { ?>
+              <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
+                <tr>
+                  <td rowspan="4" width="25%" class="text-center align-middle"><img class="imageSize" src="' . $row['images'] . '"></td>
+                  <th colspan="2" width="38%" class="houseName"><?php echo $row_webinfo['house']; ?></th>
+                  <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
+                  <td width="20%" class="text-center align-middle houseInfo">來自：<?php echo $row_webinfo['WebName']; ?></td>
+                </tr>
+
+                <tr>
+                  <td colspan="2"><?php echo $row_webinfo['adress']; ?></td>
+                  <td rowspan="2" id="Price" class="text-center align-middle housePrice"><?php echo number_format($row_webinfo['money']); ?></td>
+                </tr>
+
+                <tr>
+                  <td class="align-middle houseInfo">坪數：<?php echo $row_webinfo['square_meters']; ?></td>
+                  <td class="align-middle houseInfo">形式：<?php echo $row_webinfo['pattern']; ?></td>
+                </tr>
+
+                <tr>
+                  <td class="align-middle houseInfo">樓層：<?php echo $row_webinfo['floor']; ?></td>
+                  <td class="align-middle houseInfo">特色：</td>
+                  <td>
+                    <a class="btn btn-block btn-sm btnGo" href="<?php echo $row_webinfo['Link']; ?>">查看更多</a>
+                  </td>
+                </tr>
+              </table>
+            <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
+          <?php } else {
+            echo '<h2>立即收藏喜愛的房源</h2>';
+          } ?>
+        </div>
+
+      </div>
     </div>
+  </section>
 
 
-
-
-
- 
-
-<div class="footer">
-    <span><a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a></span>
-    <span><a href="home.php">作伙</a></span>
+  <!-- footer -->
+  <div class="footer">
+    <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
   </div>
 
 </body>
