@@ -20,7 +20,7 @@ def str2obj(s, s1=';', s2='='):
     return res
 
 count=1
-while count<=5:
+while count<=2:
     def main(url, params='', data='', headers=''):
         headers = str2obj(headers, '\n', ': ')
 
@@ -46,9 +46,9 @@ while count<=5:
             else:
                 house_type='無'
             if a[1].string !="":
-                meters_start=a[1].string.find('坪數:')
+                meters_start=int(a[1].string.find('坪數:'))+4
                 meters_end=a[1].string.find('坪<')
-                meters=a[1].string[meters_start+4:meters_end]#坪數
+                meters=a[1].string[meters_start:meters_end]#坪數
             else:
                 meters=0
             floors=a[3].string[3:]#樓情
@@ -81,16 +81,24 @@ while count<=5:
             checker=f"""SELECT COUNT(*) FROM page_data WHERE `Link`='{data['Link']}'"""
             Ccursor.execute(checker)
             count=Ccursor.fetchone()
-            if count[0]==0:
-                sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-                val = ['永慶房屋',data['images'],data['address'],data['name'],data['Link'],data['money'],data['house_type'],data['pattern'],data['meters'],data['floor']]
-                cursor.execute(sqlinsert,val)
-                sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
-                change = [data['Link'],data['money']]
-                cursor.execute(sqlinsert_moneychange,change)
-                db.commit()
-            else:
-                print('已重複')
+            try:
+                if count[0]==0:
+                    sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+                    val = ['永慶房屋',data['images'],data['address'],data['name'],data['Link'],data['money'],data['house_type'],data['pattern'],data['meters'],data['floor']]
+                    cursor.execute(sqlinsert,val)
+                    sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+                    change = [data['Link'],data['money']]
+                    cursor.execute(sqlinsert_moneychange,change)
+                    db.commit()
+                    print('完成！')
+                else:
+                    sqlUpdate=(f"UPDATE page_data SET Images=%s,adress=%s,house=%s,money=%s,house_type=%s,pattern=%s,square_meters=%s,floor=%s WHERE Link =%s")
+                    val=[data['images'],data['address'],data['name'],data['money'],data['house_type'],data['pattern'],data['meters'],data['floor'],data['Link']]
+                    cursor.execute(sqlUpdate,val)
+                    db.commit()
+                    print('已更新！')
+            except:
+                print('寫入失敗')
         print(f'Total: {len(result)}')
         
     if __name__ == '__main__':
@@ -116,4 +124,4 @@ while count<=5:
         main(url, params, text, headers)
         print((f'=================第{count}頁=================='))
         count+=1
-
+db.close()

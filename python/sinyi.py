@@ -55,23 +55,31 @@ def getData(url):
         checker=f"""SELECT COUNT(*) FROM page_data WHERE `Link`='{data['url']}'"""
         Ccursor.execute(checker)
         count=Ccursor.fetchone()
-        if count[0]==0:
-            sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-            val = ['信義房屋',data['images'],data['address'],data['house_name'],data['url'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor']]
-            cursor.execute(sqlinsert,val)
-            sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
-            change = [data['url'],data['house_money']]
-            cursor.execute(sqlinsert_moneychange,change)
-            db.commit()
-        else:
-            print('已重複')
+        try:
+            if count[0]==0:
+                sqlinsert = ("INSERT INTO page_data(WebName,images,adress,house,Link,money,house_type,pattern,square_meters,floor)" "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+                val = ['信義房屋',data['images'],data['address'],data['house_name'],data['url'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor']]
+                cursor.execute(sqlinsert,val)
+                sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
+                change = [data['url'],data['house_money']]
+                cursor.execute(sqlinsert_moneychange,change)
+                db.commit()
+                print('完成！')
+            else:
+                sqlUpdate=(f"UPDATE page_data SET Images=%s,adress=%s,house=%s,money=%s,house_type=%s,pattern=%s,square_meters=%s,floor=%s WHERE Link =%s")
+                val=[data['images'],data['address'],data['house_name'],data['house_money'],data['house_type'],data['pattern'],data['square_meters'],data['floor'],data['url']]
+                cursor.execute(sqlUpdate,val)
+                db.commit()
+                print('已更新！')
+        except:
+            print('寫入失敗')
     print(f'Total: {len(result)}')
 
 count=1#頁數156
 while count<=3:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
-    print(f'=================第{count}頁==================')
     print(pageURL)
     pageURL=getData(pageURL)
+    print(f'=================第{count}頁==================')
     count+=1
 db.close()
