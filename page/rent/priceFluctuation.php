@@ -72,7 +72,7 @@ mysql_select_db($database_cralwer, $cralwer);
 $query_subscrption = "SELECT *
 FROM `subscription` SB
 LEFT JOIN `money_change` MC ON SB.Link = MC.Link
-WHERE userid = '$userid' AND SB.Link='https://www.sinyi.com.tw/rent/houseno/C218138'
+WHERE userid = '$userid' AND SB.Link='https://www.sinyi.com.tw/rent/houseno/C210102'
 order by SB.Link DESC
 LIMIT 0 , 30";
 $subscrption = mysql_query($query_subscrption, $cralwer) or die(mysql_error());
@@ -156,37 +156,45 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
             <hr /> -->
             <div>
                 <div class="row justify-content-center">
-                    <div class="col-12 col-sm-10 col-md-8 col-lg-6" style="margin-top:50px">
-                        <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
-                            <tr>
-                                <td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src=""></td>
-                                <th colspan="2" width="50%" class="houseName"></th>
-                                <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
-                                <td width="18%" class="text-center align-middle houseInfo">來自：</td>
-                            </tr>
+                    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+                        <div class="subscribedItems">
+                            <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
+                                <tr>
+                                    <td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src=""></td>
+                                    <th colspan="2" width="50%" class="houseName"></th>
+                                    <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
+                                    <td width="18%" class="text-center align-middle houseInfo">來自：</td>
+                                </tr>
 
-                            <tr>
-                                <td colspan="2"></td>
-                                <td rowspan="2" id="Price" class="text-center align-middle housePrice"></td>
-                            </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td rowspan="2" id="Price" class="text-center align-middle housePrice"></td>
+                                </tr>
 
-                            <tr>
-                                <td class="align-middle houseInfo">坪數：</td>
-                                <td class="align-middle houseInfo">形式：</td>
-                            </tr>
+                                <tr>
+                                    <td class="align-middle houseInfo">坪數：</td>
+                                    <td class="align-middle houseInfo">形式：</td>
+                                </tr>
 
-                            <tr>
-                                <td class="align-middle houseInfo">樓層：</td>
-                                <td class="align-middle houseInfo">類型：</td>
-                                <td>
-                                    <a class="btn btn-block btn-sm btnGo" href="">查看更多</a>
-                                </td>
-                            </tr>
-                        </table>
+                                <tr>
+                                    <td class="align-middle houseInfo">樓層：</td>
+                                    <td class="align-middle houseInfo">類型：</td>
+                                    <td>
+                                        <a class="btn btn-block btn-sm btnGo" href="">查看更多</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="5" align="center">
+                                        <div id="main" style="width:550px; height:300px;"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div id="main" style="width:600px; height:400px;"></div>
+                <!-- <div id="main" style="width:600px; height:400px;"></div> -->
                 <?php
                 do {
                     $Id = $row_subscrption['id'];
