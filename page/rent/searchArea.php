@@ -213,7 +213,9 @@ $totalRows_Login = mysql_num_rows($Login);
                             <table class="table table-sm table-borderless searchTitle">
                                 <thead>
                                     <tr>
-                                        <th colspan="5">區域搜尋</th>
+                                        <th colspan="5">
+                                        區域搜尋 <a href="maps.php" style="color:black; text-decoration:none; font-weight:500;"> | 地圖搜尋</a>
+                                    </th>
                                     </tr>
                                 </thead>
 

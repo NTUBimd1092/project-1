@@ -52,9 +52,9 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 
                     <tr>
                         <td class="align-middle houseInfo">樓層：' . $row['floor'] . '</td>
-                        <td class="align-middle houseInfo">特色：</td>
+                        <td class="align-middle houseInfo">類型：' . $row['house_type'] . '</td>
                         <td>
-                            <a class="btn btn-block btn-sm btnGo" href="' . $row['Link'] . '">查看更多</a>
+                            <a class="btn btn-block btn-sm btnGo" href="' . $row['Link'] . '"  target="_blank">查看更多</a>
                         </td>
                     </tr>
                 </table>

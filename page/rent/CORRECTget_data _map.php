@@ -31,11 +31,7 @@ function Query($mylat,$mylng,$search)
 		$Money = $row['money'];
 		$Address = urlencode($row['adress']);
 		$Images= $row['images'];
-        $Link = $row['Link']; 
-        $SquareFeet = $row['square_meters'];
-        $HouseType = $row['house_type'];
-        $Floor = $row['floor'];
-        $WebName = $row['WebName'];
+		$Link = $row['Link'];
 	
 		$return_arr[] = array("Id" => $Id,
 						"Name" => $Name,
@@ -44,11 +40,7 @@ function Query($mylat,$mylng,$search)
 						"Money" => $Money,
 						"Address" => $Address,
 						"Images" => $Images,
-                        "Link" => $Link,
-                        "SquareFeet" => $SquareFeet,
-                        "HouseType" => $HouseType,
-                        "Floor" => $Floor,
-                        "WebName" => $WebName
+						"Link" => $Link
 						);
 	}
 	$json = json_encode($return_arr);

@@ -147,6 +147,7 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
   <link rel="icon" href="images/logo.ico" type="image/x-icon">
   <link rel="stylesheet" href="src/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <style>
@@ -173,6 +174,7 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
         <ul class="navbar-nav ml-auto">
           <?php if ($totalRows_Login > 0) { // 登入後顯示 
           ?>
+            <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php echo $row_Login['name']; ?></b></a></li>
             <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
           <?php } // Show if recordset not empty 
@@ -202,42 +204,46 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
 
       <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-6">
-          <?php if ($totalRows_webinfo > 0) { // Show if recordset not empty 
-          ?>
-            <?php do { ?>
-              <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
-                <tr>
-                  <td rowspan="4" width="25%" class="text-center align-middle"><img class="imageSize" src="' . $row['images'] . '"></td>
-                  <th colspan="2" width="38%" class="houseName"><?php echo $row_webinfo['house']; ?></th>
-                  <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
-                  <td width="20%" class="text-center align-middle houseInfo">來自：<?php echo $row_webinfo['WebName']; ?></td>
-                </tr>
+          <div class="subscribedItems">
+            <?php if ($totalRows_webinfo > 0) { // Show if recordset not empty 
+            ?>
+              <?php do { ?>
+                <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
+                  <tr>
+                    <td rowspan="4" width="25%" class="text-center align-middle"><img class="imageSize" src="<?php echo $row_webinfo['images']; ?>"></td>
+                    <th colspan="2" width="38%" class="houseName"><?php echo $row_webinfo['house']; ?></th>
+                    <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
+                    <td width="20%" class="text-center align-middle houseInfo">來自：<?php echo $row_webinfo['WebName']; ?></td>
+                  </tr>
 
-                <tr>
-                  <td colspan="2"><?php echo $row_webinfo['adress']; ?></td>
-                  <td rowspan="2" id="Price" class="text-center align-middle housePrice"><?php echo number_format($row_webinfo['money']); ?></td>
-                </tr>
+                  <tr>
+                    <td colspan="2"><?php echo $row_webinfo['adress']; ?></td>
+                    <td rowspan="2" id="Price" class="text-center align-middle housePrice"><?php echo number_format($row_webinfo['money']); ?></td>
+                  </tr>
 
-                <tr>
-                  <td class="align-middle houseInfo">坪數：<?php echo $row_webinfo['square_meters']; ?></td>
-                  <td class="align-middle houseInfo">形式：<?php echo $row_webinfo['pattern']; ?></td>
-                </tr>
+                  <tr>
+                    <td class="align-middle houseInfo">坪數：<?php echo $row_webinfo['square_meters']; ?></td>
+                    <td class="align-middle houseInfo">形式：<?php echo $row_webinfo['pattern']; ?></td>
+                  </tr>
 
-                <tr>
-                  <td class="align-middle houseInfo">樓層：<?php echo $row_webinfo['floor']; ?></td>
-                  <td class="align-middle houseInfo">特色：</td>
-                  <td>
-                    <a class="btn btn-block btn-sm btnGo" href="<?php echo $row_webinfo['Link']; ?>">查看更多</a>
-                  </td>
-                </tr>
-              </table>
-            <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
-          <?php } else {
-            echo '<h2>立即收藏喜愛的房源</h2>';
-          } ?>
+                  <tr>
+                    <td class="align-middle houseInfo">樓層：<?php echo $row_webinfo['floor']; ?></td>
+                    <td class="align-middle houseInfo">類型：<?php echo $row_webinfo['house_type']; ?></td>
+                    <td>
+                      <a class="btn btn-block btn-sm btnGo" href="<?php echo $row_webinfo['Link']; ?>" target="_blank">查看更多</a>
+                    </td>
+                  </tr>
+                </table>
+              <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
+            <?php } else {
+              echo '<h2>立即收藏喜愛的房源</h2>';
+            } ?>
+          </div>
         </div>
 
       </div>
+
+      <button id="myBtn" class="btn btn-dark backToTop" onClick="topFunction()"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
     </div>
   </section>
 
@@ -246,6 +252,27 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
   <div class="footer">
     <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
   </div>
+
+  <script>
+    /**  back to top **/
+    var mybutton = document.getElementById("myBtn");
+    window.onscroll = function() {
+      scrollFunction()
+    };
+
+    function scrollFunction() {
+      if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+    }
+
+    function topFunction() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+  </script>
 
 </body>
 
