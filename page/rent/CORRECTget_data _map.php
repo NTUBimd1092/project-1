@@ -16,7 +16,7 @@ function Query($mylat,$mylng,$search)
 	SELECT *
 	FROM page_data AS PD 
 	LEFT JOIN localtion AS LA ON PD.id = LA.houseid 
-	WHERE (1=1) AND ABS(lat-{$mylat})<=0.1 AND ABS(lng-{$mylng})<=0.1 {$SqlWhere}
+	WHERE (1=1) AND ABS(lat-{$mylat})<=0.05 AND ABS(lng-{$mylng})<=0.05 {$SqlWhere}
 	ORDER BY lat DESC
 	LIMIT 0 , 15";
 
@@ -31,11 +31,7 @@ function Query($mylat,$mylng,$search)
 		$Money = $row['money'];
 		$Address = urlencode($row['adress']);
 		$Images= $row['images'];
-        $Link = $row['Link']; 
-        $SquareFeet = $row['square_meters'];
-        $HouseType = $row['house_type'];
-        $Floor = $row['floor'];
-        $WebName = $row['WebName'];
+		$Link = $row['Link'];
 	
 		$return_arr[] = array("Id" => $Id,
 						"Name" => $Name,
@@ -44,11 +40,7 @@ function Query($mylat,$mylng,$search)
 						"Money" => $Money,
 						"Address" => $Address,
 						"Images" => $Images,
-                        "Link" => $Link,
-                        "SquareFeet" => $SquareFeet,
-                        "HouseType" => $HouseType,
-                        "Floor" => $Floor,
-                        "WebName" => $WebName
+						"Link" => $Link
 						);
 	}
 	$json = json_encode($return_arr);
@@ -61,11 +53,4 @@ if (isset($_POST['mylat']) and isset($_POST['mylng'])) {
     Query($_POST['mylat'], $_POST['mylng'] ,$_POST['search']);
 }
 
-if(isset($_POST['Action'])){
-	switch($_POST['Action']){
-		case "Favorate":
-			
-			break;
-	}
-}
 ?>
