@@ -16,7 +16,7 @@ function Query($mylat,$mylng,$search)
 	SELECT *
 	FROM page_data AS PD 
 	LEFT JOIN localtion AS LA ON PD.id = LA.houseid 
-	WHERE (1=1) AND ABS(lat-{$mylat})<=0.05 AND ABS(lng-{$mylng})<=0.05 {$SqlWhere}
+	WHERE (1=1) AND ABS(lat-{$mylat})<=0.1 AND ABS(lng-{$mylng})<=0.1 {$SqlWhere}
 	ORDER BY lat DESC
 	LIMIT 0 , 15";
 
@@ -53,4 +53,11 @@ if (isset($_POST['mylat']) and isset($_POST['mylng'])) {
     Query($_POST['mylat'], $_POST['mylng'] ,$_POST['search']);
 }
 
+if(isset($_POST['Action'])){
+	switch($_POST['Action']){
+		case "Favorate":
+			
+			break;
+	}
+}
 ?>

@@ -27,8 +27,6 @@ if ((isset($_GET['doLogout'])) && ($_GET['doLogout'] == "true")) {
     exit;
   }
 }
-?>
-<?php
 @session_start();
 if (!function_exists("GetSQLValueString")) {
   function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
@@ -68,389 +66,365 @@ $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueStr
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
-$userid = $row_Login['id'];
-
-/*登入帳號的金錢異動查詢*/
+$userid=isset($row_Login['id'])?$row_Login['id']:"";
+$Link=isset($_POST['Link'])?$_POST['Link']:"";
 mysql_select_db($database_cralwer, $cralwer);
-$query_favorite = "SELECT * FROM money_change WHERE userid = $userid ORDER BY Link ASC";
-$favorite = mysql_query($query_favorite, $cralwer) or die(mysql_error());
-$row_favorite = mysql_fetch_assoc($favorite);
-$totalRows_favorite = mysql_num_rows($favorite);
-?>
+$query_subscrption = "SELECT *
+FROM `subscription` SB
+LEFT JOIN `money_change` MC ON SB.Link = MC.Link
+WHERE userid = '$userid' AND SB.Link='https://www.sinyi.com.tw/rent/houseno/C218138'
+order by SB.Link DESC
+LIMIT 0 , 30";
+$subscrption = mysql_query($query_subscrption, $cralwer) or die(mysql_error());
+$row_subscrption = mysql_fetch_assoc($subscrption);
+$totalRows_subscrption = mysql_num_rows($subscrption);
 
+?>
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>作伙</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>作伙</title>
   <link rel="icon" href="images/logo.ico" type="image/x-icon">
-  <style>
-    body {
-      font-family: 微軟正黑體;
-      background-color: #EFEFEF;
-    }
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="src/echarts.min.js"></script>
 
-    .header {
-      background-color: rgb(126, 83, 34);
-      color: white;
-      font-size: 25px;
-      width: 100%;
-      height: 45px;
-      position: fixed;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .header a {
-      text-decoration: none;
-    }
-
-    .header a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .header a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight {
-      float: right;
-      font-size: 15px;
-      line-height: 40px;
-      padding-top: 3px;
-      padding-right: 15px;
-      color: white;
-    }
-
-    .headerRight a {
-      text-decoration: none;
-      font-size: 16px;
-      padding: 3px 8px;
-    }
-
-    .headerRight a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .headerRight a:hover {
-      color: rgb(126, 83, 34, 0.85);
-      background-color: white;
-      border-radius: 3px;
-    }
-
-    .HomeIcon {
-      height: 25px;
-      padding-top: 8px;
-      padding-right: 3px;
-      padding-left: 8px;
-    }
-
-    .accountData {
-      background-color: #D0B392;
-      color: #707070;
-      font-size: 16px;
-      width: 100%;
-      height: 150px;
-      position: fixed;
-      position: absolute;
-      top: 45px;
-      left: 0;
-    }
-
-    .accountData table {
-      text-align: center;
-      vertical-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .accountData th {
-      font-size: 18px;
-      padding: 0 25px;
-    }
-
-    .accountData td {
-      padding: 0 25px;
-    }
-
-    .accountData a {
-      text-decoration: none;
-    }
-
-    .accountData a:link {
-      text-decoration: none;
-      color: #707070;
-    }
-
-    .accountData a:visited {
-      text-decoration: none;
-      color: #707070;
-    }
-
-    .input {
-      width: 470px;
-      height: 28px;
-      margin: 5px 3px;
-      padding: 1.5px 8px;
-      font-family: Arial, 微軟正黑體;
-      border: 0 none;
-      border-radius: 5px;
-    }
-
-    .resultDiv {
-      top: 50%;
-      left: 50%;
-      margin: 10px auto;
-      transform: translateY(138%);
-      -webkit-transform: translateY(138%);
-    }
-
-    .noData{
-      top: 50%;
-      left: 50%;
-      text-align: center;
-      vertical-align: middle;
-      margin-top: 20px;
-      margin-left: -70px;
-      position: absolute;
-      color: #7E5322;
-      font-size: 30px;
-      font-family: 微軟正黑體;
-    }
-
-    .resultDiv table {
-      width: 700px;
-      padding: 5px;
-      background-color: #FFFFFF;
-      color: #726A6A;
-      border: 1px solid #FFFFFF;
-      border-collapse: separate;
-      border-spacing: 0;
-      border-radius: 10px;
-      line-height: 18px;
-      font-size: 14px;
-    }
-
-    th {
-      padding: 5px;
-      color: rgb(114, 106, 106, 0.9);
-      vertical-align: center;
-    }
-
-    td {
-      padding: 5px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      vertical-align: center;
-    }
-
-    .favorite {
-      width: 20px;
-      padding-top: 5px;
-    }
-
-    .more {
-      width: 75%;
-      padding: 3px;
-      color: white;
-      font-size: 12px;
-      font-family: 微軟正黑體;
-      border: rgb(126, 83, 34, 0.85);
-      background-color: rgb(126, 83, 34, 0.85);
-    }
-
-    .more a {
-      text-decoration: none;
-    }
-
-    .more a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .more a:visited {
-      text-decoration: none;
-      color: white;
-    }
-
-    .pages {
-      text-align: center;
-      margin-top: 60px;
-      margin-bottom: 80px;
-    }
-
-    .pages a {
-      text-decoration: none;
-    }
-
-    .pages a:link {
-      text-decoration: none;
-      color: #7E5322;
-    }
-
-    .pages a:visited {
-      text-decoration: none;
-      color: #7E5322;
-    }
-
-    .footer {
-      background-color: rgb(126, 83, 34);
-      color: white;
-      font-size: 25px;
-      width: 100%;
-      height: 45px;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-    }
-
-    .footer a {
-      text-decoration: none;
-    }
-
-    .footer a:link {
-      text-decoration: none;
-      color: white;
-    }
-
-    .footer a:visited {
-      text-decoration: none;
-      color: white;
-    }
-  </style>
-
+<style>
+body {
+	font-family: 微軟正黑體;
+	background-color: #EFEFEF;
+}
+.header {
+	background-color: rgb(126, 83, 34);
+	color: white;
+	font-size: 25px;
+	width: 100%;
+	height: 45px;
+	position: fixed;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.header a {
+	text-decoration: none;
+}
+.header a:link {
+	text-decoration: none;
+	color: white;
+}
+.header a:visited {
+	text-decoration: none;
+	color: white;
+}
+.headerRight {
+	float: right;
+	font-size: 15px;
+	line-height: 40px;
+	padding-top: 3px;
+	padding-right: 15px;
+	color: white;
+}
+.headerRight a {
+	text-decoration: none;
+	font-size: 16px;
+	padding: 3px 8px;
+}
+.headerRight a:link {
+	text-decoration: none;
+	color: white;
+}
+.headerRight a:visited {
+	text-decoration: none;
+	color: white;
+}
+.headerRight a:hover {
+	color: rgb(126, 83, 34, 0.85);
+	background-color: white;
+	border-radius: 3px;
+}
+.HomeIcon {
+	height: 25px;
+	padding-top: 8px;
+	padding-right: 3px;
+	padding-left: 8px;
+}
+.accountData {
+	background-color: #D0B392;
+	color: #707070;
+	font-size: 16px;
+	width: 100%;
+	height: 150px;
+	position: fixed;
+	position: absolute;
+	top: 45px;
+	left: 0;
+}
+.accountData table {
+	text-align: center;
+	vertical-align: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.accountData th {
+	font-size: 18px;
+	padding: 0 25px;
+}
+.accountData td {
+	padding: 0 25px;
+}
+.accountData a {
+	text-decoration: none;
+}
+.accountData a:link {
+	text-decoration: none;
+	color: #707070;
+}
+.accountData a:visited {
+	text-decoration: none;
+	color: #707070;
+}
+.input {
+	width: 470px;
+	height: 28px;
+	margin: 5px 3px;
+	padding: 1.5px 8px;
+	font-family: Arial, 微軟正黑體;
+	border: 0 none;
+	border-radius: 5px;
+}
+.resultDiv {
+	top: 50%;
+	left: 50%;
+	margin: 10px auto;
+	transform: translateY(138%);
+	-webkit-transform: translateY(138%);
+}
+.noData {
+	top: 50%;
+	left: 50%;
+	text-align: center;
+	vertical-align: middle;
+	margin-top: 20px;
+	margin-left: -70px;
+	position: absolute;
+	color: #7E5322;
+	font-size: 30px;
+	font-family: 微軟正黑體;
+}
+.resultDiv table {
+	width: 700px;
+	padding: 5px;
+	background-color: #FFFFFF;
+	color: #726A6A;
+	border: 1px solid #FFFFFF;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: 10px;
+	line-height: 18px;
+	font-size: 14px;
+}
+th {
+	padding: 5px;
+	color: rgb(114, 106, 106, 0.9);
+	vertical-align: center;
+}
+td {
+	padding: 5px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	vertical-align: center;
+}
+.favorite {
+	width: 20px;
+	padding-top: 5px;
+}
+.more {
+	width: 75%;
+	padding: 3px;
+	color: white;
+	font-size: 12px;
+	font-family: 微軟正黑體;
+	border: rgb(126, 83, 34, 0.85);
+	background-color: rgb(126, 83, 34, 0.85);
+}
+.more a {
+	text-decoration: none;
+}
+.more a:link {
+	text-decoration: none;
+	color: white;
+}
+.more a:visited {
+	text-decoration: none;
+	color: white;
+}
+.pages {
+	text-align: center;
+	margin-top: 60px;
+	margin-bottom: 80px;
+}
+.pages a {
+	text-decoration: none;
+}
+.pages a:link {
+	text-decoration: none;
+	color: #7E5322;
+}
+.pages a:visited {
+	text-decoration: none;
+	color: #7E5322;
+}
+.footer {
+	background-color: rgb(126, 83, 34);
+	color: white;
+	font-size: 25px;
+	width: 100%;
+	height: 45px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+}
+.footer a {
+	text-decoration: none;
+}
+.footer a:link {
+	text-decoration: none;
+	color: white;
+}
+.footer a:visited {
+	text-decoration: none;
+	color: white;
+}
+</style>
 </head>
-
 <body>
+<div class="header"> <span> <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a> <a href="home.php">作伙</a> </span>
+  <div class="headerRight"> <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a> <a href="searchArea.php">搜尋列表</a> <a href="<?php echo $logoutAction ?>">登出</a> </div>
+</div>
+<div class="accountData">
+  <table>
+    <tr>
+      <td rowspan="2"><img width="60px" height="60px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+      <th><a href="favorite.php"></a>
+        </td>
+      <th><a href="priceFluctuation.php">0</a></th>
+      <th>0</th>
+    </tr>
+    <tr>
+      <td><a href="favorite.php">已收藏</a></td>
+      <td><a href="priceFluctuation.php">價格異動</a></td>
+      <td>為您推薦</td>
+    </tr>
+  </table>
+</div>
 
-  <div class="header">
-    <span>
-      <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a>
-      <a href="home.php">作伙</a>
-    </span>
+<div class="">
+<br>
+無價格異動資料</div>
+<hr />
+全部異動紀錄：<br />
+<hr />
+<div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+              <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
+                <tr>
+                  <td rowspan="4" width="25%" class="text-center align-middle"><img class="imageSize" src=""></td>
+                  <th colspan="2" width="38%" class="houseName"></th>
+                  <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
+                  <td width="20%" class="text-center align-middle houseInfo">來自：</td>
+                </tr>
 
-    <div class="headerRight">
-      <a href="userPage.php" style="border:1px solid white; border-radius:2px;">嗨！<?php echo $row_Login['name']; ?></a>
-      <a href="searchArea.php">搜尋列表</a>
-      <a href="<?php echo $logoutAction ?>">登出</a> </div>
-  </div>
+                <tr>
+                  <td colspan="2"></td>
+                  <td rowspan="2" id="Price" class="text-center align-middle housePrice"></td>
+                </tr>
 
-  <div class="accountData">
-    <table>
-      <tr>
-        <td rowspan="2"><img width="60px" height="60px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
-        <th><a href="favorite.php"><?php echo $totalRows_favorite ?></a></td>
-        <th><a href="priceFluctuation.php">0</a></th>
-        <th>0</th>
-      </tr>
+                <tr>
+                  <td class="align-middle houseInfo">坪數：</td>
+                  <td class="align-middle houseInfo">形式：</td>
+                </tr>
 
-      <tr>
-        <td><a href="favorite.php">已收藏</a></td>
-        <td><a href="priceFluctuation.php">價格異動</a></td>
-        <td>為您推薦</td>
-      </tr>
-    </table>
-  </div>
+                <tr>
+                  <td class="align-middle houseInfo">樓層：</td>
+                  <td class="align-middle houseInfo">特色：</td>
+                  <td>
+                    <a class="btn btn-block btn-sm btnGo" href="">查看更多</a>
+                  </td>
+                </tr>
+              </table>
+              </div>
+             </div>
 
-  <div class="noData">無價格異動資料</div>
+ <div id="main" style="width: 600px;height:400px;"></div>
+ <?php 
+ do{
+		$Id = $row_subscrption['id'];
+		$Money = $row_subscrption['money'];
+		$Link = $row_subscrption['Link'];
+		$Datetime = $row_subscrption['date'];
+	
+		$return_arr[] = array(
+						"Money" => $Money,
+						"MyDate" => $Datetime
+						);
+	}while ($row_subscrption = mysql_fetch_assoc($subscrption));
+	$json = json_encode($return_arr);
 
+ ?>
+ <script type="text/javascript">
+        // 初始化
+        var myChart = echarts.init(document.getElementById('main'));
+		var response =<?php echo $json;?>;
+		var Datedata=new Array();
+		var Moneydata= new Array();
+		for (var i in response){
+			Moneydata.push(response[i].Money);
+			Datedata.push(response[i].MyDate);
+		}
 
-  
-  <!--<?php do {
-    /* 關聯page_data與money_change */
-    $Link = $row_favorite['Link'];
-
-    mysql_select_db($database_cralwer, $cralwer);
-    $query_webinfo = "SELECT * FROM page_data WHERE Link = '$Link'";
-    $webinfo = mysql_query($query_webinfo, $cralwer) or die(mysql_error());
-    $row_webinfo = mysql_fetch_assoc($webinfo);
-    $totalRows_webinfo = mysql_num_rows($webinfo);
-  ?>
-    <div class="resultDiv">
-      <table align="center" id="customers">
-        <tr>
-          <td rowspan="4" width="30%" align="center" valign="center"><img width="160px" src="<?php echo $row_webinfo['images']; ?>"></td>
-          <th colspan="2" width="43%" align="left" style="font-size:20px"><?php echo $row_webinfo['house']; ?></th>
-          <td rowspan="4" width="2%" valign="top"><img src="images/selectedFav.png" alt="like" class="favorite"></td>
-          <td width="25%" align="center" style="font-size:12px">來自：<?php echo $row_webinfo['WebName']; ?></td>
-        </tr>
-        <tr>
-          <td colspan="2"><?php echo $row_webinfo['adress']; ?></td>
-          <td align="center" style="font-size:16px"><?php echo $row_webinfo['money']; ?></td>
-        </tr>
-        <tr>
-          <td>坪數：<?php echo $row_webinfo['square_meters']; ?></td>
-          <td>形式：
-            <?php echo substr($row_webinfo['pattern'], 0, 1); ?>房
-            <?php echo substr($row_webinfo['pattern'], 1, 1); ?>廳
-            <?php echo substr($row_webinfo['pattern'], 2, 1); ?>衛
-            <?php echo substr($row_webinfo['pattern'], 3, 1); ?>室
-          </td>
-          <td align="center" style="font-size:22px"><?php echo $row_webinfo['money']; ?></td>
-        </tr>
-        <tr>
-          <td>樓層：<?php echo $row_webinfo['floor']; ?></td>
-          <td style="color:rgb(227, 73, 73, 0.9)">特色：</td>
-          <td align="center"><button class="more">
-              <a href="<?php echo $row_favorite['Link']; ?>" target="_blank">查看更多</a>
-            </button></td>
-        </tr>
-      </table>
-    </div>
-  <?php } while ($row_favorite = mysql_fetch_assoc($favorite)); ?>
+        // 指定图表的配置项和数据
+        option = {
+    xAxis: {
+        type: 'category',
+        data: Datedata
+    },
+    yAxis: {
+        type: 'value'
+		
+    },
+    series: [{
+        data:Moneydata,
+        type: 'line'	
+    }]
+	
+	
+};
 
 
-  <?php echo $row_Login['id']; ?>
-  <hr />
-  全部異動紀錄：<br />
-  <hr />
-  <?php do {
-    /*關聯page_data與money_change*/
-    $Link = $row_favorite['Link'];
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+    <?php 
+	
+	?>
+</div>
 
-    mysql_select_db($database_cralwer, $cralwer);
-    $query_webinfo = "SELECT * FROM page_data WHERE Link = '$Link'";
-    $webinfo = mysql_query($query_webinfo, $cralwer) or die(mysql_error());
-    $row_webinfo = mysql_fetch_assoc($webinfo);
-    $totalRows_webinfo = mysql_num_rows($webinfo);
-  ?>
-    編號：<?php echo $row_favorite['id']; ?><br />
-    名稱：<?php echo $row_webinfo['house']; ?><br />
-    連結：<a href="<?php echo $row_favorite['Link']; ?>" target="_blank"><?php echo $row_favorite['Link']; ?></a><br />
-    日期：<?php echo $row_favorite['date']; ?><br />
-    金額：<?php echo $row_favorite['money']; ?>$<br />
-    <hr />
-  <?php } while ($row_favorite = mysql_fetch_assoc($favorite)); ?> -->
-
-  
-
-  <div class="footer">
-    <span><a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a></span>
-    <span><a href="home.php">作伙</a></span>
-  </div>
-
+<div class="footer"> <span><a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon"></a></span> <span><a href="home.php">作伙</a></span> </div>
 </body>
-
 </html>
-
 <?php
-mysql_free_result($favorite);
-mysql_free_result($webinfo);
+
 mysql_free_result($Login);
+
+mysql_free_result($subscrption);
 ?>

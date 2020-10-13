@@ -322,7 +322,7 @@ td {
 <div class="searchDiv">
 <div class="searchCondition"> <span text-align="left"> <a href="searchArea.php"><b>區域搜尋</b></a> &nbsp;|&nbsp; <a href="searchMetro.php">捷運搜尋</a> &nbsp;|&nbsp; <a href="searchDestination.php">目的搜尋</a> &nbsp;|&nbsp; <a href="maps.php"> <img width="25px" src="images/map.png"> </a> </span><br>
   <br>
-<form method='GET' action="maps.php" name="form1" style="background:none">
+<form method='GET' action="maps01.php" name="form1" style="background:none">
 <input type="text" class="form-control" name="qtxt" id="qtxt" value="<?php echo isset($_GET['qtxt']) ? $_GET['qtxt'] : ""; ?>" placeholder="輸入房屋名稱或地址..."></input>
   <input id="submit"  class="search" type="submit" value="搜尋">
   </form>
@@ -362,7 +362,7 @@ td {
 		myinfo.setContent('你在這裡!');
 		myinfo.open(map);
 	    
-        var qtxt = '<?php isset($_GET['qtxt'])? $_GET['qtxt']:"";?>'; //查詢房名、地址
+        var qtxt = '<?php echo $_GET['qtxt']; ?>'; //查詢房名、地址
         $(document).ready(function() {
             
             $.ajax({
@@ -407,7 +407,7 @@ td {
 					
 	            },
                 error: function(e) {
-                    alert('附近沒有相關資料！');
+                    alert('查無資料！');
 					//alert(e.responseText);
 					console.log('error', e)
                 }

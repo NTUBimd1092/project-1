@@ -1,4 +1,5 @@
 // JavaScript Document
+/*
 $(document).ready(function(){
 	var i=0;
 	$(".favorite").click(function(){
@@ -12,4 +13,10 @@ $(document).ready(function(){
 		}
 	});  
 	
-});
+});*/
+
+function Favorate(myObj,userid){
+		alert(myObj.id+userid);
+		
+	
+	}

@@ -92,6 +92,7 @@ $totalRows_Login = mysql_num_rows($Login);
         var moneyE = '<?php echo $_POST['moneyE']; ?>';
         var orderby = '<?php echo $_POST['orderby']; ?>';
         var dict = '<?php echo $_POST['dict']; ?>';
+		var userid='<?php echo isset($row_Login['id']) ? $row_Login['id'] : "";?>';
 
         $(document).ready(function() {
             var flag = 0;
@@ -106,7 +107,8 @@ $totalRows_Login = mysql_num_rows($Login);
                     'moneyS': moneyS,
                     'moneyE': moneyE,
                     'orderby': orderby,
-                    'dict': dict
+                    'dict': dict,
+					'userid':userid
                 },
                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                 success: function(data) {
@@ -132,7 +134,8 @@ $totalRows_Login = mysql_num_rows($Login);
                             'moneyS': moneyS,
                             'moneyE': moneyE,
                             'orderby': orderby,
-                            'dict': dict
+                            'dict': dict,
+							'userid':userid
                         },
                         contentType: "application/x-www-form-urlencoded; charset=utf-8",
                         success: function(data) {
@@ -213,7 +216,8 @@ $totalRows_Login = mysql_num_rows($Login);
                             <table class="table table-sm table-borderless searchTitle">
                                 <thead>
                                     <tr>
-                                        <th colspan="5">區域搜尋</th>
+                                        <th colspan="4">區域搜尋</th>
+                                        <th colspan="1"><a href="maps.php">Map</a></th>
                                     </tr>
                                 </thead>
 
@@ -223,7 +227,7 @@ $totalRows_Login = mysql_num_rows($Login);
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" name="qtxt" id="qtxt" value="<?php echo isset($_POST['qtxt']) ? $_POST['qtxt'] : ""; ?>" placeholder="輸入房屋名稱或地址..."></input>
                                                 <div class="input-group-append">
-                                                    <button type="submit" class="btn btnGo"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                    <button type="submit" class="btn btnGo" id="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                 </div>
                                             </div>
                                         </td>
@@ -232,7 +236,7 @@ $totalRows_Login = mysql_num_rows($Login);
                                     <tr>
                                         <td colspan="2">房屋租金</td>
                                         <td>房屋來源</td>
-                                        <td colspan="2">排序方式</td>
+                                        <td colspan="2" >排序方式</td>
                                     </tr>
 
                                     <tr>
