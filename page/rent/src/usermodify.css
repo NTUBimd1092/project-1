@@ -139,3 +139,7 @@ th {
     text-decoration: none;
     color: white;
 }
+
+.myBody {
+    min-height: calc(100vh - 50px);
+}

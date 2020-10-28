@@ -80,12 +80,14 @@ $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
+include 'encrypt.php'; //加解密檔
+$temp_pass = ((isset($_POST['password'])) && ($_POST['password'] != "")) ? encryptthis($_POST['password'], $key) : $row_Login['password'];
 
 if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "modify")) {
     $updateSQL = sprintf(
         "UPDATE `user` SET account=%s, password=%s, name=%s, phone=%s, birth=%s, subscribe=%s WHERE id=%s",
         GetSQLValueString($_POST['account'], "text"),
-        GetSQLValueString($_POST['password'], "text"),
+        GetSQLValueString($temp_pass, "text"),
         GetSQLValueString($_POST['name'], "text"),
         GetSQLValueString($_POST['phone'], "text"),
         GetSQLValueString($_POST['birth'], "date"),
@@ -103,6 +105,13 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "modify")) {
     }
     header(sprintf("Location: %s", $updateGoTo));
 }
+
+/* 查詢價格異動總比數 */
+mysql_select_db($database_cralwer, $cralwer);
+$query_webinfo = "SELECT * FROM page_data where Link IN(SELECT Link FROM subscription where userid='$userid')";
+$webinfo = mysql_query($query_webinfo, $cralwer) or die(mysql_error());
+$row_webinfo = mysql_fetch_assoc($webinfo);
+
 ?>
 
 
@@ -143,154 +152,171 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "modify")) {
 </head>
 
 <body>
+    <section class="myBody">
 
-    <!-- navbar -->
-    <nav class="navbar navbar-dark navbar-fixed-top myHeader">
+        <!-- navbar -->
+        <nav class="navbar navbar-dark navbar-fixed-top myHeader">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="home.php">
+                        <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top" alt="logo">
+                    </a>
+                    <a class="navbar-brand" style="font-size: 23px;" href="home.php">作伙</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <?php if ($totalRows_Login > 0) { // 登入後顯示 
+                        ?>
+                            <li><a href="searchArea.php">搜尋列表</a></li>
+                            <li><a href="<?php echo $logoutAction ?>">登出</a></li>
+                        <?php } // Show if recordset not empty 
+                        ?>
+
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+
+        <?php
+        $sum = 0;
+        do {
+            $query_price = "SELECT COUNT(*) countPrice FROM `money_change` WHERE `Link` = '{$row_webinfo['Link']}'";
+            $priceCount = mysql_query($query_price, $cralwer) or die(mysql_error());
+            $row_price = mysql_fetch_assoc($priceCount);
+            if ($row_price['countPrice'] > 1) {
+                $sum += 1;
+            }
+        } while ($row_webinfo = mysql_fetch_assoc($webinfo));
+        ?>
+
+        <!-- account data -->
         <div class="container-fluid">
-
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="home.php">
-                    <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top" alt="logo">
-                </a>
-                <a class="navbar-brand" style="font-size: 23px;" href="home.php">作伙</a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav navbar-right">
-
-                    <?php if ($totalRows_Login > 0) { // 登入後顯示 
-                    ?>
-                        <li><a href="searchArea.php">搜尋列表</a></li>
-                        <li><a href="<?php echo $logoutAction ?>">登出</a></li>
-                    <?php } // Show if recordset not empty 
-                    ?>
-
-                </ul>
-            </div>
-
-        </div>
-    </nav>
-
-    <!-- account data -->
-    <div class="container-fluid">
-        <div class="accountBg">
-            <table class="accountData text-center">
-                <tr>
-                    <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
-                    <th class="text-center"><?php echo $totalRows_favorite ?></th>
-                    <th class="text-center">(num)</th>
-                    <th class="text-center">(num)</th>
-                </tr>
-
-                <tr>
-                    <td>已收藏</td>
-                    <td>價格異動</td>
-                    <td>為您推薦</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- modify table -->
-        <div class="col-12 col-md-4 col-sm-4"></div>
-        <div class="col-12 col-md-4 col-sm-4 userBg">
-            <table class="table table-sm dataTable">
-                <thead>
+            <div class="accountBg">
+                <table class="accountData text-center">
                     <tr>
-                        <td align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
-                        <td style="vertical-align:middle">
-                            <form id="form">
-                                <label class="btn btn-light btn-lg btn-block">
-                                    <input id="upload_img" style="display:none;" onclick="changePic();">
-                                    <i class="fa fa-photo"></i> 更改頭像
-                                </label>
-                            </form>
-                        </td>
+                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+                        <th class="text-center"><?php echo $totalRows_favorite ?></th>
+                        <th class="text-center" id="price"></th>
+                        <th class="text-center">(num)</th>
                     </tr>
-                </thead>
 
+                    <tr>
+                        <td>已收藏</td>
+                        <td>價格異動</td>
+                        <td>為您推薦</td>
+                    </tr>
+                </table>
+            </div>
 
-                <form action="<?php echo $editFormAction; ?>" method="POST" name="modify">
-                    <tbody>
+            <!-- modify table -->
+            <div class="col-12 col-md-4 col-sm-4"></div>
+            <div class="col-12 col-md-4 col-sm-4 userBg">
+                <table class="table table-sm dataTable">
+                    <thead>
                         <tr>
-                            <input type="hidden" name="id" value="<?php echo $row_Login['id']; ?>">
-                            <th>姓名</th>
-                            <td><input class="form-control" name="name" type="text" value="<?php echo $row_Login['name']; ?>"></td>
-                        </tr>
-
-                        <tr>
-                            <th>生日</th>
-                            <td><input class="form-control" type="date" name="birth" value="<?php echo $row_Login['birth']; ?>"></td>
-                        </tr>
-
-                        <tr>
-                            <th>電話</th>
-                            <td><input class="form-control" type="number" name="phone" value="<?php echo $row_Login['phone']; ?>"></td>
-                        </tr>
-
-                        <tr>
-                            <th>電子郵件</th>
-                            <td><input class="form-control" type="email" name="account" value="<?php echo $row_Login['account']; ?>"></td>
-                        </tr>
-
-                        <tr>
-                            <th>密碼</th>
-                            <td><input class="form-control" type="text" name="password" value="<?php echo $row_Login['password']; ?>"></td>
-                        </tr>
-
-                        <tr>
-                            <th>訂閱通知</th>
-                            <td>
-                                <!-- 判斷是否訂閱 -->
-                                <?php if ($row_Login['subscribe'] == "是") { ?>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="subscribe" value="是" checked="checked">是
+                            <td align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+                            <td style="vertical-align:middle">
+                                <form id="form">
+                                    <label class="btn btn-light btn-lg btn-block">
+                                        <input id="upload_img" style="display:none;" onclick="changePic();">
+                                        <i class="fa fa-photo"></i> 更改頭像
                                     </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="subscribe" value="否">否
-                                    </label>
-                                <?php } ?>
-
-                                <?php if ($row_Login['subscribe'] == "否") { ?>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="subscribe" value="是">是
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="subscribe" value="否" checked="checked">否
-                                    </label>
-                                <?php } ?>
+                                </form>
                             </td>
                         </tr>
+                    </thead>
 
-                    </tbody>
-            </table>
 
-            <table class="table table-borderless">
-                <tr>
-                    <td align="right"><button class="btn btnGo" onclick="javascript:location.href='userPage.php'">取消變更</button></td>
-                    <td>
-                        <button class="btn btnGo" type="submit">儲存變更</button>
-                        <input type="hidden" name="MM_update" value="modify">
-                    </td>
-                </tr>
-            </table>
+                    <form action="<?php echo $editFormAction; ?>" method="POST" name="modify">
+                        <tbody>
+                            <tr>
+                                <input type="hidden" name="id" value="<?php echo $row_Login['id']; ?>">
+                                <th>姓名</th>
+                                <td><input class="form-control" name="name" type="text" value="<?php echo $row_Login['name']; ?>"></td>
+                            </tr>
 
-            </form>
+                            <tr>
+                                <th>生日</th>
+                                <td><input class="form-control" type="date" name="birth" value="<?php echo $row_Login['birth']; ?>"></td>
+                            </tr>
 
+                            <tr>
+                                <th>電話</th>
+                                <td><input class="form-control" type="number" name="phone" value="<?php echo $row_Login['phone']; ?>"></td>
+                            </tr>
+
+                            <tr>
+                                <th>電子郵件</th>
+                                <td><input class="form-control" type="email" name="account" value="<?php echo $row_Login['account']; ?>"></td>
+                            </tr>
+
+                            <tr>
+                                <th>密碼</th>
+                                <td><input class="form-control" type="text" name="password" value="" placeholder="******"></td>
+                            </tr>
+
+                            <tr>
+                                <th>訂閱通知</th>
+                                <td>
+                                    <!-- 判斷是否訂閱 -->
+                                    <?php if ($row_Login['subscribe'] == "是") { ?>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="subscribe" value="是" checked="checked">是
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="subscribe" value="否">否
+                                        </label>
+                                    <?php } ?>
+
+                                    <?php if ($row_Login['subscribe'] == "否") { ?>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="subscribe" value="是">是
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="subscribe" value="否" checked="checked">否
+                                        </label>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                </table>
+
+                <table class="table table-borderless">
+                    <tr>
+                        <td align="right"><button class="btn btnGo" onclick="javascript:location.href='userPage.php'">取消變更</button></td>
+                        <td>
+                            <button class="btn btnGo" type="submit">儲存變更</button>
+                            <input type="hidden" name="MM_update" value="modify">
+                        </td>
+                    </tr>
+                </table>
+
+                </form>
+
+            </div>
+            <div class="col-12 col-md-4 col-sm-4"></div>
         </div>
-        <div class="col-12 col-md-4 col-sm-4"></div>
-    </div>
+    </section>
 
     <div class="footer">
         <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
 
-
     <script>
+        /* priceFluctuation total */
+        document.getElementById('price').innerHTML = '<?php echo $sum; ?>';
+
+        /* change user pic */
         var selectedImages = [];
 
         function changePic() {

@@ -57,7 +57,7 @@ if (!function_exists("GetSQLValueString")) {
   }
 }
 
-/*登入資料查詢*/
+/* 登入資料查詢 */
 $maxRows_Login = 10;
 $pageNum_Login = 0;
 if (isset($_GET['pageNum_Login'])) {
@@ -84,7 +84,7 @@ if (isset($_GET['totalRows_Login'])) {
 $totalPages_Login = ceil($totalRows_Login / $maxRows_Login) - 1;
 $userid = $row_Login['id'];
 
-/*此帳號訂閱查詢*/
+/* 此帳號訂閱查詢 */
 $currentPage = $_SERVER["PHP_SELF"];
 
 $maxRows_webinfo = 10;
@@ -126,14 +126,6 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 }
 $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $queryString_webinfo);
 
-//刪除訂閱
-@$deluid = base64_decode($_GET['userid']);
-@$delLink = base64_decode($_GET['Link']);
-if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
-  $deleteSQL = sprintf("DELETE FROM `crawler`.`subscription` WHERE `subscription`.`userid` ='$deluid' AND `subscription`.`Link` ='$delLink'");
-  mysql_select_db($database_cralwer, $cralwer);
-  $Result1 = mysql_query($deleteSQL, $cralwer) or die(mysql_error());
-}
 ?>
 
 
@@ -150,6 +142,7 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="src/get_data.js"></script>
   <style>
     body {
       font-family: 微軟正黑體;
@@ -190,13 +183,13 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
           <tr>
             <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
             <th><a href="favorite.php"><?php echo $totalRows_webinfo ?> </a></th>
-            <th><a href="priceFluctuation.php">(num)</a></th>
+            <th><a href="#" id="price"></a></th>
             <th><a href="#">(num)</a></th>
           </tr>
 
           <tr>
             <td><a href="favorite.php">已收藏</a></td>
-            <td><a href="priceFluctuation.php">價格異動</a></td>
+            <td><a href="#">價格異動</a></td>
             <td><a href="#">為您推薦</a></td>
           </tr>
         </table>
@@ -206,19 +199,43 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
         <div class="col-12 col-sm-10 col-md-8 col-lg-6">
           <div class="subscribedItems">
             <?php if ($totalRows_webinfo > 0) { // Show if recordset not empty 
-            ?>
-              <?php do { ?>
+              $sum = 0;
+              do { ?>
                 <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
                   <tr>
-                    <td rowspan="4" width="25%" class="text-center align-middle"><img class="imageSize" src="<?php echo $row_webinfo['images']; ?>"></td>
-                    <th colspan="2" width="38%" class="houseName"><?php echo $row_webinfo['house']; ?></th>
-                    <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
-                    <td width="20%" class="text-center align-middle houseInfo">來自：<?php echo $row_webinfo['WebName']; ?></td>
+                    <td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src="<?php echo $row_webinfo['images']; ?>"></td>
+                    <th colspan="2" width="50%" class="houseName"><?php echo $row_webinfo['house']; ?></th>
+                    <td rowspan="4" width="2%" class="text-center align-top">
+                      <?php
+                      $query_subscribe = "SELECT COUNT(*) count1 FROM `subscription` WHERE `userid` = {$userid} AND `Link` = '{$row_webinfo['Link']}'";
+                      $subscribeCount = mysql_query($query_subscribe, $cralwer) or die(mysql_error());
+                      if ($subscribeCount >= 1) {
+                        echo '<img class="favorite" id="' . $row_webinfo["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
+                      } else {
+                        echo '<img class="favorite" id="' . $row_webinfo["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
+                      }
+                      ?>
+                    </td>
+                    <td width="18%" class="text-center align-middle houseInfo">來自：<?php echo $row_webinfo['WebName']; ?></td>
                   </tr>
 
                   <tr>
                     <td colspan="2"><?php echo $row_webinfo['adress']; ?></td>
-                    <td rowspan="2" id="Price" class="text-center align-middle housePrice"><?php echo number_format($row_webinfo['money']); ?></td>
+                    <td rowspan="2" id="Price" class="text-center align-middle housePrice">
+                      <?php
+                      $query_price = "SELECT COUNT(*) countPrice FROM `money_change` WHERE `Link` = '{$row_webinfo['Link']}'";
+                      $priceCount = mysql_query($query_price, $cralwer) or die(mysql_error());
+                      $row_price = mysql_fetch_assoc($priceCount);
+                      if ($row_price['countPrice'] > 1) {
+                        echo '<a href="priceFluctuation.php?Link=' . $row_webinfo['Link'] . '">' . number_format($row_webinfo['money']) . '</a>';
+                      } else {
+                        echo number_format($row_webinfo['money']);
+                      }
+
+                      $countFluc = $row_price['countPrice'] > 1;
+                      $sum += $countFluc;
+                      ?>
+                    </td>
                   </tr>
 
                   <tr>
@@ -236,8 +253,12 @@ if ((isset($_GET['del'])) && ($_GET['del'] != "")) {
                 </table>
               <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
             <?php } else {
-              echo '<h2>立即收藏喜愛的房源</h2>';
+              echo '<a class="btn btn-block btn-lg outlineBtn" href="searchArea.php" style="margin-top:350px">立即收藏喜愛的房源</a>';
             } ?>
+
+            <script>
+              document.getElementById('price').innerHTML = '<?php echo $sum; ?>';
+            </script>
           </div>
         </div>
 

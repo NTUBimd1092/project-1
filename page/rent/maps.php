@@ -101,6 +101,8 @@ $totalRows_Login = mysql_num_rows($Login);
         }
 
         #map {
+            height: 72%;
+            width: 100%;
             position: absolute;
             /* header + searchArea 's height = 170 */
             margin-top: 170px;
@@ -183,7 +185,6 @@ $totalRows_Login = mysql_num_rows($Login);
     <!-- 將 YOUR_API_KEY 替換成你的 API Key 即可 -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzA3f6KHEpViCBcLFSWS3a2ywVr3fCIvY&callback=initMap" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyAzA3f6KHEpViCBcLFSWS3a2ywVr3fCIvY"></script>
     <!-- map -->
     <script type="text/javascript">
         //放DataTable資料的全域變數

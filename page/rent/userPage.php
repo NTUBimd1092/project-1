@@ -73,6 +73,13 @@ $query_favorite = "SELECT * FROM subscription WHERE userid = $userid";
 $favorite = mysql_query($query_favorite, $cralwer) or die(mysql_error());
 $row_favorite = mysql_fetch_assoc($favorite);
 $totalRows_favorite = mysql_num_rows($favorite);
+
+/* 查詢價格異動總比數 */
+mysql_select_db($database_cralwer, $cralwer);
+$query_webinfo = "SELECT * FROM page_data where Link IN(SELECT Link FROM subscription where userid='$userid')";
+$webinfo = mysql_query($query_webinfo, $cralwer) or die(mysql_error());
+$row_webinfo = mysql_fetch_assoc($webinfo);
+
 ?>
 
 
@@ -107,101 +114,119 @@ $totalRows_favorite = mysql_num_rows($favorite);
 </head>
 
 <body>
+    <section class="myBody">
 
-    <!-- navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top myHeader">
-        <a class="navbar-brand" href="home.php">
-            <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
-            作伙
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav ml-auto">
-                <?php if ($totalRows_Login > 0) { // 登入後顯示 
-                ?>
-                    <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
-                <?php } // Show if recordset not empty 
-                ?>
-            </ul>
-        </div>
-    </nav>
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top myHeader">
+            <a class="navbar-brand" href="home.php">
+                <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
+                作伙
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <?php if ($totalRows_Login > 0) { // 登入後顯示 
+                    ?>
+                        <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
+                    <?php } // Show if recordset not empty 
+                    ?>
+                </ul>
+            </div>
+        </nav>
 
-    <!-- account data -->
-    <div class="container-fluid">
-        <div class="accountBg">
-            <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
-                <tr>
-                    <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo $row_Login['image']; ?>"></th>
-                    <th><a href="favorite.php"><?php echo $totalRows_favorite; ?> </a></th>
-                    <th><a href="priceFluctuation.php">(num)</a></th>
-                    <th><a href="#">(num)</a></th>
-                </tr>
+        <?php
+        $sum = 0;
+        do {
+            $query_price = "SELECT COUNT(*) countPrice FROM `money_change` WHERE `Link` = '{$row_webinfo['Link']}'";
+            $priceCount = mysql_query($query_price, $cralwer) or die(mysql_error());
+            $row_price = mysql_fetch_assoc($priceCount);
+            if ($row_price['countPrice'] > 1) {
+                $sum += 1;
+            }
+        } while ($row_webinfo = mysql_fetch_assoc($webinfo));
+        ?>
 
-                <tr>
-                    <td><a href="favorite.php">已收藏</a></td>
-                    <td><a href="priceFluctuation.php">價格異動</a></td>
-                    <td><a href="#">為您推薦</a></td>
-                </tr>
-            </table>
-        </div>
+        <!-- account data -->
+        <div class="container-fluid">
+            <div class="accountBg">
+                <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
+                    <tr>
+                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+                        <th><a href="favorite.php"><?php echo $totalRows_favorite ?> </a></th>
+                        <th><a href="#" id="price"></a></th>
+                        <th><a href="#">(num)</a></th>
+                    </tr>
 
-        <!-- data table -->
-        <div class="row justify-content-center">
-            <div class="col-11 col-sm-8 col-md-6 col-lg-4 userBg">
-                <table class="table dataTable">
-                    <thead>
-                        <tr>
-                            <td colspan="2" align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-                            <th>姓名</th>
-                            <td><?php echo $row_Login['name']; ?></td>
-                        </tr>
-
-                        <tr>
-                            <th>生日</th>
-                            <td><?php echo $row_Login['birth']; ?></td>
-                        </tr>
-
-                        <tr>
-                            <th>電話</th>
-                            <td><?php echo $row_Login['phone']; ?></td>
-                        </tr>
-
-                        <tr>
-                            <th>電子郵件</th>
-                            <td><?php echo $row_Login['account']; ?></td>
-                        </tr>
-
-                        <tr>
-                            <th>密碼</th>
-                            <td>********</td>
-                        </tr>
-
-                        <tr>
-                            <th>訂閱通知</th>
-                            <td><?php echo $row_Login['subscribe']; ?></td>
-                        </tr>
-
-                        <tr>
-                            <td colspan="2" align="center"><input type="button" onclick="javascript:location.href='usermodify.php'" value="修改資料"></input></td>
-                        </tr>
-                    </tbody>
+                    <tr>
+                        <td><a href="favorite.php">已收藏</a></td>
+                        <td><a href="#">價格異動</a></td>
+                        <td><a href="#">為您推薦</a></td>
+                    </tr>
                 </table>
             </div>
+
+            <!-- data table -->
+            <div class="row justify-content-center">
+                <div class="col-11 col-sm-8 col-md-6 col-lg-4 userBg">
+                    <table class="table dataTable">
+                        <thead>
+                            <tr>
+                                <td colspan="2" align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th>姓名</th>
+                                <td><?php echo $row_Login['name']; ?></td>
+                            </tr>
+
+                            <tr>
+                                <th>生日</th>
+                                <td><?php echo $row_Login['birth']; ?></td>
+                            </tr>
+
+                            <tr>
+                                <th>電話</th>
+                                <td><?php echo $row_Login['phone']; ?></td>
+                            </tr>
+
+                            <tr>
+                                <th>電子郵件</th>
+                                <td><?php echo $row_Login['account']; ?></td>
+                            </tr>
+
+                            <tr>
+                                <th>密碼</th>
+                                <td>********</td>
+                            </tr>
+
+                            <tr>
+                                <th>訂閱通知</th>
+                                <td><?php echo $row_Login['subscribe']; ?></td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" align="center"><input type="button" onclick="javascript:location.href='usermodify.php'" value="修改資料"></input></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <!-- footer -->
     <div class="footer">
         <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
+
+    <script>
+        document.getElementById('price').innerHTML = '<?php echo $sum; ?>';
+    </script>
 
 </body>
 

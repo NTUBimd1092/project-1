@@ -56,7 +56,7 @@ if (!function_exists("GetSQLValueString")) {
         return $theValue;
     }
 }
-/*登入資料查詢*/
+/* 登入資料查詢 */
 $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
     $colname_Login = $_SESSION['MM_Username'];
@@ -66,18 +66,34 @@ $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueStr
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
-$userid=isset($row_Login['id'])?$row_Login['id']:"";
-$Link=isset($_POST['Link'])?$_POST['Link']:"";
+$userid = isset($row_Login['id']) ? $row_Login['id'] : "";
+$Link = isset($_GET['Link']) ? $_GET['Link'] : "";
 mysql_select_db($database_cralwer, $cralwer);
 $query_subscrption = "SELECT *
 FROM `subscription` SB
 LEFT JOIN `money_change` MC ON SB.Link = MC.Link
-WHERE userid = '$userid' AND SB.Link='https://www.sinyi.com.tw/rent/houseno/C210102'
+WHERE userid = '$userid' AND SB.Link='{$Link}'
 order by SB.Link DESC
 LIMIT 0 , 30";
 $subscrption = mysql_query($query_subscrption, $cralwer) or die(mysql_error());
 $row_subscrption = mysql_fetch_assoc($subscrption);
 $totalRows_subscrption = mysql_num_rows($subscrption);
+$query_pageData = "SELECT * FROM `page_data` WHERE `Link`='{$Link}'";
+$pageData = mysql_query($query_pageData, $cralwer) or die(mysql_error());
+$row_pageData = mysql_fetch_assoc($pageData);
+
+/* 訂閱訊息 */
+mysql_select_db($database_cralwer, $cralwer);
+$query_favorite = "SELECT * FROM subscription WHERE userid = $userid";
+$favorite = mysql_query($query_favorite, $cralwer) or die(mysql_error());
+$row_favorite = mysql_fetch_assoc($favorite);
+$totalRows_favorite = mysql_num_rows($favorite);
+
+/* 查詢價格異動總比數 */
+mysql_select_db($database_cralwer, $cralwer);
+$query_webinfo = "SELECT * FROM page_data where Link IN(SELECT Link FROM subscription where userid='$userid')";
+$webinfo = mysql_query($query_webinfo, $cralwer) or die(mysql_error());
+$row_webinfo = mysql_fetch_assoc($webinfo);
 
 ?>
 
@@ -103,6 +119,7 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
         }
     </style>
 </head>
+
 <body>
     <section class="myBody">
 
@@ -128,63 +145,69 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
             </div>
         </nav>
 
+        <?php
+        $sum = 0;
+        do {
+            $query_price = "SELECT COUNT(*) countPrice FROM `money_change` WHERE `Link` = '{$row_webinfo['Link']}'";
+            $priceCount = mysql_query($query_price, $cralwer) or die(mysql_error());
+            $row_price = mysql_fetch_assoc($priceCount);
+            if ($row_price['countPrice'] > 1) {
+                $sum += 1;
+            }
+        } while ($row_webinfo = mysql_fetch_assoc($webinfo));
+        ?>
+
         <!-- account data -->
         <div class="container-fluid">
             <div class="accountBg">
                 <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
                     <tr>
                         <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
-                        <th><a href="favorite.php">(num)</a></th>
-                        <th><a href="#">(num)</a></th>
+                        <th><a href="favorite.php"><?php echo $totalRows_favorite ?></a></th>
+                        <th><a href="#" id="price"></a></th>
                         <th><a href="#">(num)</a></th>
                     </tr>
 
                     <tr>
                         <td><a href="favorite.php">已收藏</a></td>
-                        <td><a href="priceFluctuation.php">價格異動</a></td>
+                        <td><a href="#">價格異動</a></td>
                         <td><a href="#">為您推薦</a></td>
                     </tr>
                 </table>
             </div>
 
-            <!-- <div class="">
-                <br>
-                無價格異動資料</div>
-            <hr />
-            全部異動紀錄：<br />
-            <hr /> -->
             <div>
                 <div class="row justify-content-center">
-                    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+                    <div class="col-12 col-sm-10 col-md-8 col-lg-6 row justify-content-center">
                         <div class="subscribedItems">
                             <table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
                                 <tr>
-                                    <td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src=""></td>
-                                    <th colspan="2" width="50%" class="houseName"></th>
-                                    <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td>
-                                    <td width="18%" class="text-center align-middle houseInfo">來自：</td>
+                                    <td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src="<?php echo $row_pageData['images']; ?>"></td>
+                                    <th colspan="2" width="50%" class="houseName"><?php echo $row_pageData['house']; ?></th>
+                                    <!-- <td rowspan="4" width="2%" class="text-center align-top"><img class="favorite" id="favorite" src="images/favorite.png" width="20px"></td> -->
+                                    <td width="20%" class="text-center align-middle houseInfo">來自：<?php echo $row_pageData['WebName']; ?></td>
                                 </tr>
 
                                 <tr>
-                                    <td colspan="2"></td>
-                                    <td rowspan="2" id="Price" class="text-center align-middle housePrice"></td>
+                                    <td colspan="2"><?php echo $row_pageData['adress']; ?></td>
+                                    <td rowspan="2" id="Price" class="text-center align-middle housePrice"><?php echo number_format($row_pageData['money']); ?></td>
                                 </tr>
 
                                 <tr>
-                                    <td class="align-middle houseInfo">坪數：</td>
-                                    <td class="align-middle houseInfo">形式：</td>
+                                    <td class="align-middle houseInfo">坪數：<?php echo $row_pageData['square_meters']; ?></td>
+                                    <td class="align-middle houseInfo">形式：<?php echo $row_pageData['pattern']; ?></td>
                                 </tr>
 
                                 <tr>
-                                    <td class="align-middle houseInfo">樓層：</td>
-                                    <td class="align-middle houseInfo">類型：</td>
+                                    <td class="align-middle houseInfo">樓層：<?php echo $row_pageData['floor']; ?></td>
+                                    <td class="align-middle houseInfo">類型：<?php echo $row_pageData['house_type']; ?></td>
                                     <td>
-                                        <a class="btn btn-block btn-sm btnGo" href="">查看更多</a>
+                                        <a class="btn btn-block btn-sm btnGo" href="<?php echo $row_pageData['Link']; ?>" target="_blank">查看更多</a>
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td colspan="5" align="center">
+                                    <td colspan="4" align="center">
                                         <div id="main" style="width:550px; height:300px;"></div>
                                     </td>
                                 </tr>
@@ -193,7 +216,6 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
                     </div>
                 </div>
 
-                <!-- <div id="main" style="width:600px; height:400px;"></div> -->
                 <?php
                 do {
                     $Id = $row_subscrption['id'];
@@ -207,8 +229,8 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
                     );
                 } while ($row_subscrption = mysql_fetch_assoc($subscrption));
                 $json = json_encode($return_arr);
-
                 ?>
+
                 <script type="text/javascript">
                     // 初始化
                     var myChart = echarts.init(document.getElementById('main'));
@@ -235,7 +257,7 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
                         }]
                     };
 
-                    // 使用剛指定的配置項和數據顯示圖表。
+                    // 使用剛指定的配置項和數據顯示圖表f
                     myChart.setOption(option);
                 </script>
                 <?php
@@ -250,10 +272,14 @@ $totalRows_subscrption = mysql_num_rows($subscrption);
         <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
 
+    <script>
+        document.getElementById('price').innerHTML = '<?php echo $sum; ?>';
+    </script>
+
 </body>
+
 </html>
 <?php
-
 mysql_free_result($Login);
 mysql_free_result($subscrption);
 ?>
