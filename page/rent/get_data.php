@@ -26,27 +26,27 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 	if (isset($city) && $city != "") {
 		switch ($city){
 			case '臺北市':
-				$SqlWhere .= " AND (`adress` Like '{臺北}%' OR `address` Like '{台北}%')";
+				$SqlWhere .= " AND (`adress` Like '臺北%' OR `adress` Like '台北%')";
 			break;
 			case '臺中市':
-				$SqlWhere .= " AND (`adress` Like '{臺中}%' OR `address` Like '{台中}%')";
+				$SqlWhere .= " AND (`adress` Like '臺中%' OR `adress` Like '台中%')";
 			break;
 			case '臺南市':
-				$SqlWhere .= " AND (`adress` Like '{臺南}%' OR `address` Like '{台南}%')";
+				$SqlWhere .= " AND (`adress` Like '臺南}%' OR `adress` Like '台南%')";
 			break;
 			case '臺東縣':
-				$SqlWhere .= " AND (`adress` Like '{臺東}%' OR `address` Like '{台東}%')";
+				$SqlWhere .= " AND (`adress` Like '臺東%' OR `adress` Like '台東%')";
 			break;
 			default:
 				$SqlWhere .= " AND `adress` Like '{$city}%'";
 			break;
 		}
-        	}
+	}
 	
 	if (isset($town) && $town != "") {
 		switch($town){
 			case '臺東市':
-				$SqlWhere .= " AND (`adress` Like '%臺東市%' or `address` Like '%台東市%')";
+				$SqlWhere .= " AND (`adress` Like '%臺東市%' or `adress` Like '%台東市%')";
 			break;
 			default:
 				$SqlWhere .= " AND `adress` Like '%{$town}%'";
@@ -194,84 +194,84 @@ function register($UserName, $UserAccount, $Image, $UserPwd){
 }
 
 function Login($myaccount, $mypassword){
-	require_once('Connections/cralwer.php');
-    mysql_select_db($database_cralwer, $cralwer);
-	mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
-	if (!function_exists("GetSQLValueString")) {
-		function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
-		{
-			$theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+	// require_once('Connections/cralwer.php');
+    // mysql_select_db($database_cralwer, $cralwer);
+	// mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+	// if (!function_exists("GetSQLValueString")) {
+	// 	function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+	// 	{
+	// 		$theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 	
-			$theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+	// 		$theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
 	
-			switch ($theType) {
-				case "text":
-					$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-					break;
-				case "long":
-				case "int":
-					$theValue = ($theValue != "") ? intval($theValue) : "NULL";
-					break;
-				case "double":
-					$theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-					break;
-				case "date":
-					$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-					break;
-				case "defined":
-					$theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-					break;
-			}
-			return $theValue;
-		}
-	}
-	if (!isset($_SESSION)) {
-		session_start();
-	}
+	// 		switch ($theType) {
+	// 			case "text":
+	// 				$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+	// 				break;
+	// 			case "long":
+	// 			case "int":
+	// 				$theValue = ($theValue != "") ? intval($theValue) : "NULL";
+	// 				break;
+	// 			case "double":
+	// 				$theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+	// 				break;
+	// 			case "date":
+	// 				$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+	// 				break;
+	// 			case "defined":
+	// 				$theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+	// 				break;
+	// 		}
+	// 		return $theValue;
+	// 	}
+	// }
+	// if (!isset($_SESSION)) {
+	// 	session_start();
+	// }
 	
-	$loginFormAction = $_SERVER['PHP_SELF'];
-	if (isset($_GET['accesscheck'])) {
-		$_SESSION['PrevUrl'] = $_GET['accesscheck'];
-	}
-	include 'encrypt.php';
+	// $loginFormAction = $_SERVER['PHP_SELF'];
+	// if (isset($_GET['accesscheck'])) {
+	// 	$_SESSION['PrevUrl'] = $_GET['accesscheck'];
+	// }
+	// include 'encrypt.php';
 
-	if (isset($myaccount) {
-		$Pass_query = "SELECT account,password from `user` where account='$myaccount'";
-		$Pass_Select = mysql_query($Pass_query, $cralwer) or die(mysql_error());
-		$row_pass = mysql_fetch_assoc($Pass_Select);
-		if ($mypassword == decryptthis($row_pass['password'], $key)) {
-			$password = $row_pass['password'];
-		}
+	// if (isset($myaccount) {
+	// 	$Pass_query = "SELECT account,password from `user` where account='$myaccount'";
+	// 	$Pass_Select = mysql_query($Pass_query, $cralwer) or die(mysql_error());
+	// 	$row_pass = mysql_fetch_assoc($Pass_Select);
+	// 	if ($mypassword == decryptthis($row_pass['password'], $key)) {
+	// 		$password = $row_pass['password'];
+	// 	}
 
-		$MM_fldUserAuthorization = "";
-		$MM_redirectLoginSuccess = "home.php";
-		$MM_redirectLoginFailed = "login.php?check=err";
-		$MM_redirecttoReferrer = false;
-		mysql_select_db($database_cralwer, $cralwer);
+	// 	$MM_fldUserAuthorization = "";
+	// 	$MM_redirectLoginSuccess = "home.php";
+	// 	$MM_redirectLoginFailed = "login.php?check=err";
+	// 	$MM_redirecttoReferrer = false;
+	// 	mysql_select_db($database_cralwer, $cralwer);
 
-		$LoginRS__query = sprintf(
-			"SELECT account, password FROM `user` WHERE account=%s AND password=%s",
-			GetSQLValueString($myaccount, "text"),
-			GetSQLValueString($password, "text")
-		);
+	// 	$LoginRS__query = sprintf(
+	// 		"SELECT account, password FROM `user` WHERE account=%s AND password=%s",
+	// 		GetSQLValueString($myaccount, "text"),
+	// 		GetSQLValueString($password, "text")
+	// 	);
 
-		$LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
-		$loginFoundUser = mysql_num_rows($LoginRS);
-		if ($loginFoundUser) {
-			$loginStrGroup = "";
+	// 	$LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
+	// 	$loginFoundUser = mysql_num_rows($LoginRS);
+	// 	if ($loginFoundUser) {
+	// 		$loginStrGroup = "";
 
-			//declare two session variables and assign them
-			$_SESSION['MM_Username'] = $loginUsername;
-			$_SESSION['MM_UserGroup'] = $loginStrGroup;
+	// 		//declare two session variables and assign them
+	// 		$_SESSION['MM_Username'] = $loginUsername;
+	// 		$_SESSION['MM_UserGroup'] = $loginStrGroup;
 
-			if (isset($_SESSION['PrevUrl']) && false) {
-				$MM_redirectLoginSuccess = $_SESSION['PrevUrl'];
-			}
-			header("Location: " . $MM_redirectLoginSuccess);
-		} else {
-			header("Location: " . $MM_redirectLoginFailed);
-		}
-	}
+	// 		if (isset($_SESSION['PrevUrl']) && false) {
+	// 			$MM_redirectLoginSuccess = $_SESSION['PrevUrl'];
+	// 		}
+	// 		header("Location: " . $MM_redirectLoginSuccess);
+	// 	} else {
+	// 		header("Location: " . $MM_redirectLoginFailed);
+	// 	}
+	// }
 
 }
 

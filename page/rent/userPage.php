@@ -134,8 +134,8 @@ $totalRows_favorite = mysql_num_rows($favorite);
         <div class="accountBg">
             <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
                 <tr>
-                    <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
-                    <th><a href="favorite.php"><?php echo $totalRows_favorite ?> </a></th>
+                    <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo $row_Login['image']; ?>"></th>
+                    <th><a href="favorite.php"><?php echo $totalRows_favorite; ?> </a></th>
                     <th><a href="priceFluctuation.php">(num)</a></th>
                     <th><a href="#">(num)</a></th>
                 </tr>
