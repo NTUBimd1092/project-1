@@ -67,9 +67,6 @@ $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,6 +79,16 @@ $totalRows_Login = mysql_num_rows($Login);
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        if('serviceWorker' in navigator){
+            console.log("Will service worker register?");
+            navigator.serviceWorker.register('service-worker.js').then(function(reg){
+                console.log("Yes it did.");
+            }).catch(function(err){
+                console.log("Err:",err);
+            });
+        }
+    </script>
     <style>
         body {
             font-family: 微軟正黑體;
