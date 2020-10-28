@@ -1,7 +1,6 @@
-<!-- <script src="JS/jquery-3.5.1.min.js"></script> -->
 <script src="src/get_data.js"></script>
 <?php
-function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $dict, $userid)
+function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $dict, $userid, $city, $town)
 {
     require_once('Connections/cralwer.php');
     mysql_select_db($database_cralwer, $cralwer);
@@ -24,13 +23,52 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
         $SqlWhere .= " AND `money` <= '{$moneyE}'";
     }
 
+	if (isset($city) && $city != "") {
+		switch ($city){
+			case '臺北市':
+				$SqlWhere .= " AND (`adress` Like '{臺北}%' OR `address` Like '{台北}%')";
+			break;
+			case '臺中市':
+				$SqlWhere .= " AND (`adress` Like '{臺中}%' OR `address` Like '{台中}%')";
+			break;
+			case '臺南市':
+				$SqlWhere .= " AND (`adress` Like '{臺南}%' OR `address` Like '{台南}%')";
+			break;
+			case '臺東縣':
+				$SqlWhere .= " AND (`adress` Like '{臺東}%' OR `address` Like '{台東}%')";
+			break;
+			default:
+				$SqlWhere .= " AND `adress` Like '{$city}%'";
+			break;
+		}
+        	}
+	
+	if (isset($town) && $town != "") {
+		switch($town){
+			case '臺東市':
+				$SqlWhere .= " AND (`adress` Like '%臺東市%' or `address` Like '%台東市%')";
+			break;
+			default:
+				$SqlWhere .= " AND `adress` Like '%{$town}%'";
+			break;	
+		}
+        $SqlWhere .= " AND `adress` Like '%{$town}%'";
+	}
+	
 
-    $query = "SELECT * FROM `page_data` where (1=1) {$SqlWhere} ORDER BY `{$orderby}` {$dict} LIMIT {$limit} OFFSET {$offset}";
-    $data = mysql_query($query, $cralwer) or die(mysql_error());
 
-    while ($row =  mysql_fetch_array($data)) {
-		if(isset($userid)){
-			 echo '
+	$query = "SELECT * FROM `page_data` where (1=1) {$SqlWhere} ORDER BY `{$orderby}` {$dict} LIMIT {$limit} OFFSET {$offset}";
+	$data = mysql_query($query, $cralwer) or die(mysql_error());
+	$row = mysql_fetch_assoc($data);
+	do{
+		$query_subscribe = "SELECT COUNT(*) countSubscribe FROM `subscription` WHERE `userid` = '{$userid}' AND `Link` = '{$row['Link']}'";
+		$subscribeCount = mysql_query($query_subscribe, $cralwer) or die(mysql_error());
+		$row_subscribeCount=mysql_fetch_assoc($subscribeCount);
+		$selectedFav = '<img class="favorite" id="' . $row["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
+		$favorite = '<img class="favorite" id="' . $row["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
+		$mystr = $row_subscribeCount['countSubscribe']>="1" ? $selectedFav : $favorite;
+		if (isset($userid) AND $userid!="") {
+            echo '
 			<div class="row justify-content-center">
 				<div class="col-12 col-sm-10 col-md-8 col-lg-6">
 					<table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
@@ -39,9 +77,10 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 								<img class="imageSize" src="' . $row['images'] . '">	
 							</td>
 							<th colspan="2" width="50%" class="houseName">' . $row['house'] . '</th>
-							<td rowspan="4" width="2%" class="text-center align-top">
-							<img class="favorite" id="'.$row['Link'].'" src="images/favorite.png" width="20px" onClick="Favorate(this,'.$userid.')" >
-							</td>
+							<td rowspan="4" width="2%" class="text-center align-top">'.
+							// ($subscribeCount>=1 ? '<img class="favorite" id="' . $row["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">' : '<img class="favorite" id="' . $row["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">')
+							$mystr
+							.'</td>
 							<td width="18%" class="text-center align-middle houseInfo">來自：' . $row['WebName'] . '</td>
 						</tr>
 	
@@ -57,7 +96,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 	
 						<tr>
 							<td class="align-middle houseInfo">樓層：' . $row['floor'] . '</td>
-							<td class="align-middle houseInfo">特色：</td>
+							<td class="align-middle houseInfo">類型：' . $row['house_type'] . '</td>
 							<td>
 								<a class="btn btn-block btn-sm btnGo" href="' . $row['Link'] . '">查看更多</a>
 							</td>
@@ -66,17 +105,15 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 				</div>
 			</div>
 		';
-		}else{
-			 echo '
+        } else {
+            echo '
 			<div class="row justify-content-center">
 				<div class="col-12 col-sm-10 col-md-8 col-lg-6">
 					<table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
 						<tr>
 							<td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src="' . $row['images'] . '"></td>
 							<th colspan="2" width="50%" class="houseName">' . $row['house'] . '</th>
-							<td rowspan="4" width="2%" class="text-center align-top">
-							
-							</td>
+							<td rowspan="4" width="2%" class="text-center align-top"></td>
 							<td width="18%" class="text-center align-middle houseInfo">來自：' . $row['WebName'] . '</td>
 						</tr>
 	
@@ -92,7 +129,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 	
 						<tr>
 							<td class="align-middle houseInfo">樓層：' . $row['floor'] . '</td>
-							<td class="align-middle houseInfo">特色：</td>
+							<td class="align-middle houseInfo">類型：' . $row['house_type'] . '</td>
 							<td>
 								<a class="btn btn-block btn-sm btnGo" href="' . $row['Link'] . '">查看更多</a>
 							</td>
@@ -101,12 +138,157 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 				</div>
 			</div>
 		';
-		}
-    }
+        }
+    }while($row=mysql_fetch_assoc($data));
 }
 if (isset($_POST['offset']) and isset($_POST['limit'])) {
     /*設定參數*/
-    Query($_POST['offset'], $_POST['limit'], $_POST['WebName'], $_POST['search'], $_POST['moneyS'], $_POST['moneyE'], $_POST['orderby'], $_POST['dict'], $_POST['userid']);
+    Query($_POST['offset'], $_POST['limit'], $_POST['WebName'], $_POST['search'], $_POST['moneyS'], $_POST['moneyE'], $_POST['orderby'], $_POST['dict'], $_POST['userid'],$_POST['city'],$_POST['town']);
+}
+
+function Favorate($Link, $userid)
+{
+    require_once('Connections/cralwer.php');
+    mysql_select_db($database_cralwer, $cralwer);
+    mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+
+    $query = "SELECT * FROM `subscription` where (1=1) AND `userid`='{$userid}' AND `Link`='{$Link}'";
+    $data = mysql_query($query, $cralwer) or die(mysql_error());
+    $totalRows = mysql_num_rows($data);
+    if ($totalRows == 0) {
+        $insert = "INSERT `subscription` VALUES('{$userid}', '{$Link}')";
+        mysql_query($insert, $cralwer) or die(mysql_error());
+		echo 'Insert';
+    } else {
+        $delete = "DELETE FROM `crawler`.`subscription` WHERE `subscription`.`userid` = '{$userid}' AND `subscription`.`Link` = '{$Link}'";
+        mysql_query($delete, $cralwer) or die(mysql_error());
+		echo 'Delete';
+    }
+}
+
+function register($UserName, $UserAccount, $Image, $UserPwd){
+	require_once('Connections/cralwer.php');
+    mysql_select_db($database_cralwer, $cralwer);
+    mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+	$query = "SELECT * FROM `user` where (1=1) AND `account`='{$UserAccount}'";
+    $data = mysql_query($query, $cralwer) or die(mysql_error());
+	$totalRows = mysql_num_rows($data);
+	include 'encrypt.php'; //加解密檔
+	$mypwd=encryptthis($UserPwd, $key);
+	if ($totalRows == 0) {
+		$insert="INSERT INTO `crawler`.`user` (
+			`account` ,
+			`password` ,
+			`name` ,
+			`image` 
+			)
+			VALUES (
+				'{$UserAccount}', '{$mypwd}', '{$UserName}', '{$Image}'
+			);
+			";
+        mysql_query($insert, $cralwer) or die(mysql_error());
+		echo 'Register'; 
+    } else {
+        echo 'Login';
+    }
+}
+
+function Login($myaccount, $mypassword){
+	require_once('Connections/cralwer.php');
+    mysql_select_db($database_cralwer, $cralwer);
+	mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+	if (!function_exists("GetSQLValueString")) {
+		function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+		{
+			$theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+	
+			$theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+	
+			switch ($theType) {
+				case "text":
+					$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+					break;
+				case "long":
+				case "int":
+					$theValue = ($theValue != "") ? intval($theValue) : "NULL";
+					break;
+				case "double":
+					$theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+					break;
+				case "date":
+					$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+					break;
+				case "defined":
+					$theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+					break;
+			}
+			return $theValue;
+		}
+	}
+	if (!isset($_SESSION)) {
+		session_start();
+	}
+	
+	$loginFormAction = $_SERVER['PHP_SELF'];
+	if (isset($_GET['accesscheck'])) {
+		$_SESSION['PrevUrl'] = $_GET['accesscheck'];
+	}
+	include 'encrypt.php';
+
+	if (isset($myaccount) {
+		$Pass_query = "SELECT account,password from `user` where account='$myaccount'";
+		$Pass_Select = mysql_query($Pass_query, $cralwer) or die(mysql_error());
+		$row_pass = mysql_fetch_assoc($Pass_Select);
+		if ($mypassword == decryptthis($row_pass['password'], $key)) {
+			$password = $row_pass['password'];
+		}
+
+		$MM_fldUserAuthorization = "";
+		$MM_redirectLoginSuccess = "home.php";
+		$MM_redirectLoginFailed = "login.php?check=err";
+		$MM_redirecttoReferrer = false;
+		mysql_select_db($database_cralwer, $cralwer);
+
+		$LoginRS__query = sprintf(
+			"SELECT account, password FROM `user` WHERE account=%s AND password=%s",
+			GetSQLValueString($myaccount, "text"),
+			GetSQLValueString($password, "text")
+		);
+
+		$LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
+		$loginFoundUser = mysql_num_rows($LoginRS);
+		if ($loginFoundUser) {
+			$loginStrGroup = "";
+
+			//declare two session variables and assign them
+			$_SESSION['MM_Username'] = $loginUsername;
+			$_SESSION['MM_UserGroup'] = $loginStrGroup;
+
+			if (isset($_SESSION['PrevUrl']) && false) {
+				$MM_redirectLoginSuccess = $_SESSION['PrevUrl'];
+			}
+			header("Location: " . $MM_redirectLoginSuccess);
+		} else {
+			header("Location: " . $MM_redirectLoginFailed);
+		}
+	}
+
+}
+
+if (isset($_POST['Action'])) {
+    switch ($_POST['Action']) {
+        case "Favorate":
+            Favorate($_POST['Link'], $_POST['userid']);
+            break;
+
+		case "register":
+			register($_POST['UserName'],$_POST['UserAccount'],$_POST['Image'],$_POST['UserPwd']);
+			break;
+		
+		case "Login":
+			Login($_POST['account'],$_POST['password']);
+		break;
+	}
 }
 
 ?>

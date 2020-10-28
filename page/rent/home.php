@@ -76,6 +76,12 @@ $totalRows_Login = mysql_num_rows($Login);
 <head>
     <title>作伙</title>
     <meta charset="utf-8">
+    <meta name=”apple-mobile-web-app-capable” content=”yes”>
+    <link
+    rel='apple-touch-startup-image'
+    href='/images/BrownIcon.png'
+    media='(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
+    />
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

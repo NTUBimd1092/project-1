@@ -67,10 +67,6 @@ $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html>
 
@@ -79,77 +75,13 @@ $totalRows_Login = mysql_num_rows($Login);
     <meta charset="utf-8">
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/style.css">
+    <link rel="stylesheet" href="src/twzipcode.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="src/searchArea.js"></script>
-
-    <script type="text/javascript">
-        var WebName = '<?php echo $_POST['WebName']; ?>';
-        var qtxt = '<?php echo $_POST['qtxt']; ?>'; //查詢房名、地址
-        var moneyS = '<?php echo $_POST['moneyS']; ?>';
-        var moneyE = '<?php echo $_POST['moneyE']; ?>';
-        var orderby = '<?php echo $_POST['orderby']; ?>';
-        var dict = '<?php echo $_POST['dict']; ?>';
-		var userid='<?php echo isset($row_Login['id']) ? $row_Login['id'] : "";?>';
-
-        $(document).ready(function() {
-            var flag = 0;
-            $.ajax({
-                type: "POST",
-                url: "get_data.php",
-                data: {
-                    'offset': 0,
-                    'limit': 10,
-                    'WebName': WebName,
-                    'search': qtxt,
-                    'moneyS': moneyS,
-                    'moneyE': moneyE,
-                    'orderby': orderby,
-                    'dict': dict,
-					'userid':userid
-                },
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                success: function(data) {
-                    $('#DataList').append(data);
-                    flag += 10;
-                },
-                error: function(e) {
-                    console.log('error', e)
-                }
-            });
-
-            $(window).scroll(function() {
-                last = $("body").height() - $(window).height() - 100
-                if ($(window).scrollTop() >= last) {
-                    $.ajax({
-                        type: "POST",
-                        url: "get_data.php",
-                        data: {
-                            'offset': flag,
-                            'limit': 10,
-                            'WebName': WebName,
-                            'search': qtxt,
-                            'moneyS': moneyS,
-                            'moneyE': moneyE,
-                            'orderby': orderby,
-                            'dict': dict,
-							'userid':userid
-                        },
-                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                        success: function(data) {
-                            $('#DataList').append(data);
-                            flag += 10;
-                        },
-                        error: function(e) {
-                            console.log('error', e)
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
+    <!-- <script src="src/searchArea.js"></script> -->
 
     <style>
         body {
@@ -170,10 +102,11 @@ $totalRows_Login = mysql_num_rows($Login);
             padding: 10px;
             z-index: 1;
         }
+
     </style>
 </head>
 
-<body onLoad="window_onload();">
+<body>
     <section class="myBody">
 
         <!-- navbar -->
@@ -217,14 +150,14 @@ $totalRows_Login = mysql_num_rows($Login);
                                 <thead>
                                     <tr>
                                         <th colspan="5">
-                                        區域搜尋 <a href="maps.php" style="color:black; text-decoration:none; font-weight:500;"> | 地圖搜尋</a>
-                                    </th>
+                                            區域搜尋 <a href="maps.php" style="color:black; text-decoration:none; font-weight:500;"> | 地圖搜尋</a>
+                                        </th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <tr>
-                                        <td colspan="5">
+                                        <td colspan="7">
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" name="qtxt" id="qtxt" value="<?php echo isset($_POST['qtxt']) ? $_POST['qtxt'] : ""; ?>" placeholder="輸入房屋名稱或地址..."></input>
                                                 <div class="input-group-append">
@@ -237,7 +170,7 @@ $totalRows_Login = mysql_num_rows($Login);
                                     <tr>
                                         <td colspan="2">房屋租金</td>
                                         <td>房屋來源</td>
-                                        <td colspan="2" >排序方式</td>
+                                        <td colspan="2">排序方式</td>
                                     </tr>
 
                                     <tr>
@@ -269,6 +202,7 @@ $totalRows_Login = mysql_num_rows($Login);
                                                 <option value="">全部</option>
                                                 <option value="信義房屋">信義房屋</option>
                                                 <option value="永慶房屋">永慶房屋</option>
+                                                <option value="591網">591網</option>
                                             </select>
                                         </td>
 
@@ -288,6 +222,22 @@ $totalRows_Login = mysql_num_rows($Login);
                                             </select>
 
                                         </td>
+                                        <td>
+                                            <div id="twzipcode_ADV" name="twzipcode_ADV" ></div>        
+                                            <script>
+                                                $("#twzipcode_ADV").twzipcode({
+                                                    zipcodeIntoDistrict: true, // 郵遞區號自動顯示在地區
+                                                    css: ["city form-control", "town form-control"], // 自訂 "城市"、"地區" class 名稱 
+                                                    countyName: "city", // 自訂城市 select 標籤的 name 值
+                                                    districtName: "town" // 自訂地區 select 標籤的 name 值
+                                                });
+                                                
+                                                $('#twzipcode_ADV').twzipcode({
+                                                    'countySel': '<?php echo isset($_POST['city']) ? $_POST['city'] : '高雄市'; ?>',
+                                                    'districtSel': '<?php echo isset($_POST['town']) ? $_POST['town'] : '那瑪夏區';?>'
+                                                });
+                                            </script>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -305,6 +255,78 @@ $totalRows_Login = mysql_num_rows($Login);
     <div class="footer">
         <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
+    <script type="text/javascript">
+
+        var WebName = '<?php echo $_POST['WebName']; ?>';
+        var qtxt = '<?php echo $_POST['qtxt']; ?>'; //查詢房名、地址
+        var moneyS = '<?php echo $_POST['moneyS']; ?>';
+        var moneyE = '<?php echo $_POST['moneyE']; ?>';
+        var orderby = '<?php echo $_POST['orderby']; ?>';
+        var dict = '<?php echo $_POST['dict']; ?>';
+        var userid = '<?php echo isset($row_Login['id']) ? $row_Login['id'] : ""; ?>';
+        var city ='<?php echo $_POST['city'];?>';
+        var town='<?php echo $_POST['town'];?>';
+        $(document).ready(function() {
+            var flag = 0;
+            $.ajax({
+                type: "POST",
+                url: "get_data.php",
+                data: {
+                    'offset': 0,
+                    'limit': 10,
+                    'WebName': WebName,
+                    'search': qtxt,
+                    'moneyS': moneyS,
+                    'moneyE': moneyE,
+                    'orderby': orderby,
+                    'dict': dict,
+                    'userid': userid,
+                    'city':city,
+                    'town':town
+                },
+                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function(data) {
+                    $('#DataList').append(data);
+                    flag += 10;
+                },
+                error: function(e) {
+                    console.log('error', e)
+                }
+            });
+
+            $(window).scroll(function() {
+                last = $("body").height() - $(window).height() - 100
+                if ($(window).scrollTop() >= last) {
+                    $.ajax({
+                        type: "POST",
+                        url: "get_data.php",
+                        data: {
+                            'offset': flag,
+                            'limit': 10,
+                            'WebName': WebName,
+                            'search': qtxt,
+                            'moneyS': moneyS,
+                            'moneyE': moneyE,
+                            'orderby': orderby,
+                            'dict': dict,
+                            'userid': userid,
+                            'city':city,
+                            'town':town
+                        },
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        success: function(data) {
+                            $('#DataList').append(data);
+                            flag += 10;
+                        },
+                        error: function(e) {
+                            console.log('error', e)
+                        }
+                    });
+                }
+            });
+        });
+ 
+    </script>
 
     <script>
         /**  back to top **/
@@ -313,6 +335,7 @@ $totalRows_Login = mysql_num_rows($Login);
             scrollFunction()
         };
 
+
         function scrollFunction() {
             if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
                 mybutton.style.display = "block";
@@ -320,11 +343,12 @@ $totalRows_Login = mysql_num_rows($Login);
                 mybutton.style.display = "none";
             }
         }
-        
+
         function topFunction() {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         }
+        
     </script>
 
 </body>

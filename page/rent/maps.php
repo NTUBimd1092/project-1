@@ -76,14 +76,8 @@ $totalRows_Login = mysql_num_rows($Login);
 
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
     <title>作伙</title>
     <link rel="canonical" href="https://letswrite.tw/google-map-api-marker-custom/">
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
-
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -197,7 +191,7 @@ $totalRows_Login = mysql_num_rows($Login);
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 panControl: false,
-                zoomControl: false, //可以通過單击縮放按钮来縮放地圖
+                zoomControl: true, //可以通過單击縮放按钮来縮放地圖
                 mapTypeControl: true,
                 scaleControl: false,
                 streetViewControl: false,
@@ -211,11 +205,11 @@ $totalRows_Login = mysql_num_rows($Login);
             navigator.geolocation.getCurrentPosition(function(position) {
                 var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 map.setCenter(initialLocation);
-                map.setZoom(18);
+                map.setZoom(15);
                 myinfo.setPosition(initialLocation);
                 myinfo.setContent('你在這裡！');
                 myinfo.open(map);
-
+                
                 var qtxt = '<?php isset($_GET['qtxt']) ? $_GET['qtxt'] : ""; ?>'; //查詢房名、地址
                 $(document).ready(function() {
 
@@ -234,6 +228,7 @@ $totalRows_Login = mysql_num_rows($Login);
                             for (var i in response) {
                                 tr_str =
                                     // '<div class="row justify-content-center">' +
+                                    '<a href="'+response[i].Link+'" target="_blank">'+
                                     '<div class="listTable">' +
                                     '<table class="table table-sm initialism table-borderless card">' +
                                     '<tr>' +
@@ -250,11 +245,14 @@ $totalRows_Login = mysql_num_rows($Login);
                                     '<td class="align-middle houseInfo">樓層：' + response[i].Floor + '</td>' +
                                     '<td class="align-middle houseInfo">來自：' + response[i].WebName + '</td>' +
                                     '</tr>' +
-                                    '</table>'
-                                // + '</div>'
+                                    '</table>'+
+                                    '</div>'+
+                                    '</a>'
+                                    ;
+                                    
                                 $('#DataList').append(tr_str);
 
-                                var marker = new google.maps.Marker({
+                                const  marker = new google.maps.Marker({
                                     position: {
                                         lat: parseFloat(response[i].Lat),
                                         lng: parseFloat(response[i].Lng)
@@ -263,20 +261,20 @@ $totalRows_Login = mysql_num_rows($Login);
                                     animation: google.maps.Animation.DROP,
                                     icon: 'images/marker.png',
                                     label: {
-                                        // text: response[i].HouseType + '\n' + 'NT$' + response[i].Money,
                                         text: 'NT$\n' + response[i].Money,
                                         color: "white",
                                         fontSize: "12.5px",
-                                        fontWeight: "bold"
+                                        fontWeight: "bold",
                                     }
                                 });
 
-                                var infowindow = new google.maps.InfoWindow({
-                                    content: "<a href=\"" + response[i].Link + "\" target=_blank><img src=\"" + response[i].Images + "\" width=\"150px\" height=\"100px\"><br>" +
-                                        response[i].Name + "<br>" + response[i].Address + "</a>"
+                                const  infowindow = new google.maps.InfoWindow({
+                                    content: "<a href=\"" + response[i].Link + "\" target=_blank><img src=\"" 
+                                    + response[i].Images + "\" width=\"150px\" height=\"100px\"><br>" 
+                                    + response[i].Name + "<br>" + response[i].Address + "</a>",
                                 });
 
-                                google.maps.event.addListener(marker, 'click', function() {
+                                marker.addListener("click", () => {
                                     infowindow.open(map, marker);
                                 });
                             }

@@ -165,7 +165,8 @@ if (isset($_POST['account'])) {
                         </table>
                     </div>
 
-                    <button type="submit" class="btn btn-block btnGo">登入！</button>
+                    <button type="submit" id="btnLogin" class="btn btn-block btnGo">登入！</button>
+                    <div>Google登入：<input type="button"  value="Google登入" onclick="GoogleLogin();" /></div>
                     <small class="form-text text-muted">還沒加入作伙嗎？<b><a href="register.php">註冊</a></b></small>
 
                 </form>
@@ -174,6 +175,89 @@ if (isset($_POST['account'])) {
     </div>
 
     <script src="src/captcha.js"></script>
+<!--Google登入-->
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    <script type="text/javascript">
+        //進入 https://console.developers.google.com/，找「憑證」頁籤(記得先選對專案)，即可找到用戶端ID
+        let Google_appId = "106996317158-4im0d5hkld50a5ucueqqodvptgpuu6km.apps.googleusercontent.com";
+
+
+        //參考文章：http://usefulangle.com/post/55/google-login-javascript-api 
+
+        // Called when Google Javascript API Javascript is loaded
+        function HandleGoogleApiLibrary() {
+            // Load "client" & "auth2" libraries
+            gapi.load('client:auth2', {
+                callback: function () {
+                    // Initialize client & auth libraries
+                    gapi.client.init({
+                        clientId: Google_appId,
+                        scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
+                    }).then(
+                        function (success) {
+                            // Google Libraries are initialized successfully
+                            // You can now make API calls 
+                            console.log("Google Libraries are initialized successfully");
+                        },
+                        function (error) {
+                            // Error occurred
+                            console.log(error);// to find the reason 
+                        }
+                    );
+                },
+                onerror: function () {
+                    // Failed to load libraries
+                    console.log("Failed to load libraries");
+                }
+            });
+        }
+
+        function GoogleLogin() {
+            // API call for Google login  
+            gapi.auth2.getAuthInstance().signIn().then(
+                function (success) {
+                    // Login API call is successful 
+                    console.log(success);
+                    console.log(success.getId());
+                    console.log(success.getBasicProfile().Ad);
+                    console.log(success.getBasicProfile().bu);
+                    console.log(success.getBasicProfile().$eK);
+                    if(success.getBasicProfile().Xt!=''){
+                        $(document).ready(function() {
+                            $.ajax({
+                                type: "POST",
+                                url: "get_data.php",
+                                data: {
+                                'Action': 'register',
+                                'UserName':success.getBasicProfile().Ad,
+                                'UserAccount':success.getBasicProfile().bu,
+                                'Image':success.getBasicProfile().$eK,
+                                'UserPwd':success.getId()
+                                },
+                                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                                success: function(data) {
+                                    document.getElementById('email').value=success.getBasicProfile().bu;
+                                    document.getElementById('pwd').value=success.getId();
+                                    document.getElementById("btnLogin").click();
+                                },
+                                error: function(e) {
+                                    console.log('error', e)
+                                }
+                            });
+                        });
+                    }
+                },
+                function (error) {
+                    // Error occurred
+                    // console.log(error) to find the reason
+                    console.log(error);
+                    alert('登入失敗，訊息=>'+error.error)
+                }
+            );
+
+        }
+    </script>
 </body>
 
 </html>
