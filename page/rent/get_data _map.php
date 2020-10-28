@@ -20,10 +20,11 @@ function Query($mylat,$mylng,$search)
 	ORDER BY lat DESC
 	LIMIT 0 , 15";
 
-    $data = mysql_query($query, $cralwer) or die(mysql_error());
+	$data = mysql_query($query, $cralwer) or die(mysql_error());
+	$row = mysql_fetch_array($data);
 	$datacount=mysql_num_rows($data);
 		
-	while($row = mysql_fetch_array($data)){
+	do{
 		$Id = urlencode($row['id']);
 		$Name=urlencode($row['house']);
 		$Lat = $row['lat'];
@@ -50,7 +51,7 @@ function Query($mylat,$mylng,$search)
                         "Floor" => $Floor,
                         "WebName" => $WebName
 						);
-	}
+	}while($row = mysql_fetch_array($data));
 	$json = json_encode($return_arr);
 	echo urldecode($json);
 	//echo json_encode($return_arr);
@@ -61,11 +62,4 @@ if (isset($_POST['mylat']) and isset($_POST['mylng'])) {
     Query($_POST['mylat'], $_POST['mylng'] ,$_POST['search']);
 }
 
-if(isset($_POST['Action'])){
-	switch($_POST['Action']){
-		case "Favorate":
-			
-			break;
-	}
-}
 ?>
