@@ -218,26 +218,25 @@ if (isset($_POST['account'])) {
             gapi.auth2.getAuthInstance().signIn().then(
                 function (success) {
                     // Login API call is successful 
-                    console.log(success);
-                    console.log(success.getId());
-                    console.log(success.getBasicProfile().Ad);
-                    console.log(success.getBasicProfile().bu);
-                    console.log(success.getBasicProfile().$eK);
-                    if(success.getBasicProfile().Xt!=''){
+                    // console.log(success.getBasicProfile().getName());
+                    // console.log(success.getBasicProfile().getEmail());
+                    // console.log(success.getBasicProfile().getImageUrl());
+                    
+                    if(success.getBasicProfile().getEmail()!=''){
                         $(document).ready(function() {
                             $.ajax({
                                 type: "POST",
                                 url: "get_data.php",
                                 data: {
                                 'Action': 'register',
-                                'UserName':success.getBasicProfile().Ad,
-                                'UserAccount':success.getBasicProfile().bu,
-                                'Image':success.getBasicProfile().$eK,
+                                'UserName':success.getBasicProfile().getName(),
+                                'UserAccount':success.getBasicProfile().getEmail(),
+                                'Image':success.getBasicProfile().getImageUrl(),
                                 'UserPwd':success.getId()
                                 },
                                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                                 success: function(data) {
-                                    document.getElementById('email').value=success.getBasicProfile().bu;
+                                    document.getElementById('email').value=success.getBasicProfile().getEmail();
                                     document.getElementById('pwd').value=success.getId();
                                     document.getElementById("btnLogin").click();
                                 },

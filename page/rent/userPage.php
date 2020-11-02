@@ -154,7 +154,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
             <div class="accountBg">
                 <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
                     <tr>
-                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo $row_Login['image']; ?>"></th>
                         <th><a href="favorite.php"><?php echo $totalRows_favorite ?> </a></th>
                         <th><a href="#" id="price"></a></th>
                         <th><a href="#">(num)</a></th>
