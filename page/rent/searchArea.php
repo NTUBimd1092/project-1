@@ -157,13 +157,30 @@ $totalRows_Login = mysql_num_rows($Login);
 
                                 <tbody>
                                     <tr>
-                                        <td colspan="7">
-                                            <div class="input-group mb-3">
+                                        <td colspan="3">
+                                            <div class="input-group">
                                                 <input type="text" class="form-control" name="qtxt" id="qtxt" value="<?php echo isset($_POST['qtxt']) ? $_POST['qtxt'] : ""; ?>" placeholder="輸入房屋名稱或地址..."></input>
                                                 <div class="input-group-append">
                                                     <button type="submit" class="btn btnGo" id="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                 </div>
                                             </div>
+                                        </td>
+
+                                        <td colspan="2">
+                                            <div id="twzipcode_ADV" name="twzipcode_ADV" class="form-inline"></div>        
+                                            <script>
+                                                $("#twzipcode_ADV").twzipcode({
+                                                    zipcodeIntoDistrict: true, // 郵遞區號自動顯示在地區
+                                                    css: ["city form-control w-50", "town form-control w-50"], // 自訂 "城市"、"地區" class 名稱 
+                                                    countyName: "city", // 自訂城市 select 標籤的 name 值
+                                                    districtName: "town" // 自訂地區 select 標籤的 name 值
+                                                });
+                                                
+                                                $('#twzipcode_ADV').twzipcode({
+                                                    'countySel': '<?php echo isset($_POST['city']) ? $_POST['city'] : '高雄市'; ?>',
+                                                    'districtSel': '<?php echo isset($_POST['town']) ? $_POST['town'] : '那瑪夏區';?>'
+                                                });
+                                            </script>
                                         </td>
                                     </tr>
 
@@ -214,6 +231,7 @@ $totalRows_Login = mysql_num_rows($Login);
                                                 <option value="date">刊登時間</option>
                                             </select>
                                         </td>
+
                                         <td>
                                             <select name="dict" class="form-control">
                                                 <option value="<?php echo isset($_POST['dict']) ? $_POST['dict'] : "ASC"; ?>" selected><?php echo isset($_POST['dict']) ? $_POST['dict'] : "ASC"; ?></option>
@@ -221,22 +239,6 @@ $totalRows_Login = mysql_num_rows($Login);
                                                 <option value="DESC">DESC</option>
                                             </select>
 
-                                        </td>
-                                        <td>
-                                            <div id="twzipcode_ADV" name="twzipcode_ADV" ></div>        
-                                            <script>
-                                                $("#twzipcode_ADV").twzipcode({
-                                                    zipcodeIntoDistrict: true, // 郵遞區號自動顯示在地區
-                                                    css: ["city form-control", "town form-control"], // 自訂 "城市"、"地區" class 名稱 
-                                                    countyName: "city", // 自訂城市 select 標籤的 name 值
-                                                    districtName: "town" // 自訂地區 select 標籤的 name 值
-                                                });
-                                                
-                                                $('#twzipcode_ADV').twzipcode({
-                                                    'countySel': '<?php echo isset($_POST['city']) ? $_POST['city'] : '高雄市'; ?>',
-                                                    'districtSel': '<?php echo isset($_POST['town']) ? $_POST['town'] : '那瑪夏區';?>'
-                                                });
-                                            </script>
                                         </td>
                                     </tr>
                                 </tbody>

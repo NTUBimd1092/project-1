@@ -96,11 +96,13 @@ if (isset($_POST['account'])) {
 <head>
     <title>作伙</title>
     <meta charset="utf-8">
+    <meta name="google-signin-client_id" content="106996317158-4im0d5hkld50a5ucueqqodvptgpuu6km.apps.googleusercontent.com">
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <style>
         body {
             font-family: 微軟正黑體;
@@ -165,19 +167,31 @@ if (isset($_POST['account'])) {
                         </table>
                     </div>
 
-                    <button type="submit" id="btnLogin" class="btn btn-block btnGo">登入！</button>
-                    <div>Google登入：<input type="button"  value="Google登入" onclick="GoogleLogin();" /></div>
-                    <small class="form-text text-muted">還沒加入作伙嗎？<b><a href="register.php">註冊</a></b></small>
+                    <div>
+                        <table style="width:100%">
+                            <tr>
+                                <td class="w-50">
+                                    <button type="button" class="btn btn-block btn-outline-secondary" onclick="GoogleLogin();">
+                                        <img src="images/Google_Logo.png" width="29px" class="googleLogo">Google帳戶登入
+                                    </button>
+                                </td>
+                                <!-- <td class="w-50">
+                                    <div class="g-signin2"></div>
+                                </td> -->
+                                <td class="w-50"><button type="submit" id="btnLogin" class="btn btn-block btnGo">登入！</button></td>
+                            </tr>
+                        </table>
+                    </div>
 
+                    <small class="form-text text-muted">還沒加入作伙嗎？<b><a href="register.php">註冊</a></b></small>
                 </form>
             </div>
         </div>
     </div>
 
     <script src="src/captcha.js"></script>
-<!--Google登入-->
-<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()"
-            onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    <!--Google登入-->
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
     <script type="text/javascript">
         //進入 https://console.developers.google.com/，找「憑證」頁籤(記得先選對專案)，即可找到用戶端ID
         let Google_appId = "106996317158-4im0d5hkld50a5ucueqqodvptgpuu6km.apps.googleusercontent.com";
@@ -189,24 +203,24 @@ if (isset($_POST['account'])) {
         function HandleGoogleApiLibrary() {
             // Load "client" & "auth2" libraries
             gapi.load('client:auth2', {
-                callback: function () {
+                callback: function() {
                     // Initialize client & auth libraries
                     gapi.client.init({
                         clientId: Google_appId,
                         scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
                     }).then(
-                        function (success) {
+                        function(success) {
                             // Google Libraries are initialized successfully
                             // You can now make API calls 
                             console.log("Google Libraries are initialized successfully");
                         },
-                        function (error) {
+                        function(error) {
                             // Error occurred
-                            console.log(error);// to find the reason 
+                            console.log(error); // to find the reason 
                         }
                     );
                 },
-                onerror: function () {
+                onerror: function() {
                     // Failed to load libraries
                     console.log("Failed to load libraries");
                 }
@@ -216,28 +230,28 @@ if (isset($_POST['account'])) {
         function GoogleLogin() {
             // API call for Google login  
             gapi.auth2.getAuthInstance().signIn().then(
-                function (success) {
+                function(success) {
                     // Login API call is successful 
                     // console.log(success.getBasicProfile().getName());
                     // console.log(success.getBasicProfile().getEmail());
                     // console.log(success.getBasicProfile().getImageUrl());
-                    
-                    if(success.getBasicProfile().getEmail()!=''){
+
+                    if (success.getBasicProfile().getEmail() != '') {
                         $(document).ready(function() {
                             $.ajax({
                                 type: "POST",
                                 url: "get_data.php",
                                 data: {
-                                'Action': 'register',
-                                'UserName':success.getBasicProfile().getName(),
-                                'UserAccount':success.getBasicProfile().getEmail(),
-                                'Image':success.getBasicProfile().getImageUrl(),
-                                'UserPwd':success.getId()
+                                    'Action': 'register',
+                                    'UserName': success.getBasicProfile().getName(),
+                                    'UserAccount': success.getBasicProfile().getEmail(),
+                                    'Image': success.getBasicProfile().getImageUrl(),
+                                    'UserPwd': success.getId()
                                 },
                                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                                 success: function(data) {
-                                    document.getElementById('email').value=success.getBasicProfile().getEmail();
-                                    document.getElementById('pwd').value=success.getId();
+                                    document.getElementById('email').value = success.getBasicProfile().getEmail();
+                                    document.getElementById('pwd').value = success.getId();
                                     document.getElementById("btnLogin").click();
                                 },
                                 error: function(e) {
@@ -247,14 +261,13 @@ if (isset($_POST['account'])) {
                         });
                     }
                 },
-                function (error) {
+                function(error) {
                     // Error occurred
                     // console.log(error) to find the reason
                     console.log(error);
-                    alert('登入失敗，訊息=>'+error.error)
+                    alert('登入失敗，訊息=>' + error.error)
                 }
             );
-
         }
     </script>
 </body>
