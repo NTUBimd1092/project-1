@@ -82,15 +82,16 @@ if (isset($_SERVER['QUERY_STRING'])) {
 }
 include 'encrypt.php'; //加解密檔
 $temp_pass = ((isset($_POST['password'])) && ($_POST['password'] != "")) ? encryptthis($_POST['password'], $key) : $row_Login['password'];
+$temp_name = ((isset($_POST['name'])) && ($_POST['name'] != "")) ? encryptthis($_POST['name'], $key) : $row_Login['name'];
+$temp_phon = ((isset($_POST['phone'])) && ($_POST['phone'] != "")) ? encryptthis($_POST['phone'], $key) : $row_Login['phone'];
 
 if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "modify")) {
     $updateSQL = sprintf(
-        "UPDATE `user` SET account=%s, password=%s, name=%s, phone=%s, birth=%s, subscribe=%s WHERE id=%s",
+        "UPDATE `user` SET account=%s, password=%s, name=%s, phone=%s, subscribe=%s WHERE id=%s",
         GetSQLValueString($_POST['account'], "text"),
         GetSQLValueString($temp_pass, "text"),
-        GetSQLValueString($_POST['name'], "text"),
-        GetSQLValueString($_POST['phone'], "text"),
-        GetSQLValueString($_POST['birth'], "date"),
+        GetSQLValueString($temp_name, "text"),
+        GetSQLValueString($temp_phon, "text"),
         GetSQLValueString($_POST['subscribe'], "text"),
         GetSQLValueString($_POST['id'], "int")
     );
@@ -203,7 +204,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
             <div class="accountBg">
                 <table class="accountData text-center">
                     <tr>
-                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php  echo decryptthis($row_Login['image'],$key);?>"></th>
                         <th class="text-center"><?php echo $totalRows_favorite ?></th>
                         <th class="text-center" id="price"></th>
                         <th class="text-center">(num)</th>
@@ -223,7 +224,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
                 <table class="table table-sm dataTable">
                     <thead>
                         <tr>
-                            <td align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+                            <td align="center"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo decryptthis($row_Login['image'],$key); ?>"></td>
                             <td style="vertical-align:middle">
                                 <form id="form">
                                     <label class="btn btn-light btn-lg btn-block">
@@ -241,22 +242,17 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
                             <tr>
                                 <input type="hidden" name="id" value="<?php echo $row_Login['id']; ?>">
                                 <th>姓名</th>
-                                <td><input class="form-control" name="name" type="text" value="<?php echo $row_Login['name']; ?>"></td>
-                            </tr>
-
-                            <tr>
-                                <th>生日</th>
-                                <td><input class="form-control" type="date" name="birth" value="<?php echo $row_Login['birth']; ?>"></td>
+                                <td><input class="form-control" name="name" type="text" value="<?php echo decryptthis($row_Login['name'],$key);?>"></td>
                             </tr>
 
                             <tr>
                                 <th>電話</th>
-                                <td><input class="form-control" type="number" name="phone" value="<?php echo $row_Login['phone']; ?>"></td>
+                                <td><input class="form-control" type="number" name="phone" value="<?php echo decryptthis($row_Login['phone'],$key);?>"></td>
                             </tr>
 
                             <tr>
                                 <th>電子郵件</th>
-                                <td><input class="form-control" type="email" name="account" value="<?php echo $row_Login['account']; ?>"></td>
+                                <td><input class="form-control" type="email" name="account" value="<?php echo $row_Login['account'];?>"></td>
                             </tr>
 
                             <tr>

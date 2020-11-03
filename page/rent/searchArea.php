@@ -129,7 +129,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
                     <?php if ($totalRows_Login > 0) { // 登入後顯示 
                     ?>
-                        <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php echo $row_Login['name']; ?></b></a></li>
+                        <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php include 'encrypt.php'; echo decryptthis($row_Login['name'],$key); ?></b></a></li>
                         <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
                     <?php } // Show if recordset not empty 
                     ?>

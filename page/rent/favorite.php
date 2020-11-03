@@ -167,7 +167,7 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
         <ul class="navbar-nav ml-auto">
           <?php if ($totalRows_Login > 0) { // 登入後顯示 
           ?>
-            <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php echo $row_Login['name']; ?></b></a></li>
+            <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php  include 'encrypt.php'; echo decryptthis($row_Login['name'],$key);  ?></b></a></li>
             <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
           <?php } // Show if recordset not empty 
@@ -181,7 +181,7 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
       <div class="accountBg">
         <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
           <tr>
-            <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></th>
+            <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo decryptthis($row_Login['image'],$key); ?>"></th>
             <th><a href="favorite.php"><?php echo $totalRows_webinfo ?> </a></th>
             <th><a href="#" id="price"></a></th>
             <th><a href="#">(num)</a></th>

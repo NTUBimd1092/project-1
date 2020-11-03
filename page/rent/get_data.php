@@ -98,7 +98,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 							<td class="align-middle houseInfo">樓層：' . $row['floor'] . '</td>
 							<td class="align-middle houseInfo">類型：' . $row['house_type'] . '</td>
 							<td>
-								<a class="btn btn-block btn-sm btnGo" href="' . $row['Link'] . '">查看更多</a>
+								<a class="btn btn-block btn-sm btnGo" target="_blank" href="' . $row['Link'] . '">查看更多</a>
 							</td>
 						</tr>
 					</table>
@@ -131,7 +131,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 							<td class="align-middle houseInfo">樓層：' . $row['floor'] . '</td>
 							<td class="align-middle houseInfo">類型：' . $row['house_type'] . '</td>
 							<td>
-								<a class="btn btn-block btn-sm btnGo" href="' . $row['Link'] . '">查看更多</a>
+								<a class="btn btn-block btn-sm btnGo" target="_blank" href="' . $row['Link'] . '">查看更多</a>
 							</td>
 						</tr>
 					</table>
@@ -169,13 +169,15 @@ function Favorate($Link, $userid)
 function register($UserName, $UserAccount, $Image, $UserPwd){
 	require_once('Connections/cralwer.php');
     mysql_select_db($database_cralwer, $cralwer);
-    mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
-	$query = "SELECT * FROM `user` where (1=1) AND `account`='{$UserAccount}'";
+	mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+	$query="SELECT * FROM `user` where (1=1) AND `account`='{$UserAccount}'";
     $data = mysql_query($query, $cralwer) or die(mysql_error());
 	$totalRows = mysql_num_rows($data);
-	include 'encrypt.php'; //加解密檔
-	$mypwd=encryptthis($UserPwd, $key);
-	if ($totalRows == 0) {
+	if ($totalRows == 0) {	
+		include 'encrypt.php'; //加解密檔
+		$mypwd=encryptthis($UserPwd, $key);
+		$myUserName=encryptthis($UserName, $key);
+		$myImage=encryptthis($Image, $key);
 		$insert="INSERT INTO `crawler`.`user` (
 			`account` ,
 			`password` ,
@@ -183,7 +185,7 @@ function register($UserName, $UserAccount, $Image, $UserPwd){
 			`image` 
 			)
 			VALUES (
-				'{$UserAccount}', '{$mypwd}', '{$UserName}', '{$Image}'
+				'{$UserAccount}', '{$mypwd}', '{$myUserName}', '{$myImage}'
 			);
 			";
         mysql_query($insert, $cralwer) or die(mysql_error());
@@ -197,42 +199,6 @@ function Login($myaccount, $mypassword){
 	// require_once('Connections/cralwer.php');
     // mysql_select_db($database_cralwer, $cralwer);
 	// mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
-	// if (!function_exists("GetSQLValueString")) {
-	// 	function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
-	// 	{
-	// 		$theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-	
-	// 		$theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
-	
-	// 		switch ($theType) {
-	// 			case "text":
-	// 				$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-	// 				break;
-	// 			case "long":
-	// 			case "int":
-	// 				$theValue = ($theValue != "") ? intval($theValue) : "NULL";
-	// 				break;
-	// 			case "double":
-	// 				$theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-	// 				break;
-	// 			case "date":
-	// 				$theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-	// 				break;
-	// 			case "defined":
-	// 				$theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-	// 				break;
-	// 		}
-	// 		return $theValue;
-	// 	}
-	// }
-	// if (!isset($_SESSION)) {
-	// 	session_start();
-	// }
-	
-	// $loginFormAction = $_SERVER['PHP_SELF'];
-	// if (isset($_GET['accesscheck'])) {
-	// 	$_SESSION['PrevUrl'] = $_GET['accesscheck'];
-	// }
 	// include 'encrypt.php';
 
 	// if (isset($myaccount) {

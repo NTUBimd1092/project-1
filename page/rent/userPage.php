@@ -154,7 +154,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
             <div class="accountBg">
                 <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
                     <tr>
-                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo $row_Login['image']; ?>"></th>
+                        <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php include 'encrypt.php'; echo decryptthis($row_Login['image'],$key); ?>"></th>
                         <th><a href="favorite.php"><?php echo $totalRows_favorite ?> </a></th>
                         <th><a href="#" id="price"></a></th>
                         <th><a href="#">(num)</a></th>
@@ -174,29 +174,23 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
                     <table class="table dataTable">
                         <thead>
                             <tr>
-                                <td colspan="2" align="center"><img width="55px" height="55px" style="border-radius:50%" src="images/<?php echo $row_Login['image']; ?>"></td>
+                                <td colspan="2" align="center"><img width="55px" height="55px" style="border-radius:50%" src="<?php  echo decryptthis($row_Login['image'],$key); ?>"></td>
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr>
                                 <th>姓名</th>
-                                <td><?php echo $row_Login['name']; ?></td>
+                                <td><?php  echo decryptthis($row_Login['name'],$key); ?></td>
                             </tr>
-
-                            <tr>
-                                <th>生日</th>
-                                <td><?php echo $row_Login['birth']; ?></td>
-                            </tr>
-
                             <tr>
                                 <th>電話</th>
-                                <td><?php echo $row_Login['phone']; ?></td>
+                                <td><?php echo decryptthis($row_Login['phone'],$key); ?></td>
                             </tr>
 
                             <tr>
                                 <th>電子郵件</th>
-                                <td><?php echo $row_Login['account']; ?></td>
+                                <td><?php echo $row_Login['account'];?></td>
                             </tr>
 
                             <tr>

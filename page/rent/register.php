@@ -36,15 +36,15 @@ if (isset($_SERVER['QUERY_STRING'])) {
 }
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "from2") and (@$_POST['password'] == @$_POST['repassword'])) {
-	include 'encrypt.php';//加解密檔
+    include 'encrypt.php'; //加解密檔
     $insertSQL = sprintf(
-        "INSERT INTO `user` (account, password, name, phone, birth) VALUES (%s, %s, %s, %s, %s)",
-        GetSQLValueString($_POST['account'], "text"),
-        GetSQLValueString(encryptthis($_POST['password'], $key),"text"),
-        GetSQLValueString($_POST['name'], "text"),
-        GetSQLValueString($_POST['phone'], "text"),
-        GetSQLValueString($_POST['birth'], "date")
-    );
+        "INSERT INTO `user` (account, password, name, phone, image) VALUES (%s, %s, %s, %s, %s)",
+        GetSQLValueString($_POST['account'],"text"),
+        GetSQLValueString(encryptthis($_POST['password'], $key), "text"),
+        GetSQLValueString(encryptthis($_POST['name'], $key), "text"),
+        GetSQLValueString(encryptthis($_POST['phone'], $key), "text"),
+        GetSQLValueString(encryptthis("images\avatar.png", $key), "text")
+        );
 
     mysql_select_db($database_cralwer, $cralwer);
     $Result1 = mysql_query($insertSQL, $cralwer) or die(mysql_error());
@@ -126,18 +126,13 @@ $totalRows_user = mysql_num_rows($user);
 
                     <div class="form-group">
                         <label for="uname"><b>姓名&nbsp;|&nbsp;Name</b></label>
-                        <input class="form-control" type="text" name="name" placeholder="Zachary Walton" required>
+                        <input class="form-control" type="text" name="name" placeholder="ex:Zachary Walton" required>
                     </div>
 
                     <div class="form-group">
                         <label for="phone"><b>電話&nbsp;|&nbsp;PhoneNumber</b></label>
-                        <input class="form-control" type="tel" pattern="[0-9]{10}" name="phone" placeholder="0912345678" required>
+                        <input class="form-control" type="tel" pattern="[0-9]{10}" name="phone" placeholder="ex:0912345678" required>
 
-                    </div>
-
-                    <div class="form-group">
-                        <label for="birthday"><b>生日&nbsp;|&nbsp;Birthday</b></label>
-                        <input class="form-control" type="date" name="birth" placeholder="您的生日" required>
                     </div>
 
                     <div class="form-group">
@@ -155,7 +150,7 @@ $totalRows_user = mysql_num_rows($user);
                     <input type="hidden" name="MM_insert" value="from2" />
                 </form>
             </div>
-            
+
         </div>
     </div>
 

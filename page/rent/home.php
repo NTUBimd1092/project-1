@@ -66,6 +66,7 @@ $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueStr
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,7 +125,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
                 <?php if ($totalRows_Login > 0) { // 登入後顯示 
                 ?>
-                    <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php echo $row_Login['name']; ?></b></a></li>
+                    <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php include 'encrypt.php'; echo decryptthis($row_Login['name'],$key); ?></b></a></li>
                     <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
                 <?php } // Show if recordset not empty 
