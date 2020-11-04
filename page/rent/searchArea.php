@@ -176,10 +176,6 @@ $totalRows_Login = mysql_num_rows($Login);
                                                     districtName: "town" // 自訂地區 select 標籤的 name 值
                                                 });
                                                 
-                                                $('#twzipcode_ADV').twzipcode({
-                                                    'countySel': '<?php echo isset($_POST['city']) ? $_POST['city'] : '高雄市'; ?>',
-                                                    'districtSel': '<?php echo isset($_POST['town']) ? $_POST['town'] : '那瑪夏區';?>'
-                                                });
                                             </script>
                                         </td>
                                     </tr>
@@ -214,7 +210,7 @@ $totalRows_Login = mysql_num_rows($Login);
                                         </td>
 
                                         <td>
-                                            <select name="WebName" class="form-control">
+                                            <select id="WebName" name="WebName" class="form-control">
                                                 <option value="<?php echo isset($_POST['WebName']) ? $_POST['WebName'] : ""; ?>" selected><?php echo isset($_POST['WebName']) && $_POST['WebName'] != "" ? $_POST['WebName'] : "全部"; ?></option>
                                                 <option value="">全部</option>
                                                 <option value="信義房屋">信義房屋</option>
@@ -290,6 +286,10 @@ $totalRows_Login = mysql_num_rows($Login);
                 success: function(data) {
                     $('#DataList').append(data);
                     flag += 10;
+                    $('#twzipcode_ADV').twzipcode({
+                        'countySel':city ,
+                        'districtSel': town
+                    });
                 },
                 error: function(e) {
                     console.log('error', e)
@@ -319,6 +319,11 @@ $totalRows_Login = mysql_num_rows($Login);
                         success: function(data) {
                             $('#DataList').append(data);
                             flag += 10;
+
+                            $('#twzipcode_ADV').twzipcode({
+                                'countySel':city ,
+                                'districtSel': town
+                            });
                         },
                         error: function(e) {
                             console.log('error', e)
