@@ -67,6 +67,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 		$selectedFav = '<img class="favorite" id="' . $row["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
 		$favorite = '<img class="favorite" id="' . $row["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
 		$mystr = $row_subscribeCount['countSubscribe']>="1" ? $selectedFav : $favorite;
+		$Is_Delete=$row['Is_Delete']=='Y'?"<span class=\"badge badge-danger\" >已下架</span>":"";
 		if (isset($userid) AND $userid!="") {
             echo '
 			<div class="row justify-content-center">
@@ -76,7 +77,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 							<td rowspan="4" width="30%" class="text-center align-middle">
 								<img class="imageSize" src="' . $row['images'] . '">	
 							</td>
-							<th colspan="2" width="50%" class="houseName">' . $row['house'] . '</th>
+							<th colspan="2" width="50%" class="houseName">' .$Is_Delete. $row['house'] . '</th>
 							<td rowspan="4" width="2%" class="text-center align-top">'.
 							// ($subscribeCount>=1 ? '<img class="favorite" id="' . $row["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">' : '<img class="favorite" id="' . $row["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">')
 							$mystr
@@ -112,7 +113,7 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 					<table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
 						<tr>
 							<td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src="' . $row['images'] . '"></td>
-							<th colspan="2" width="50%" class="houseName">' . $row['house'] . '</th>
+							<th colspan="2" width="50%" class="houseName">' .$Is_Delete. $row['house'] . '</th>
 							<td rowspan="4" width="2%" class="text-center align-top"></td>
 							<td width="18%" class="text-center align-middle houseInfo">來自：' . $row['WebName'] . '</td>
 						</tr>
