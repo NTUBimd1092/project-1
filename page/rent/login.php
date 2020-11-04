@@ -172,7 +172,7 @@ if (isset($_POST['account'])) {
                             <tr>
                                 <td class="w-50">
                                     <button type="button" class="btn btn-block btn-outline-secondary" onclick="GoogleLogin();">
-                                        <img src="images/Google_Logo.png" width="29px" class="googleLogo">Google帳戶登入
+                                        <img src="images/Google_Logo.png" width="16.5px" class="googleLogo">&nbsp; Google帳戶登入
                                     </button>
                                 </td>
                                 <!-- <td class="w-50">
