@@ -172,7 +172,7 @@ if (isset($_POST['account'])) {
                             <tr>
                                 <td class="w-50">
                                     <button type="button" class="btn btn-block btn-outline-secondary" onclick="GoogleLogin();">
-                                        <img src="images/Google_Logo.png" width="16.5px" class="googleLogo">&nbsp; Google帳戶登入
+                                        <img src="images/Google_Logo.png" width="29px" class="googleLogo">Google帳戶登入
                                     </button>
                                 </td>
                                 <!-- <td class="w-50">
@@ -250,9 +250,14 @@ if (isset($_POST['account'])) {
                                 },
                                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                                 success: function(data) {
-                                    document.getElementById('email').value = success.getBasicProfile().getEmail();
-                                    document.getElementById('pwd').value = success.getId();
-                                    document.getElementById("btnLogin").click();
+                                    // document.getElementById('email').value = success.getBasicProfile().getEmail();
+                                    // document.getElementById('pwd').value = success.getId();
+                                    // document.getElementById("btnLogin").click();
+                                    var formData = new FormData(form);
+                                    var ajax = new XMLHttpRequest();
+                                    ajax.open("GET", "login.php?account=%s&password=%s",success.getBasicProfile().getEmail(),"s");
+                                    ajax.send();
+                                    window.location.reload();
                                 },
                                 error: function(e) {
                                     console.log('error', e)

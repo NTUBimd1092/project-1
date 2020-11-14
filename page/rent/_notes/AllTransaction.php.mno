@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_AllTransaction" value="name:id;datatype:int,name:Link;datatype:string,name:date;datatype:datetime,name:money;datatype:int,name:userid;datatype:int" />
+	<infoitem key="UD_webinfo" value="name:images;datatype:string,name:WebName;datatype:string,name:Link;datatype:string,name:house;datatype:string,name:adress;datatype:string,name:money;datatype:int,name:house_type;datatype:string,name:floor;datatype:string,name:square_meters;datatype:int,name:pattern;datatype:string" />
+	<infoitem key="UD_Login" value="name:id;datatype:int,name:account;datatype:string,name:password;datatype:string,name:name;datatype:string,name:image;datatype:string,name:phone;datatype:string,name:birth;datatype:date,name:subscribe;datatype:string" />
+</info>

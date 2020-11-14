@@ -61,11 +61,11 @@ $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
     $colname_Login = $_SESSION['MM_Username'];
 }
-mysql_select_db($database_cralwer, $cralwer);
+mysqli_select_db($cralwer , $database_cralwer);
 $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueString($colname_Login, "text"));
-$Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
-$row_Login = mysql_fetch_assoc($Login);
-$totalRows_Login = mysql_num_rows($Login);
+$Login = mysqli_query( $cralwer ,$query_Login);
+$row_Login = mysqli_fetch_assoc($Login);
+$totalRows_Login = mysqli_num_rows($Login);
 
 ?>
 <!DOCTYPE html>
