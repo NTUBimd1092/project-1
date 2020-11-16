@@ -139,7 +139,7 @@ $totalRows_Login = mysql_num_rows($Login);
     <div class="container-fluid">
         <div class="row justify-content-center">
 
-            <div class="col-8 col-sm-8 col-md-3 col-lg-4">
+            <div class="col-8 col-sm-8 col-md-5 col-lg-4">
                 <form class="formContainer" action="searchArea.php" method="post">
                     <section class="title">
                         <img src="images/BrownIcon.png" alt="logo" class="HomeIcon"> | 找到最適合您的家

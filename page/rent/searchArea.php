@@ -66,6 +66,7 @@ $query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueStr
 $Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
 $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -76,6 +77,7 @@ $totalRows_Login = mysql_num_rows($Login);
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/style.css">
     <link rel="stylesheet" href="src/twzipcode.css">
+    <link rel="stylesheet" href="src/jquery.scrolltop.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -101,6 +103,12 @@ $totalRows_Login = mysql_num_rows($Login);
             height: 200px;
             padding: 10px;
             z-index: 1;
+        }
+        .custom-scrolltop {
+            background-color:rgb(126, 83, 34, 0.85) !important;
+            font-size: 1.5em;
+            line-height: 40px;
+            border-radius: 50%;
         }
 
     </style>
@@ -157,7 +165,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
                                 <tbody>
                                     <tr>
-                                        <td colspan="3">
+                                        <td colspan="4">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" name="qtxt" id="qtxt" value="<?php echo isset($_POST['qtxt']) ? $_POST['qtxt'] : ""; ?>" placeholder="輸入房屋名稱或地址..."></input>
                                                 <div class="input-group-append">
@@ -182,6 +190,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
                                     <tr>
                                         <td colspan="2">房屋租金</td>
+                                        <td>坪數</td>
                                         <td>房屋來源</td>
                                         <td colspan="2">排序方式</td>
                                     </tr>
@@ -195,6 +204,13 @@ $totalRows_Login = mysql_num_rows($Login);
                                                 <option value="10000">10000</option>
                                                 <option value="20000">20000</option>
                                                 <option value="30000">30000</option>
+                                                <option value="40000">40000</option>
+                                                <option value="50000">50000</option>
+                                                <option value="60000">60000</option>
+                                                <option value="70000">70000</option>
+                                                <option value="80000">80000</option>
+                                                <option value="90000">90000</option>
+                                                <option value="100000">100000</option>
                                             </select>
                                         </td>
 
@@ -206,9 +222,27 @@ $totalRows_Login = mysql_num_rows($Login);
                                                 <option value="10000">10000</option>
                                                 <option value="20000">20000</option>
                                                 <option value="30000">30000</option>
+                                                <option value="40000">40000</option>
+                                                <option value="50000">50000</option>
+                                                <option value="60000">60000</option>
+                                                <option value="70000">70000</option>
+                                                <option value="80000">80000</option>
+                                                <option value="90000">90000</option>
+                                                <option value="100000">100000</option>
                                             </select>
                                         </td>
-
+                                        <td>
+                                        <select name="square" class="form-control">
+                                            <option value="<?php echo isset($_POST['square']) ? $_POST['square'] : ""; ?>" selected><?php echo isset($_POST['square']) && $_POST['square'] != "" ? $_POST['square'] : "不限"; ?></option>
+                                            <option value="">不限</option>
+                                            <option value="10坪以下">10坪以下</option>
+                                            <option value="10-20坪">10-20坪</option>
+                                            <option value="20-30坪">20-30坪</option>
+                                            <option value="30-40坪">30-40坪</option>
+                                            <option value="40-50坪">40-50坪</option>
+                                            <option value="50坪以上">50坪以上</option>
+                                        </select>
+                                        </td>
                                         <td>
                                             <select id="WebName" name="WebName" class="form-control">
                                                 <option value="<?php echo isset($_POST['WebName']) ? $_POST['WebName'] : ""; ?>" selected><?php echo isset($_POST['WebName']) && $_POST['WebName'] != "" ? $_POST['WebName'] : "全部"; ?></option>
@@ -222,17 +256,17 @@ $totalRows_Login = mysql_num_rows($Login);
                                         <td>
                                             <select name="orderby" class="form-control">
                                                 <option value="<?php echo isset($_POST['orderby']) ? $_POST['orderby'] : "house"; ?>" selected><?php echo isset($_POST['orderby']) ? $_POST['orderby'] : "house"; ?></option>
-                                                <option value="house">房屋來源</option>
-                                                <option value="money">房屋租金</option>
-                                                <option value="date">刊登時間</option>
+                                                <option value="房屋來源">房屋來源</option>
+                                                <option value="房屋租金">房屋租金</option>
+                                                <option value="刊登時間">刊登時間</option>
                                             </select>
                                         </td>
 
                                         <td>
                                             <select name="dict" class="form-control">
                                                 <option value="<?php echo isset($_POST['dict']) ? $_POST['dict'] : "ASC"; ?>" selected><?php echo isset($_POST['dict']) ? $_POST['dict'] : "ASC"; ?></option>
-                                                <option value="ASC">ASC</option>
-                                                <option value="DESC">DESC</option>
+                                                <option value="由小到大">由小到大</option>
+                                                <option value="由大到小">由大到小</option>
                                             </select>
 
                                         </td>
@@ -245,7 +279,42 @@ $totalRows_Login = mysql_num_rows($Login);
             </div>
 
             <div id="DataList" class="append"></div>
-            <button id="myBtn" class="btn btn-dark backToTop" onClick="topFunction()"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="src/jquery.scrolltop.js"></script>
+
+    <script>
+        (function($){
+
+            $.scrolltop({
+                template: '<i class="fa fa-chevron-up"></i>',
+                class: 'custom-scrolltop'
+            });
+
+        })(jQuery);
+
+    </script>
+
+</body>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
         </div>
     </section>
 
@@ -254,7 +323,6 @@ $totalRows_Login = mysql_num_rows($Login);
         <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
     <script type="text/javascript">
-
         var WebName = '<?php echo $_POST['WebName']; ?>';
         var qtxt = '<?php echo $_POST['qtxt']; ?>'; //查詢房名、地址
         var moneyS = '<?php echo $_POST['moneyS']; ?>';
@@ -264,6 +332,7 @@ $totalRows_Login = mysql_num_rows($Login);
         var userid = '<?php echo isset($row_Login['id']) ? $row_Login['id'] : ""; ?>';
         var city ='<?php echo $_POST['city'];?>';
         var town='<?php echo $_POST['town'];?>';
+        var square='<?php echo $_POST['square']; ?>';
         $(document).ready(function() {
             var flag = 0;
             $.ajax({
@@ -280,16 +349,18 @@ $totalRows_Login = mysql_num_rows($Login);
                     'dict': dict,
                     'userid': userid,
                     'city':city,
-                    'town':town
+                    'town':town,
+                    'square':square
                 },
                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                 success: function(data) {
-                    $('#DataList').append(data);
-                    flag += 10;
-                    $('#twzipcode_ADV').twzipcode({
-                        'countySel':city ,
-                        'districtSel': town
-                    });
+                    if(data.substr(-4)=="無資料!"){
+
+                    }else{
+                        $('#DataList').append(data);
+                        flag += 10;
+                    }
+
                 },
                 error: function(e) {
                     console.log('error', e)
@@ -313,13 +384,17 @@ $totalRows_Login = mysql_num_rows($Login);
                             'dict': dict,
                             'userid': userid,
                             'city':city,
-                            'town':town
+                            'town':town,
+                            'square':square
                         },
                         contentType: "application/x-www-form-urlencoded; charset=utf-8",
                         success: function(data) {
-                            $('#DataList').append(data);
-                            flag += 10;
+                            if(data.substr(-4)=="無資料!"){
 
+                            }else{
+                                $('#DataList').append(data);
+                                flag += 10;
+                            }
                             $('#twzipcode_ADV').twzipcode({
                                 'countySel':city ,
                                 'districtSel': town
@@ -355,8 +430,14 @@ $totalRows_Login = mysql_num_rows($Login);
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         }
-        
     </script>
+    <?php 
+    if(isset($_POST['home'])&& $_POST['home']="home"){
+        echo "<script>
+        $('#submit').trigger('click');
+        </script>";
+    }
+    ?>
 
 </body>
 

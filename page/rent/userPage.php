@@ -157,7 +157,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
                         <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php include 'encrypt.php'; echo decryptthis($row_Login['image'],$key); ?>"></th>
                         <th><a href="favorite.php"><?php echo $totalRows_favorite ?> </a></th>
                         <th><a href="#" id="price"></a></th>
-                        <th><a href="#">(num)</a></th>
+                        <th><a href="#">0</a></th>
                     </tr>
 
                     <tr>
@@ -200,7 +200,15 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
 
                             <tr>
                                 <th>訂閱通知</th>
-                                <td><?php echo $row_Login['subscribe']; ?></td>
+                                <td>
+                                    <?php if ($row_Login['subscribe'] == "1") { 
+                                        echo '是';
+                                    } 
+
+                                    if ($row_Login['subscribe'] == "0") { 
+                                        echo '否';
+                                    } ?>
+                                </td>
                             </tr>
 
                             <tr>

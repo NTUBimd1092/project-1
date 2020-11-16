@@ -67,7 +67,7 @@ if (isset($_POST['account'])) {
     $LoginRS__query = sprintf(
         "SELECT account, password FROM `user` WHERE account=%s AND password=%s",
         GetSQLValueString($loginUsername, "text"),
-        GetSQLValueString($password, "text")
+        @GetSQLValueString($password, "text")
     );
 
     $LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
@@ -82,9 +82,9 @@ if (isset($_POST['account'])) {
         if (isset($_SESSION['PrevUrl']) && false) {
             $MM_redirectLoginSuccess = $_SESSION['PrevUrl'];
         }
-        header("Location: " . $MM_redirectLoginSuccess);
+        @header("Location:".$MM_redirectLoginSuccess);
     } else {
-        header("Location: " . $MM_redirectLoginFailed);
+        @header("Location:".$MM_redirectLoginFailed);
     }
 }
 ?>
@@ -106,7 +106,7 @@ if (isset($_POST['account'])) {
     <style>
         body {
             font-family: 微軟正黑體;
-            background-image: url('images/loginBackground.jpg');
+            background-image: url('images/LoginBackground.jpg');
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-position: center;
@@ -252,6 +252,7 @@ if (isset($_POST['account'])) {
                                 success: function(data) {
                                     document.getElementById('email').value = success.getBasicProfile().getEmail();
                                     document.getElementById('pwd').value = success.getId();
+                                    document.getElementById("captcha").value = code;
                                     document.getElementById("btnLogin").click();
                                 },
                                 error: function(e) {
@@ -265,7 +266,7 @@ if (isset($_POST['account'])) {
                     // Error occurred
                     // console.log(error) to find the reason
                     console.log(error);
-                    alert('登入失敗，訊息=>' + error.error)
+                    //alert('登入失敗，訊息=>' + error.error)
                 }
             );
         }

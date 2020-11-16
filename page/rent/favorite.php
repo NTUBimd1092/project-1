@@ -184,7 +184,7 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
             <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo decryptthis($row_Login['image'],$key); ?>"></th>
             <th><a href="favorite.php"><?php echo $totalRows_webinfo ?> </a></th>
             <th><a href="#" id="price"></a></th>
-            <th><a href="#">(num)</a></th>
+            <th><a href="#">0</a></th>
           </tr>
 
           <tr>

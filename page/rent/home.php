@@ -145,8 +145,9 @@ $totalRows_Login = mysql_num_rows($Login);
                         <img src="images/BrownIcon.png" alt="logo" class="HomeIcon"> | 找到最適合您的家
                     </section>
                     <div class="form-group">
-                        <input type="text" class="form-control inputSearch" name="search" placeholder="輸入地段、路名、商圈" required>
-                        <select class="form-control" style="margin-bottom: 10px;">
+                        <input type="hidden" name="home" value="home">
+                        <input type="text" name="qtxt" class="form-control inputSearch" name="search" placeholder="輸入地段、路名、商圈" required>
+                        <select name="moneyS" class="form-control" style="margin-bottom: 10px;">
                             <option value="" disabled selected>選擇價格區間</option>
                             <option value="0 AND 5000">5000元以下</option>
                             <option value="10Thousand">5000-10000元</option>
@@ -157,15 +158,14 @@ $totalRows_Login = mysql_num_rows($Login);
                             <option value="60Thousand">50000-60000元</option>
                             <option value="70Thousand">60000元以上</option>
                         </select>
-
-                        <select class="form-control">
+                        <select name="square" class="form-control">
                             <option value="" disabled selected>選擇坪數區間</option>
-                            <option value="0 AND 10">10坪以下</option>
-                            <option value="20SquareMeter">10-20坪</option>
-                            <option value="30SquareMeter">20-30坪</option>
-                            <option value="40SquareMeter">30-40坪</option>
-                            <option value="50SquareMeter">40-50坪</option>
-                            <option value="60SquareMeter">50坪以上</option>
+                            <option value="10坪以下">10坪以下</option>
+                            <option value="10-20坪">10-20坪</option>
+                            <option value="20-30坪">20-30坪</option>
+                            <option value="30-40坪">30-40坪</option>
+                            <option value="40-50坪">40-50坪</option>
+                            <option value="50坪以上">50坪以上</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-block btnGo">找房子！</button>
@@ -180,6 +180,3 @@ $totalRows_Login = mysql_num_rows($Login);
 </body>
 
 </html>
-<?php
-mysql_free_result($Login);
-?>
