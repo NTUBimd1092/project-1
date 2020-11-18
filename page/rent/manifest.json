@@ -3,14 +3,59 @@
     "name": "ZuoHuo",
     "icons": [
         {
+            "src": "images/ZuoHuo_57.png",
+            "sizes": "57x57",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_114.png",
+            "sizes": "114x114",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_120.png",
+            "sizes": "120x120",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_152.png",
+            "sizes": "152x152",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_167.png",
+            "sizes": "167x167",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_180.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
+        {
             "src": "images/ZuoHuo_192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
             "src": "images/ZuoHuo_512.png",
-            "type": "image/png",
-            "sizes": "512x512"
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "images/ZuoHuo_1024.png",
+            "sizes": "1024x1024",
+            "type": "image/png"
         }
     ],
     "start_url": ".",

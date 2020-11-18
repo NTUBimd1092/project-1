@@ -79,7 +79,7 @@ $totalRows_user = mysql_num_rows($user);
     <style>
         body {
             font-family: 微軟正黑體;
-            background-image: url('images/HomeBackground.jpg');
+            background-image: url('images/registerBackground.jpg');
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-position: center;

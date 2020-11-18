@@ -67,7 +67,7 @@ if (isset($_POST['account'])) {
     $LoginRS__query = sprintf(
         "SELECT account, password FROM `user` WHERE account=%s AND password=%s",
         GetSQLValueString($loginUsername, "text"),
-        GetSQLValueString($password, "text")
+        @GetSQLValueString($password, "text")
     );
 
     $LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
@@ -82,9 +82,9 @@ if (isset($_POST['account'])) {
         if (isset($_SESSION['PrevUrl']) && false) {
             $MM_redirectLoginSuccess = $_SESSION['PrevUrl'];
         }
-        header("Location: " . $MM_redirectLoginSuccess);
+        @header("Location:".$MM_redirectLoginSuccess);
     } else {
-        header("Location: " . $MM_redirectLoginFailed);
+        @header("Location:".$MM_redirectLoginFailed);
     }
 }
 ?>
@@ -106,7 +106,7 @@ if (isset($_POST['account'])) {
     <style>
         body {
             font-family: 微軟正黑體;
-            background-image: url('images/loginBackground.jpg');
+            background-image: url('images/LoginBackground.jpg');
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-position: center;
@@ -172,7 +172,7 @@ if (isset($_POST['account'])) {
                             <tr>
                                 <td class="w-50">
                                     <button type="button" class="btn btn-block btn-outline-secondary" onclick="GoogleLogin();">
-                                        <img src="images/Google_Logo.png" width="29px" class="googleLogo">Google帳戶登入
+                                        <img src="images/Google_Logo.png" width="16.5px" class="googleLogo">&nbsp; Google帳戶登入
                                     </button>
                                 </td>
                                 <!-- <td class="w-50">
@@ -250,14 +250,10 @@ if (isset($_POST['account'])) {
                                 },
                                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                                 success: function(data) {
-                                    // document.getElementById('email').value = success.getBasicProfile().getEmail();
-                                    // document.getElementById('pwd').value = success.getId();
-                                    // document.getElementById("btnLogin").click();
-                                    var formData = new FormData(form);
-                                    var ajax = new XMLHttpRequest();
-                                    ajax.open("GET", "login.php?account=%s&password=%s",success.getBasicProfile().getEmail(),"s");
-                                    ajax.send();
-                                    window.location.reload();
+                                    document.getElementById('email').value = success.getBasicProfile().getEmail();
+                                    document.getElementById('pwd').value = success.getId();
+                                    document.getElementById("captcha").value = code;
+                                    document.getElementById("btnLogin").click();
                                 },
                                 error: function(e) {
                                     console.log('error', e)
@@ -270,7 +266,7 @@ if (isset($_POST['account'])) {
                     // Error occurred
                     // console.log(error) to find the reason
                     console.log(error);
-                    alert('登入失敗，訊息=>' + error.error)
+                    //alert('登入失敗，訊息=>' + error.error)
                 }
             );
         }
