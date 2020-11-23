@@ -296,7 +296,7 @@ function Login($myaccount, $mypassword){
 	// 	}
 
 	// 	$MM_fldUserAuthorization = "";
-	// 	$MM_redirectLoginSuccess = "home.php";
+	// 	$MM_redirectLoginSuccess = "index.php";
 	// 	$MM_redirectLoginFailed = "login.php?check=err";
 	// 	$MM_redirecttoReferrer = false;
 	// 	mysql_select_db($database_cralwer, $cralwer);

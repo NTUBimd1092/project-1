@@ -156,7 +156,7 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top myHeader">
-      <a class="navbar-brand" href="home.php">
+      <a class="navbar-brand" href="index.php">
         <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
         作伙
       </a>
@@ -271,7 +271,7 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
 
   <!-- footer -->
   <div class="footer">
-    <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
+    <a href="index.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
   </div>
 
   <script>

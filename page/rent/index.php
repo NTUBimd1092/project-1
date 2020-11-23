@@ -68,12 +68,15 @@ $row_Login = mysql_fetch_assoc($Login);
 $totalRows_Login = mysql_num_rows($Login);
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <title>作伙</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="images/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/style.css">
@@ -81,12 +84,12 @@ $totalRows_Login = mysql_num_rows($Login);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        if('serviceWorker' in navigator){
+        if ('serviceWorker' in navigator) {
             console.log("Will service worker register?");
-            navigator.serviceWorker.register('service-worker.js').then(function(reg){
+            navigator.serviceWorker.register('service-worker.js').then(function(reg) {
                 console.log("Yes it did.");
-            }).catch(function(err){
-                console.log("Err:",err);
+            }).catch(function(err) {
+                console.log("Err:", err);
             });
         }
     </script>
@@ -100,13 +103,15 @@ $totalRows_Login = mysql_num_rows($Login);
             background-size: cover;
         }
     </style>
+    <link rel="shortcut icon" href="images/ZuoHuo_180.png">
+    <link rel="apple-touch-icon" href="images/ZuoHuo_180.png">
 </head>
 
 <body>
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-md navbar-dark myHeader">
-        <a class="navbar-brand" href="home.php">
+        <a class="navbar-brand" href="index.php">
             <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
             作伙
         </a>
@@ -125,7 +130,9 @@ $totalRows_Login = mysql_num_rows($Login);
 
                 <?php if ($totalRows_Login > 0) { // 登入後顯示 
                 ?>
-                    <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php include 'encrypt.php'; echo decryptthis($row_Login['name'],$key); ?></b></a></li>
+                    <li class="nav-item active"><a class="nav-link" href="userPage.php">
+                        <b>嗨！<?php include 'encrypt.php'; echo decryptthis($row_Login['name'], $key); ?></b>
+                    </a></li>
                     <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
                 <?php } // Show if recordset not empty 
@@ -139,14 +146,15 @@ $totalRows_Login = mysql_num_rows($Login);
     <div class="container-fluid">
         <div class="row justify-content-center">
 
-            <div class="col-8 col-sm-8 col-md-5 col-lg-4">
+            <div class="col-10 col-sm-10 col-md-5 col-lg-3">
                 <form class="formContainer" action="searchArea.php" method="post">
                     <section class="title">
                         <img src="images/BrownIcon.png" alt="logo" class="HomeIcon"> | 找到最適合您的家
                     </section>
                     <div class="form-group">
-                        <input type="text" class="form-control inputSearch" name="search" placeholder="輸入地段、路名、商圈" required>
-                        <select class="form-control" style="margin-bottom: 10px;">
+                        <input type="hidden" name="home" value="home">
+                        <input type="text" name="qtxt" class="form-control inputSearch" name="search" placeholder="輸入地段、路名、商圈" required>
+                        <select name="moneyS" class="form-control" style="margin-bottom: 10px;">
                             <option value="" disabled selected>選擇價格區間</option>
                             <option value="0 AND 5000">5000元以下</option>
                             <option value="10Thousand">5000-10000元</option>
@@ -157,15 +165,14 @@ $totalRows_Login = mysql_num_rows($Login);
                             <option value="60Thousand">50000-60000元</option>
                             <option value="70Thousand">60000元以上</option>
                         </select>
-
-                        <select class="form-control">
+                        <select name="square" class="form-control">
                             <option value="" disabled selected>選擇坪數區間</option>
-                            <option value="0 AND 10">10坪以下</option>
-                            <option value="20SquareMeter">10-20坪</option>
-                            <option value="30SquareMeter">20-30坪</option>
-                            <option value="40SquareMeter">30-40坪</option>
-                            <option value="50SquareMeter">40-50坪</option>
-                            <option value="60SquareMeter">50坪以上</option>
+                            <option value="10坪以下">10坪以下</option>
+                            <option value="10-20坪">10-20坪</option>
+                            <option value="20-30坪">20-30坪</option>
+                            <option value="30-40坪">30-40坪</option>
+                            <option value="40-50坪">40-50坪</option>
+                            <option value="50坪以上">50坪以上</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-block btnGo">找房子！</button>
@@ -173,13 +180,8 @@ $totalRows_Login = mysql_num_rows($Login);
             </div>
 
         </div>
-
     </div>
-
 
 </body>
 
 </html>
-<?php
-mysql_free_result($Login);
-?>
