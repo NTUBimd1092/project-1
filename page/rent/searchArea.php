@@ -119,7 +119,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
         <!-- navbar -->
         <nav class="navbar navbar-expand-md navbar-dark myHeader">
-            <a class="navbar-brand" href="home.php">
+            <a class="navbar-brand" href="index.php">
                 <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top">
                 作伙
             </a>
@@ -320,7 +320,7 @@ $totalRows_Login = mysql_num_rows($Login);
 
     <!-- footer -->
     <div class="footer">
-        <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
+        <a href="index.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
     <script type="text/javascript">
         var WebName = '<?php echo $_POST['WebName']; ?>';

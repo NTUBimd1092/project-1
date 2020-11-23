@@ -165,10 +165,10 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="home.php">
+                    <a class="navbar-brand" href="index.php">
                         <img src="images/WhiteIcon.png" width="28" class="d-inline-block align-top" alt="logo">
                     </a>
-                    <a class="navbar-brand" style="font-size: 23px;" href="home.php">作伙</a>
+                    <a class="navbar-brand" style="font-size: 23px;" href="index.php">作伙</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="myNavbar">
@@ -305,7 +305,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
     </section>
 
     <div class="footer">
-        <a href="home.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
+        <a href="index.php"><img src="images/WhiteIcon.png" alt="logo" class="HomeIcon">作伙</a>
     </div>
 
     <script>
