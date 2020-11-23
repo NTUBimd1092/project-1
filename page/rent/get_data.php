@@ -197,9 +197,8 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 						<table id="qDTable" class="table table-sm initialism table-borderless bg-white card">
 							<tr>
 								<td rowspan="4" width="30%" class="text-center align-middle"><img class="imageSize" src="' . $row['images'] . '"></td>
-								<th colspan="2" width="50%" class="houseName">' .$Is_Delete. $row['house'] . '</th>
-								<td rowspan="4" width="2%" class="text-center align-top"></td>
-								<td width="18%" class="text-center align-middle houseInfo">來自：' . $row['WebName'] . '</td>
+								<th colspan="2" width="55%" class="houseName">' .$Is_Delete. $row['house'] . '</th>
+								<td width="15%" class="text-center align-middle houseInfo">來自：' . $row['WebName'] . '</td>
 							</tr>
 		
 							<tr>
