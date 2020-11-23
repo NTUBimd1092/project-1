@@ -245,7 +245,7 @@ function Favorate($Link, $userid)
         mysql_query($insert, $cralwer) or die(mysql_error());
 		echo 'Insert';
     } else {
-        $delete = "DELETE FROM `crawler`.`subscription` WHERE `subscription`.`userid` = '{$userid}' AND `subscription`.`Link` = '{$Link}'";
+        $delete = "DELETE FROM `id15333885_crawler`.`subscription` WHERE `subscription`.`userid` = '{$userid}' AND `subscription`.`Link` = '{$Link}'";
         mysql_query($delete, $cralwer) or die(mysql_error());
 		echo 'Delete';
     }
