@@ -257,7 +257,7 @@ $row_webinfo = mysql_fetch_assoc($webinfo);
 
                             <tr>
                                 <th>密碼</th>
-                                <td><input class="form-control" type="text" name="password" value="" placeholder="******"></td>
+                                <td><input class="form-control" type="password" name="password" value="" placeholder="******"></td>
                             </tr>
 
                             <tr>
