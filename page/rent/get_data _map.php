@@ -3,8 +3,7 @@
 function Query($mylat,$mylng,$search)
 {
     require_once('Connections/cralwer.php');
-    mysql_select_db($database_cralwer, $cralwer);
-    mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+    mysqli_select_db($cralwer,$database_cralwer);
 	
 	$SqlWhere="";
 	
@@ -16,13 +15,13 @@ function Query($mylat,$mylng,$search)
 	SELECT *
 	FROM page_data AS PD 
 	LEFT JOIN localtion AS LA ON PD.id = LA.houseid 
-	WHERE (1=1) AND ABS(lat-{$mylat})<=0.003 AND ABS(lng-{$mylng})<=0.003 {$SqlWhere}
+	WHERE (1=1) AND ABS(lat-{$mylat})<=0.005 AND ABS(lng-{$mylng})<=0.005 {$SqlWhere}
 	ORDER BY lat DESC
 	LIMIT 0 , 15";
 
-	$data = mysql_query($query, $cralwer) or die(mysql_error());
-	$row = mysql_fetch_array($data);
-	$datacount=mysql_num_rows($data);
+	$data = mysqli_query($cralwer,$query);
+	$row = mysqli_fetch_array($data);
+	$datacount=mysqli_num_rows($data);
 		
 	do{
 		$Id = urlencode($row['id']);
@@ -51,7 +50,7 @@ function Query($mylat,$mylng,$search)
                         "Floor" => $Floor,
                         "WebName" => $WebName
 						);
-	}while($row = mysql_fetch_array($data));
+	}while($row = mysqli_fetch_array($data));
 	$json = json_encode($return_arr);
 	echo urldecode($json);
 	//echo json_encode($return_arr);

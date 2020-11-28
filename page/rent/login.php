@@ -1,40 +1,39 @@
 <?php require_once('Connections/cralwer.php'); ?>
 <?php
-mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
 if (!function_exists("GetSQLValueString")) {
-    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+    function GetSQLValueString($cralwer, $theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
     {
-        $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+      $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 
-        $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+      $theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($cralwer, $theValue) : mysqli_escape_string($cralwer, $theValue);
 
-        switch ($theType) {
-            case "text":
-                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-                break;
-            case "long":
-            case "int":
-                $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-                break;
-            case "double":
-                $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-                break;
-            case "date":
-                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-                break;
-            case "defined":
-                $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-                break;
-        }
-        return $theValue;
+      switch ($theType) {
+        case "text":
+          $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+          break;    
+        case "long":
+        case "int":
+          $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+          break;
+        case "double":
+          $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+          break;
+        case "date":
+          $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+          break;
+        case "defined":
+          $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+          break;
+      }
+      return $theValue;
     }
 }
 
-mysql_select_db($database_cralwer, $cralwer);
+mysqli_select_db($cralwer,$database_cralwer);
 $query_user = "SELECT * FROM `user`";
-$user = mysql_query($query_user, $cralwer) or die(mysql_error());
-$row_user = mysql_fetch_assoc($user);
-$totalRows_user = mysql_num_rows($user);
+$user = mysqli_query($cralwer,$query_user );
+$row_user = mysqli_fetch_assoc($user);
+$totalRows_user = mysqli_num_rows($user);
 
 // *** Validate request to login to this site.
 if (!isset($_SESSION)) {
@@ -52,8 +51,8 @@ include 'encrypt.php';
 if (isset($_POST['account'])) {
     $loginUsername = $_POST['account'];
     $Pass_query = "SELECT account,password from `user` where account='$loginUsername'";
-    $Pass_Select = mysql_query($Pass_query, $cralwer) or die(mysql_error());
-    $row_pass = mysql_fetch_assoc($Pass_Select);
+    $Pass_Select = mysqli_query($cralwer,$Pass_query);
+    $row_pass = mysqli_fetch_assoc($Pass_Select);
     if ($_POST['password'] == decryptthis($row_pass['password'], $key)) {
         $password = $row_pass['password'];
     }
@@ -62,16 +61,16 @@ if (isset($_POST['account'])) {
     $MM_redirectLoginSuccess = "index.php";
     $MM_redirectLoginFailed = "login.php?check=err";
     $MM_redirecttoReferrer = false;
-    mysql_select_db($database_cralwer, $cralwer);
+    mysqli_select_db($cralwer,$database_cralwer);
 
     $LoginRS__query = sprintf(
         "SELECT account, password FROM `user` WHERE account=%s AND password=%s",
-        GetSQLValueString($loginUsername, "text"),
-        @GetSQLValueString($password, "text")
+        GetSQLValueString($cralwer, $loginUsername, "text"),
+        GetSQLValueString($cralwer, $password, "text")
     );
 
-    $LoginRS = mysql_query($LoginRS__query, $cralwer) or die(mysql_error());
-    $loginFoundUser = mysql_num_rows($LoginRS);
+    $LoginRS = mysqli_query($cralwer,$LoginRS__query);
+    $loginFoundUser = mysqli_num_rows($LoginRS);
     if ($loginFoundUser) {
         $loginStrGroup = "";
 
@@ -82,9 +81,9 @@ if (isset($_POST['account'])) {
         if (isset($_SESSION['PrevUrl']) && false) {
             $MM_redirectLoginSuccess = $_SESSION['PrevUrl'];
         }
-        @header("Location:".$MM_redirectLoginSuccess);
+        header("Location: " . $MM_redirectLoginSuccess);
     } else {
-        @header("Location:".$MM_redirectLoginFailed);
+        header("Location: " . $MM_redirectLoginFailed);
     }
 }
 ?>
@@ -267,7 +266,7 @@ if (isset($_POST['account'])) {
                     // Error occurred
                     // console.log(error) to find the reason
                     console.log(error);
-                    //alert('登入失敗，訊息=>' + error.error)
+                    alert('登入失敗，訊息=>' + error.error)
                 }
             );
         }
@@ -276,5 +275,5 @@ if (isset($_POST['account'])) {
 
 </html>
 <?php
-mysql_free_result($user);
+mysqli_free_result($user);
 ?>

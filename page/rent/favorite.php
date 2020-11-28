@@ -1,6 +1,5 @@
 <?php require_once('Connections/cralwer.php'); ?>
 <?php
-mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
 //initialize the session
 if (!isset($_SESSION)) {
   session_start();
@@ -29,11 +28,11 @@ if ((isset($_GET['doLogout'])) && ($_GET['doLogout'] == "true")) {
 }
 @session_start();
 if (!function_exists("GetSQLValueString")) {
-  function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+  function GetSQLValueString($cralwer, $theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
   {
     $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 
-    $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+    $theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($cralwer, $theValue) : mysqli_escape_string($cralwer, $theValue);
 
     switch ($theType) {
       case "text":
@@ -69,17 +68,17 @@ $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
   $colname_Login = $_SESSION['MM_Username'];
 }
-mysql_select_db($database_cralwer, $cralwer);
-$query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueString($colname_Login, "text"));
+mysqli_select_db($cralwer, $database_cralwer);
+$query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueString($cralwer, $colname_Login, "text"));
 $query_limit_Login = sprintf("%s LIMIT %d, %d", $query_Login, $startRow_Login, $maxRows_Login);
-$Login = mysql_query($query_limit_Login, $cralwer) or die(mysql_error());
-$row_Login = mysql_fetch_assoc($Login);
+$Login = mysqli_query($cralwer, $query_limit_Login);
+$row_Login = mysqli_fetch_assoc($Login);
 
 if (isset($_GET['totalRows_Login'])) {
   $totalRows_Login = $_GET['totalRows_Login'];
 } else {
-  $all_Login = mysql_query($query_Login);
-  $totalRows_Login = mysql_num_rows($all_Login);
+  $all_Login = mysqli_query($cralwer, $query_Login);
+  $totalRows_Login = mysqli_num_rows($all_Login);
 }
 $totalPages_Login = ceil($totalRows_Login / $maxRows_Login) - 1;
 $userid = $row_Login['id'];
@@ -94,17 +93,17 @@ if (isset($_GET['pageNum_webinfo'])) {
 }
 $startRow_webinfo = $pageNum_webinfo * $maxRows_webinfo;
 
-mysql_select_db($database_cralwer, $cralwer);
+mysqli_select_db($cralwer, $database_cralwer);
 $query_webinfo = "SELECT * FROM page_data where Link IN(SELECT Link FROM subscription where userid='$userid')";
 $query_limit_webinfo = sprintf("%s LIMIT %d, %d", $query_webinfo, $startRow_webinfo, $maxRows_webinfo);
-$webinfo = mysql_query($query_limit_webinfo, $cralwer) or die(mysql_error());
-$row_webinfo = mysql_fetch_assoc($webinfo);
+$webinfo = mysqli_query($cralwer, $query_limit_webinfo);
+$row_webinfo = mysqli_fetch_assoc($webinfo);
 
 if (isset($_GET['totalRows_webinfo'])) {
   $totalRows_webinfo = $_GET['totalRows_webinfo'];
 } else {
-  $all_webinfo = mysql_query($query_webinfo);
-  $totalRows_webinfo = mysql_num_rows($all_webinfo);
+  $all_webinfo = mysqli_query($cralwer, $query_webinfo);
+  $totalRows_webinfo = mysqli_num_rows($all_webinfo);
 }
 $totalPages_webinfo = ceil($totalRows_webinfo / $maxRows_webinfo) - 1;
 
@@ -167,7 +166,8 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
         <ul class="navbar-nav ml-auto">
           <?php if ($totalRows_Login > 0) { // 登入後顯示 
           ?>
-            <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php  include 'encrypt.php'; echo decryptthis($row_Login['name'],$key);  ?></b></a></li>
+            <li class="nav-item active"><a class="nav-link" href="userPage.php"><b>嗨！<?php include 'encrypt.php';
+                                                                                      echo decryptthis($row_Login['name'], $key);  ?></b></a></li>
             <li class="nav-item"><a class="nav-link" href="searchArea.php">搜尋列表</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo $logoutAction ?>">登出</a></li>
           <?php } // Show if recordset not empty 
@@ -181,7 +181,7 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
       <div class="accountBg">
         <table class="table table-borderless table-sm accountData col-10 col-sm-8 col-md-6 col-lg-4">
           <tr>
-            <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo decryptthis($row_Login['image'],$key); ?>"></th>
+            <th rowspan="2"><img width="55px" height="55px" style="border-radius:50%" src="<?php echo decryptthis($row_Login['image'], $key); ?>"></th>
             <th><a href="favorite.php"><?php echo $totalRows_webinfo ?> </a></th>
             <th><a href="#" id="price"></a></th>
             <th><a href="#">0</a></th>
@@ -208,11 +208,11 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
                     <td rowspan="4" width="2%" class="text-center align-top">
                       <?php
                       $query_subscribe = "SELECT COUNT(*) count1 FROM `subscription` WHERE `userid` = {$userid} AND `Link` = '{$row_webinfo['Link']}'";
-                      $subscribeCount = mysql_query($query_subscribe, $cralwer) or die(mysql_error());
+                      $subscribeCount = mysqli_query($cralwer, $query_subscribe);
                       if ($subscribeCount >= 1) {
                         echo '<img class="favorite" id="' . $row_webinfo["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
                       } else {
-                        echo '<img class="favorite" id="' . $row_webinfo["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
+                        echo '<img class="favorite" id="' . $row_webinfo["Link"] . '" src="images/Favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
                       }
                       ?>
                     </td>
@@ -224,8 +224,8 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
                     <td rowspan="2" id="Price" class="text-center align-middle housePrice">
                       <?php
                       $query_price = "SELECT COUNT(*) countPrice FROM `money_change` WHERE `Link` = '{$row_webinfo['Link']}'";
-                      $priceCount = mysql_query($query_price, $cralwer) or die(mysql_error());
-                      $row_price = mysql_fetch_assoc($priceCount);
+                      $priceCount = mysqli_query($cralwer, $query_price);
+                      $row_price = mysqli_fetch_assoc($priceCount);
                       if ($row_price['countPrice'] > 1) {
                         echo '<a href="priceFluctuation.php?Link=' . $row_webinfo['Link'] . '">' . number_format($row_webinfo['money']) . '</a>';
                       } else {
@@ -251,9 +251,9 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
                     </td>
                   </tr>
                 </table>
-              <?php } while ($row_webinfo = mysql_fetch_assoc($webinfo)); ?>
+              <?php } while ($row_webinfo = mysqli_fetch_assoc($webinfo)); ?>
             <?php } else {
-              echo '<a class="btn btn-block btn-lg outlineBtn" href="searchArea.php" style="margin-top:350px">立即收藏喜愛的房源</a>';
+              echo '<a class="btn btn-block btn-lg outlineBtn" href="searchArea.php">立即收藏喜愛的房源</a>';
             } ?>
 
             <script>
@@ -300,6 +300,6 @@ $queryString_webinfo = sprintf("&totalRows_webinfo=%d%s", $totalRows_webinfo, $q
 </html>
 
 <?php
-mysql_free_result($webinfo);
-mysql_free_result($Login);
+mysqli_free_result($webinfo);
+mysqli_free_result($Login);
 ?>

@@ -1,31 +1,31 @@
 <?php require_once('Connections/cralwer.php'); ?>
 <?php
 if (!function_exists("GetSQLValueString")) {
-    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+    function GetSQLValueString($cralwer, $theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
     {
-        $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+      $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 
-        $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+      $theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($cralwer, $theValue) : mysqli_escape_string($cralwer, $theValue);
 
-        switch ($theType) {
-            case "text":
-                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-                break;
-            case "long":
-            case "int":
-                $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-                break;
-            case "double":
-                $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-                break;
-            case "date":
-                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-                break;
-            case "defined":
-                $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-                break;
-        }
-        return $theValue;
+      switch ($theType) {
+        case "text":
+          $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+          break;    
+        case "long":
+        case "int":
+          $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+          break;
+        case "double":
+          $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+          break;
+        case "date":
+          $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+          break;
+        case "defined":
+          $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+          break;
+      }
+      return $theValue;
     }
 }
 
@@ -39,15 +39,15 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "from2") and (@$_POS
     include 'encrypt.php'; //加解密檔
     $insertSQL = sprintf(
         "INSERT INTO `user` (account, password, name, phone, image) VALUES (%s, %s, %s, %s, %s)",
-        GetSQLValueString($_POST['account'],"text"),
-        GetSQLValueString(encryptthis($_POST['password'], $key), "text"),
-        GetSQLValueString(encryptthis($_POST['name'], $key), "text"),
-        GetSQLValueString(encryptthis($_POST['phone'], $key), "text"),
-        GetSQLValueString(encryptthis("images\avatar.png", $key), "text")
+        GetSQLValueString($cralwer, $_POST['account'],"text"),
+        GetSQLValueString($cralwer, encryptthis($_POST['password'], $key), "text"),
+        GetSQLValueString($cralwer, encryptthis($_POST['name'], $key), "text"),
+        GetSQLValueString($cralwer, encryptthis($_POST['phone'], $key), "text"),
+        GetSQLValueString($cralwer, encryptthis("images\avatar.png", $key), "text")
         );
 
-    mysql_select_db($database_cralwer, $cralwer);
-    $Result1 = mysql_query($insertSQL, $cralwer) or die(mysql_error());
+    mysqli_select_db( $cralwer,$database_cralwer);
+    $Result1 = mysqli_query($cralwer,$insertSQL);
 
     $insertGoTo = "login.php";
     if (isset($_SERVER['QUERY_STRING'])) {
@@ -57,11 +57,11 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "from2") and (@$_POS
     header(sprintf("Location: %s", $insertGoTo));
 }
 
-mysql_select_db($database_cralwer, $cralwer);
+mysqli_select_db( $cralwer,$database_cralwer);
 $query_user = "SELECT * FROM `user`";
-$user = mysql_query($query_user, $cralwer) or die(mysql_error());
-$row_user = mysql_fetch_assoc($user);
-$totalRows_user = mysql_num_rows($user);
+$user = mysqli_query($cralwer,$query_user);
+$row_user = mysqli_fetch_assoc($user);
+$totalRows_user = mysqli_num_rows($user);
 ?>
 
 
@@ -80,7 +80,7 @@ $totalRows_user = mysql_num_rows($user);
     <style>
         body {
             font-family: 微軟正黑體;
-            background-image: url('images/registerBackground.jpg');
+            background-image: url('images/RegisterBackground.jpg');
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-position: center;
@@ -192,5 +192,5 @@ $totalRows_user = mysql_num_rows($user);
 
 </html>
 <?php
-mysql_free_result($user);
+mysqli_free_result($user);
 ?>

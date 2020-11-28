@@ -18,8 +18,20 @@ form {
 .formContainer {
     border-radius: 8px;
     padding: 30px;
-    margin-top: 80px;
-    margin-bottom: 80px;
+    margin-top: 25vh;
+    margin-bottom: 25vh;
+    /* margin-top: 80px; */
+    /* margin-bottom: 80px; */
+}
+
+.LoginFormMargin{
+    margin-top: 15vh;
+    margin-bottom: 15vh;
+}
+
+.RegisterFormMargin{
+    margin-top: 10vh;
+    margin-bottom: 10vh;
 }
 
 .title {
@@ -224,6 +236,13 @@ form {
     color: white !important;
     background-color: rgb(126, 83, 34, 0.85) !important;
     /* font-weight: bold !important; */
+}
+
+.outlineBtn{
+    color: rgb(126, 83, 34) !important;
+    border: rgb(126, 83, 34) solid 2px !important;
+    font-weight: bold !important;
+    margin-top: 50vh;
 }
 
 /* FOOTER */

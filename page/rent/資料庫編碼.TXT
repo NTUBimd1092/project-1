@@ -1,1 +1,0 @@
-mysql_query("SET NAMES 'utf8'");//修正中文亂碼問題

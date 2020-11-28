@@ -1,4 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<info>
-	<infoitem key="UD_money_change" value="name:id;datatype:int,name:Link;datatype:string,name:date;datatype:datetime,name:money;datatype:int" />
-</info>

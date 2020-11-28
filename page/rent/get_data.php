@@ -1,14 +1,16 @@
 <script src="src/get_data.js"></script>
 <?php
-function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $dict, $userid, $city, $town, $square)
+function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $dict, $userid, $city, $town)
 {
+	//header('Access-Control-Allow_Origin: *');
     require_once('Connections/cralwer.php');
-    mysql_select_db($database_cralwer, $cralwer);
-    mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+	mysqli_select_db($cralwer , $database_cralwer);
+	mysqli_query($cralwer,"SET CHARACTER SET UTF8");
 
-    $SqlWhere = "";
+	$SqlWhere = "";
+	
     if (isset($WebName) && $WebName != "") {
-        $SqlWhere .= " AND `WebName` = '{$WebName}'";
+        $SqlWhere .= " AND `WebName` = '{$WebName}' ";
     }
 
     if (isset($search) && $search != "") {
@@ -80,8 +82,8 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 				$SqlWhere .= " AND `adress` Like '%{$town}%'";
 			break;	
 		}
-       //$SqlWhere .= " AND `adress` Like '%{$town}%'";
 	}
+
 	if(isset($square) && $square!=""){
 		switch($square){
 			case "10坪以下":
@@ -103,11 +105,14 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 				$SqlWhere.="AND (`square_meters` >='50') ";	
 			break;
 		}
-
 	}
+
 	if(isset($orderby) && $orderby!=""){
 		switch($orderby){
 			case "房屋來源":
+				$orderby="WebName";
+			break;
+			case "房屋名稱":
 				$orderby="house";
 			break;
 			case "刊登日期":
@@ -135,21 +140,21 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 			break;
 		}
 	}
+	
 
-
-	$query = "SELECT * FROM `page_data` where (1=1) {$SqlWhere} ORDER BY `{$orderby}` {$dict} LIMIT {$limit} OFFSET {$offset}";
-	$data = mysql_query($query, $cralwer) or die(mysql_error());
-	$row = mysql_fetch_assoc($data);
-	$Rowcount=mysql_num_rows($data);
-	if($Rowcount=="0"){
+	$query = "SELECT * FROM `page_data` WHERE (1=1) {$SqlWhere} ORDER BY `{$orderby}` {$dict} LIMIT {$limit} OFFSET {$offset}";
+	$data = mysqli_query($cralwer,$query);
+	$row = mysqli_fetch_assoc($data);
+	$Rowcount=mysqli_num_rows($data);
+	if($Rowcount=="0" OR $Rowcount==""){
 		echo "無資料!";
 	}else{
 		do{
 			$query_subscribe = "SELECT COUNT(*) countSubscribe FROM `subscription` WHERE `userid` = '{$userid}' AND `Link` = '{$row['Link']}'";
-			$subscribeCount = mysql_query($query_subscribe, $cralwer) or die(mysql_error());
-			$row_subscribeCount=mysql_fetch_assoc($subscribeCount);
+			$subscribeCount = mysqli_query($cralwer,$query_subscribe);
+			$row_subscribeCount=mysqli_fetch_assoc($subscribeCount);
 			$selectedFav = '<img class="favorite" id="' . $row["Link"] . '" src="images/selectedFav.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
-			$favorite = '<img class="favorite" id="' . $row["Link"] . '" src="images/favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
+			$favorite = '<img class="favorite" id="' . $row["Link"] . '" src="images/Favorite.png" width="20px" onClick="Favorate(this,' . $userid . ')">';
 			$mystr = $row_subscribeCount['countSubscribe']>="1" ? $selectedFav : $favorite;
 			$Is_Delete=$row['Is_Delete']=='Y'?"<span class=\"badge badge-danger\" >已下架</span>":"";
 			if (isset($userid) AND $userid!="") {
@@ -223,47 +228,47 @@ function Query($offset, $limit, $WebName, $search, $moneyS, $moneyE, $orderby, $
 				</div>
 			';
 			}
-		}while($row=mysql_fetch_assoc($data));
+		}while($row=mysqli_fetch_assoc($data));
 	}
 }
 if (isset($_POST['offset']) and isset($_POST['limit'])) {
     /*設定參數*/
-    Query($_POST['offset'], $_POST['limit'], $_POST['WebName'], $_POST['search'], $_POST['moneyS'], $_POST['moneyE'], $_POST['orderby'], $_POST['dict'], $_POST['userid'],$_POST['city'],$_POST['town'],$_POST['square']);
+    Query($_POST['offset'], $_POST['limit'], $_POST['WebName'], $_POST['search'], $_POST['moneyS'], $_POST['moneyE'], $_POST['orderby'], $_POST['dict'], $_POST['userid'],$_POST['city'],$_POST['town']);
 }
 
 function Favorate($Link, $userid)
 {
+	// header('Access-Control-Allow_Origin: *');
     require_once('Connections/cralwer.php');
-    mysql_select_db($database_cralwer, $cralwer);
-    mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+    mysqli_select_db($cralwer,$database_cralwer);
 
     $query = "SELECT * FROM `subscription` where (1=1) AND `userid`='{$userid}' AND `Link`='{$Link}'";
-    $data = mysql_query($query, $cralwer) or die(mysql_error());
-    $totalRows = mysql_num_rows($data);
+    $data = mysqli_query( $cralwer,$query);
+    $totalRows = mysqli_num_rows($data);
     if ($totalRows == 0) {
         $insert = "INSERT `subscription` VALUES('{$userid}', '{$Link}')";
-        mysql_query($insert, $cralwer) or die(mysql_error());
+        mysqli_query( $cralwer,$insert);
 		echo 'Insert';
     } else {
-        $delete = "DELETE FROM `id15333885_crawler`.`subscription` WHERE `subscription`.`userid` = '{$userid}' AND `subscription`.`Link` = '{$Link}'";
-        mysql_query($delete, $cralwer) or die(mysql_error());
+        $delete = "DELETE FROM `subscription` WHERE `subscription`.`userid` = '{$userid}' AND `subscription`.`Link` = '{$Link}'";
+        mysqli_query($cralwer,$delete);
 		echo 'Delete';
     }
 }
 
 function register($UserName, $UserAccount, $Image, $UserPwd){
+	// header('Access-Control-Allow_Origin: *');
 	require_once('Connections/cralwer.php');
-    mysql_select_db($database_cralwer, $cralwer);
-	mysql_query("SET NAMES 'utf8'"); //修正中文亂碼問題
+    mysqli_select_db($cralwer,$database_cralwer);
 	$query="SELECT * FROM `user` where (1=1) AND `account`='{$UserAccount}'";
-    $data = mysql_query($query, $cralwer) or die(mysql_error());
-	$totalRows = mysql_num_rows($data);
+    $data = mysqli_query($cralwer,$query);
+	$totalRows = mysqli_num_rows($data);
 	if ($totalRows == 0) {	
 		include 'encrypt.php'; //加解密檔
 		$mypwd=encryptthis($UserPwd, $key);
 		$myUserName=encryptthis($UserName, $key);
 		$myImage=encryptthis($Image, $key);
-		$insert="INSERT INTO `crawler`.`user` (
+		$insert="INSERT INTO `user` (
 			`account` ,
 			`password` ,
 			`name` ,
@@ -273,7 +278,7 @@ function register($UserName, $UserAccount, $Image, $UserPwd){
 				'{$UserAccount}', '{$mypwd}', '{$myUserName}', '{$myImage}'
 			);
 			";
-        mysql_query($insert, $cralwer) or die(mysql_error());
+        mysqli_query($cralwer,$insert);
 		echo 'Register'; 
     } else {
         echo 'Login';

@@ -1,0 +1,14 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.lock
+rent/.vscode
+rent/_mmServerScripts
+rent/_notes
+rent/_notes.mno
+/rent/*.mno

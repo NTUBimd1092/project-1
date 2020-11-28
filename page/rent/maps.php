@@ -26,13 +26,12 @@ if ((isset($_GET['doLogout'])) && ($_GET['doLogout'] == "true")) {
         exit;
     }
 }
-mysql_query("SET NAMES 'utf8'"); //資料亂碼
 if (!function_exists("GetSQLValueString")) {
-    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
+    function GetSQLValueString($cralwer, $theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
     {
         $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 
-        $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+        $theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($cralwer, $theValue) : mysqli_escape_string($cralwer, $theValue);
 
         switch ($theType) {
             case "text":
@@ -61,11 +60,11 @@ $colname_Login = "-1";
 if (isset($_SESSION['MM_Username'])) {
     $colname_Login = $_SESSION['MM_Username'];
 }
-mysql_select_db($database_cralwer, $cralwer);
-$query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueString($colname_Login, "text"));
-$Login = mysql_query($query_Login, $cralwer) or die(mysql_error());
-$row_Login = mysql_fetch_assoc($Login);
-$totalRows_Login = mysql_num_rows($Login);
+mysqli_select_db( $cralwer,$database_cralwer);
+$query_Login = sprintf("SELECT * FROM `user` WHERE account = %s", GetSQLValueString($cralwer, $colname_Login, "text"));
+$Login = mysqli_query( $cralwer,$query_Login);
+$row_Login = mysqli_fetch_assoc($Login);
+$totalRows_Login = mysqli_num_rows($Login);
 
 ?>
 
@@ -155,7 +154,7 @@ $totalRows_Login = mysql_num_rows($Login);
                             <thead>
                                 <tr>
                                     <th colspan="5">
-                                        <a href="searchArea.php" style="color:black; text-decoration:none; font-weight:500;">區域搜尋 |</a> 地圖搜尋
+                                        <a href="searchArea.php?home=home" style="color:black; text-decoration:none; font-weight:500;">區域搜尋 |</a> 地圖搜尋
                                     </th>
                                 </tr>
                             </thead>
@@ -192,7 +191,7 @@ $totalRows_Login = mysql_num_rows($Login);
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 panControl: false,
-                zoomControl: true, //可以通過單击縮放按钮来縮放地圖
+                zoomControl: false, //可以通過單击縮放按钮来縮放地圖
                 mapTypeControl: true,
                 scaleControl: false,
                 streetViewControl: false,
@@ -315,6 +314,6 @@ $totalRows_Login = mysql_num_rows($Login);
 
 </html>
 <?php
-mysql_free_result($Login);
+mysqli_free_result($Login);
 
 ?>
