@@ -4,7 +4,9 @@ import re
 import json
 from re import sub
 import pymysql
-db = pymysql.connect("localhost","root","1234","crawler")
+#db = pymysql.connect("us-cdbr-east-02.cleardb.com","b5647ade0475c5","40d209f8","heroku_56d2d16ef2b2e35")
+db = pymysql.connect("localhost","root","xu.61i6u;6","heroku_56d2d16ef2b2e35")
+
 cursor = db.cursor()
 Ccursor=db.cursor()
 Moneychange=db.cursor()
@@ -21,7 +23,7 @@ def str2obj(s, s1=';', s2='='):
     return res
 
 count=1
-while count<=2:
+while count<=10:
     def main(url, params='', data='', headers=''):
         headers = str2obj(headers, '\n', ': ')
 
@@ -47,9 +49,9 @@ while count<=2:
             else:
                 house_type='無'
             if a[1].string !="":
-                meters_start=int(str(a[1].string).find('坪數:'))+4
-                meters_end=a[1].string.find('坪<')
-                meters=a[1].string[meters_start:meters_end]#坪數
+                meters_start=str(a[1].string).find('坪數:')
+                meters_end=str(a[1].string).find('坪<')
+                meters=a[1].string[meters_start+4:meters_end]#坪數
             else:
                 meters=0
             floors=a[3].string[3:]#樓情
@@ -97,6 +99,8 @@ while count<=2:
                         sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
                         change = [data['Link'],data['money']]
                         cursor.execute(sqlinsert_moneychange,change)
+                        import PyEmail
+                        PyEmail.Email(data['Link'])
                         print("價格有異動！")
                     db.commit()
                     print('完成！')

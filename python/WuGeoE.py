@@ -4,7 +4,9 @@ import re
 import json
 from re import sub
 import pymysql
-db = pymysql.connect("localhost","root","1234","crawler" )
+
+# db = pymysql.connect("us-cdbr-east-02.cleardb.com","b5647ade0475c5","40d209f8","heroku_56d2d16ef2b2e35")
+db = pymysql.connect("localhost","root","xu.61i6u;6","heroku_56d2d16ef2b2e35")
 cursor = db.cursor()
 Ccursor=db.cursor()
 Moneychange=db.cursor()
@@ -63,6 +65,8 @@ while Readpage<=1:
                         sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
                         change = [Url,Money]
                         cursor.execute(sqlinsert_moneychange,change)
+                        import PyEmail
+                        PyEmail.Email(Url)
                         Msg+="價格有異動！"
                     db.commit()
                     Msg='已更新！'
@@ -94,19 +98,21 @@ while Readpage<=1:
         ,'firstRow': Rowcount
         }
 
+        # headers=randomUA.getrandomUA()
+        
         headers = '''        
         Accept: application/json, text/javascript, */*; q=0.01
         Accept-Encoding: gzip, deflate, br
         Accept-Language: zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7
         Connection: keep-alive
-        Cookie: is_new_index=1; is_new_index_redirect=1; T591_TOKEN=c8s5odhcjdfe35h5pdg0f5tge2; _ga=GA1.3.1404095315.1598670258; _ga=GA1.4.1404095315.1598670258; _fbp=fb.2.1598670258798.1024156568; fcm_pc_token=caEafU25k4o%3AAPA91bE16sv6GodbCZWZPeI6aFCdo9QRK6rqbjZDnaoBuCHJae4wTAVKULlTbd-QdzwrOgGvCbWghTqd8aw-XIkAyOAIpVN30DV_ByGKV_2z39gt8FBqC2SCgVNPfhFGRknPDLitXslH; tw591__privacy_agree=1; user_index_role=1; __auc=439c342417449ceef33ce64cca7; urlJumpIp=1; urlJumpIpByTxt=%E5%8F%B0%E5%8C%97%E5%B8%82; webp=1; PHPSESSID=035a32b1ad4df2e67f88335b98451198; _gid=GA1.3.1531950116.1603130593; _gid=GA1.4.1531950116.1603130593; __utmc=82835026; __utmz=82835026.1603130658.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); c10f3143a018a0513ebe1e8d27b5391c=1; user_browse_recent=a%3A5%3A%7Bi%3A0%3Ba%3A2%3A%7Bs%3A4%3A%22type%22%3Bi%3A1%3Bs%3A7%3A%22post_id%22%3Bs%3A7%3A%229859557%22%3B%7Di%3A1%3Ba%3A2%3A%7Bs%3A4%3A%22type%22%3Bi%3A1%3Bs%3A7%3A%22post_id%22%3Bs%3A7%3A%228015560%22%3B%7Di%3A2%3Ba%3A2%3A%7Bs%3A4%3A%22type%22%3Bi%3A1%3Bs%3A7%3A%22post_id%22%3Bs%3A7%3A%229726667%22%3B%7Di%3A3%3Ba%3A2%3A%7Bs%3A4%3A%22type%22%3Bi%3A1%3Bs%3A7%3A%22post_id%22%3Bs%3A7%3A%229411633%22%3B%7Di%3A4%3Ba%3A2%3A%7Bs%3A4%3A%22type%22%3Bi%3A1%3Bs%3A7%3A%22post_id%22%3Bs%3A7%3A%229660721%22%3B%7D%7D; localTime=2; __utma=82835026.1404095315.1598670258.1603130658.1603136335.2; new_rent_list_kind_test=0; _gat_UA-97423186-1=1; _gat=1; XSRF-TOKEN=eyJpdiI6InVsbzRYVjRac2FldGkyV0ZXUGxrVmc9PSIsInZhbHVlIjoiYjNQQkpENnQySjhtSmkyMERTUDVRcEdkTmI4cHBHcmNZN0thVnVhZjRUR2JtVzhVZGJsVURqSW9jMTNcL3J0YW1pRkE3eWsxWk1cLzZQVElZRTlXcE1JQT09IiwibWFjIjoiNmRkNjU1ZDIxZWIxNjI0MjkzNTM2Y2JjZTFjNTc2MmNmZTZjOTQ3OWUwYWRiNjRjNWNlODkxNDAzOTM5YThkNSJ9; 591_new_session=eyJpdiI6ImhXTTlkblpuM2llSnQzOTFyNjFaVkE9PSIsInZhbHVlIjoiWlpIQ2ppZVZ0c2lDa09XOXJKVEhrXC9wUUVHXC9DYzBnRzRYZVd1NTh0ZGRvSlwvbWxsMTBhTXhVVDBNVGl1XC8xYXJmSnpRS2dRY2tJU1dqMVVZVm9SaTVnPT0iLCJtYWMiOiI2ZjA2ZjhmMmZmMzM3ZjE0YmVjYmJiNzZjMDkyOWY5YTQ5YzQ1YTFhNGVmYzM2YTU4OTFjYmEwMjU0ZDFhMjJiIn0%3D
+        Cookie: urlJumpIp=1; urlJumpIpByTxt=%E5%8F%B0%E5%8C%97%E5%B8%82; _ga=GA1.4.111678988.1604393300; __auc=d8078dc51758d4af2d2a1082cbb; __utma=82835026.111678988.1604393300.1604393301.1604393301.1; __utmz=82835026.1604393301.1.1.utmcsr=localhost|utmccn=(referral)|utmcmd=referral|utmcct=/; T591_TOKEN=eni71mni33eb7260vkghtgeop5; _fbp=fb.2.1604393304173.1652886249; is_new_index=1; is_new_index_redirect=1; tw591__privacy_agree=0; new_rent_list_kind_test=0; webp=1; PHPSESSID=0mlr5v4l2b1rkrrmkp5et8amg7; user_index_role=1; user_browse_recent=a%3A1%3A%7Bi%3A0%3Ba%3A2%3A%7Bs%3A4%3A%22type%22%3Bi%3A1%3Bs%3A7%3A%22post_id%22%3Bs%3A8%3A%2210107984%22%3B%7D%7D; localTime=1; c10f3143a018a0513ebe1e8d27b5391c=1; _gid=GA1.3.1387178426.1606455061; _gat=1; _gid=GA1.4.1387178426.1606455061; _dc_gtm_UA-97423186-1=1; _gat_UA-97423186-1=1; XSRF-TOKEN=eyJpdiI6IjZmSE1UYUZzMzdLUTMyY013MU5UOUE9PSIsInZhbHVlIjoiVGpITk90TVwvbExKaEZmSUNUWkwzU0o1Q3lRdlwvOWNHMlNBNDJvZWRkb3lXbjZyd05jNjl2TU1UeVRmTlhXb2V2ZUg1NDBOUzUyblwvK1wvWXFxRVlKUU13PT0iLCJtYWMiOiJiNTlhMmFlNjQ0MTJiMTZjYjlmNTA2ZDFmMDI3YmY1N2FmN2M3M2FkYTBiMTJlYmQzNWQwZGIwYzg2NzZjNjdjIn0%3D; _ga=GA1.1.111678988.1604393300; _ga_ZDKGFY9EDM=GS1.1.1606455060.3.1.1606455063.0; 591_new_session=eyJpdiI6IkdWaEE4TVBMalpMWlNvUTJqekhhK2c9PSIsInZhbHVlIjoiME9DQVJuRjRTNWViTm1hdW8rRkJUUlQ4a28wR2R3UGcrVDJZNURRZ05XY25Dc2tvXC9yWWpEVWRHT0VERFMxbEdxdzduVGtrQzhtR2FZayt6TENwWkF3PT0iLCJtYWMiOiIxZTcxZDk1YjFjYzE5ZGQ4YThiNzkwMzY0NzkzNDlhMTkxMmRkOThmNzA1NmY0ZmY0ZmM1ZDNlNWE1MmY2MzdiIn0%3D
         Host: rent.591.com.tw
-        Referer: https://rent.591.com.tw/?kind=0&region=1&rentprice=0
+        Referer: https://rent.591.com.tw/?kind=0&region=1
         Sec-Fetch-Dest: empty
         Sec-Fetch-Mode: cors
         Sec-Fetch-Site: same-origin
-        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
-        X-CSRF-TOKEN: hos91tyR5EEkRrK0KnKKPjBiCnmKR7nZ7shZ642g
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36
+        X-CSRF-TOKEN: PB1R6WmPSYIpf6FcWbRDSssDvcBG0iQMVqU3z5ju
         X-Requested-With: XMLHttpRequest
         '''
         main(url, params, text, headers)

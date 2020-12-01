@@ -2,7 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 import pymysql
 from re import sub
-db = pymysql.connect("localhost","root","1234","crawler")
+# b5647ade0475c5
+# 40d209f8
+# us-cdbr-east-02.cleardb.com
+# heroku_56d2d16ef2b2e35
+# db = pymysql.connect("us-cdbr-east-02.cleardb.com","b5647ade0475c5","40d209f8","heroku_56d2d16ef2b2e35")
+db = pymysql.connect("localhost","root","xu.61i6u;6","heroku_56d2d16ef2b2e35")
 cursor = db.cursor()
 Ccursor=db.cursor()
 Moneychange=db.cursor()
@@ -78,6 +83,8 @@ def getData(url):
                     sqlinsert_moneychange = ("INSERT INTO money_change(Link,money)" "VALUES(%s,%s)")
                     change = [data['url'],data['house_money']]
                     cursor.execute(sqlinsert_moneychange,change)
+                    import PyEmail
+                    PyEmail.Email(data['url'])
                     Msg+="(價格有異動！)"
                 db.commit()                
                 Msg+="已更新！"
@@ -87,7 +94,7 @@ def getData(url):
     print(f'Total: {len(result)}')
 
 count=1#頁數156
-while count<=3:
+while count<=20:
     pageURL="https://www.sinyi.com.tw/rent/list/"+str(count)+".html"
     print(pageURL)
     pageURL=getData(pageURL)

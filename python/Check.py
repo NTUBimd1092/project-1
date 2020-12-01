@@ -4,7 +4,7 @@ import pymysql
 from re import sub
 import itertools
 
-db = pymysql.connect("localhost","root","1234","crawler", charset='utf8')
+db = pymysql.connect("us-cdbr-east-02.cleardb.com","b5647ade0475c5","40d209f8","heroku_56d2d16ef2b2e35", charset='utf8')
 cursor = db.cursor()
 Dcursor=db.cursor()
 select_sql = """SELECT id,Link,WebName FROM `page_data`"""

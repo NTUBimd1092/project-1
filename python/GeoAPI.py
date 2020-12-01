@@ -5,7 +5,6 @@ import time
 import pymysql
 
 def get_latitude_longtitude(address):
-    # decode url
     address = urllib.parse.quote(address)
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address+"&key=AIzaSyAzA3f6KHEpViCBcLFSWS3a2ywVr3fCIvY"
     while True:
@@ -21,19 +20,21 @@ def get_latitude_longtitude(address):
 
     return lat, lng
 
-db = pymysql.connect("localhost","root","1234","crawler", charset='utf8')
+# db = pymysql.connect("us-cdbr-east-02.cleardb.com","b5647ade0475c5","40d209f8","heroku_56d2d16ef2b2e35", charset='utf8')
+db = pymysql.connect("localhost","root","xu.61i6u;6","heroku_56d2d16ef2b2e35")
+
 Qcursor = db.cursor()
 Icursor=db.cursor()
 Ccursor=db.cursor()
 print('開始定位!\n')
 try:
-    select_sql = """SELECT id,adress FROM `page_data` where `Is_Delete`='N'"""
+    select_sql = """SELECT id,adress FROM `page_data`"""
     Qcursor.execute(select_sql)
     i=0
-    while i<=20:
+    while i<=816:
         arr=Qcursor.fetchone()
         print(f'編號：{arr[0]},地址：{arr[1]}')
-        check_sql=f"""SELECT COUNT( `houseid` )AS A FROM `localtion`WHERE `houseid` = {arr[0]} """
+        check_sql=f"""SELECT COUNT( `houseid` )AS A FROM `localtion` WHERE `houseid` = {arr[0]} """
         Ccursor.execute(check_sql)
         count=Ccursor.fetchone()
         if count[0]==0:    
