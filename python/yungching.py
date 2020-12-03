@@ -4,7 +4,7 @@ import re
 import json
 from re import sub
 import pymysql
-#db = pymysql.connect("us-cdbr-east-02.cleardb.com","b5647ade0475c5","40d209f8","heroku_56d2d16ef2b2e35")
+# db = pymysql.connect("us-cdbr-east-02.cleardb.com","badaadfc741319","fd67aae8","heroku_64a98996a6e263e", charset='utf8')
 db = pymysql.connect("localhost","root","xu.61i6u;6","heroku_56d2d16ef2b2e35")
 
 cursor = db.cursor()
